@@ -19,6 +19,7 @@ export const filters: DataTableFilter[] = [
         ControlName: 'SearchQuery',
         Type: 'input',
         Label: 'Search',
+        PlaceHolder: 'Search by Name'
     }
 ]
 export const btns: DataTableButtonObject[] = [
