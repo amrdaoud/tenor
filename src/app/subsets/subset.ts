@@ -15,3 +15,9 @@ export interface SubsetListViewModel {
     //isDeleted: boolean,
     supplierId: number
 }
+export interface SubsetViewModel {
+
+}
+export interface SubsetBindingModel {
+    
+}
