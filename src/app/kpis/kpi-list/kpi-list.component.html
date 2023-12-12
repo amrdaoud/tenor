@@ -1,7 +1,7 @@
 <mat-grid-list class="page-with-toolbar" cols="1"  rowHeight="fit">
     <mat-grid-tile>
         <amr-data-table
-        title="Device"
+        title="Kpi"
         [data]="data"
         [dataSize]="dataSize"
         [columnDefs]="columns"
@@ -18,7 +18,6 @@
         [isReport]="true"
         [haveDownload]="true"
         [btns]="btns"
-        (btnClicked)="buttonCliked($event)"
         ></amr-data-table>
     </mat-grid-tile>
 </mat-grid-list>

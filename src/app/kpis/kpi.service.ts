@@ -3,15 +3,15 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
-import { DeviceListViewModel,  DeviceViewModel, DeviceBindingModel} from './device';
+import { KpiListViewModel,  KpiViewModel, KpiBindingModel} from './kpi';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DeviceService {
+export class KpiService {
 
   constructor() { }
-  private url = environment.apiUrl + 'devices';
+  private url = environment.apiUrl + 'kpis';
   private http = inject(HttpClient);
 
   //Loaders
@@ -32,21 +32,21 @@ export class DeviceService {
     return this.loadingDownload.asObservable();
   }
   //Requests
-  getByFilter(filter: GeneralFilterModel): Observable<{data: DeviceListViewModel[], dataSize: number}> {
+  getByFilter(filter: GeneralFilterModel): Observable<{data: KpiListViewModel[], dataSize: number}> {
     this.loadingList.next(true);
-    return this.http.post<{data: DeviceListViewModel[], dataSize: number}>(this.url + '/getByFilter', filter).pipe(
+    return this.http.post<{data: KpiListViewModel[], dataSize: number}>(this.url + '/Get', filter).pipe(
       finalize(() => this.loadingList.next(false))
     )
   }
-  getById(id: number): Observable<DeviceViewModel> {
+  getById(id: number): Observable<KpiViewModel> {
     this.loadingElement.next(true);
-    return this.http.get<DeviceViewModel>(this.url + '/getById' + `?id=${id}`).pipe(
+    return this.http.get<KpiViewModel>(this.url + '/Get' + `?id=${id}`).pipe(
       finalize(() => this.loadingElement.next(false))
     )
   }
-  addElement(model: DeviceBindingModel): Observable<DeviceViewModel> {
+  addElement(model: KpiBindingModel): Observable<KpiViewModel> {
     this.loadingAddElement.next(true);
-    return this.http.post<DeviceViewModel>(this.url + '/addDevice', model).pipe(
+    return this.http.post<KpiViewModel>(this.url + '', model).pipe(
       finalize(() => this.loadingAddElement.next(false))
     )
   }

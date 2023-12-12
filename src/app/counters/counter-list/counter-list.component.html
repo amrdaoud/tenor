@@ -1,1 +1,4 @@
-<p>counter-list works!</p>
+<form [formGroup]="frm">
+    <amr-input controlName="text" appearance="outline" placeHolder="hello"></amr-input>
+    <amr-select controlName="select" [options]="data" displayAccessor="Name" valueAccessor="Value" appearance="outline"></amr-select>
+</form>
