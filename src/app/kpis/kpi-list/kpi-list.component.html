@@ -14,10 +14,11 @@
         [isLoading]="(loadingList$ | async)"
         (changed)="changed($event)"
         [showSubmit]="false"
-        [preserveSearchQuery]="true"
+        [preserveQueryParams]="true"
         [isReport]="true"
         [haveDownload]="true"
         [btns]="btns"
+        (btnClicked)="btnClicked($event)"
         ></amr-data-table>
     </mat-grid-tile>
 </mat-grid-list>

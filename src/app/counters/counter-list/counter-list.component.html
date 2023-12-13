@@ -1,4 +1,24 @@
-<form [formGroup]="frm">
-    <amr-input controlName="text" appearance="outline" placeHolder="hello"></amr-input>
-    <amr-select controlName="select" [options]="data" displayAccessor="Name" valueAccessor="Value" appearance="outline"></amr-select>
-</form>
+<mat-grid-list class="page-with-toolbar" cols="1"  rowHeight="fit">
+    <mat-grid-tile>
+        <amr-data-table
+        title="Counter"
+        [data]="data"
+        [dataSize]="dataSize"
+        [columnDefs]="columns"
+        [filters]="filters!"
+        [isAsync]="true"
+        [pageSize]="30"
+        [sortActive]="'id'"
+        [sortDirection]="'desc'"
+        [clickable]="true"
+        [isLoading]="(loadingList$ | async)"
+        (changed)="changed($event)"
+        [showSubmit]="false"
+        [preserveSearchQuery]="true"
+        [isReport]="true"
+        [haveDownload]="true"
+        [btns]="btns"
+        (btnClicked)="btnClicked($event)"
+        ></amr-data-table>
+    </mat-grid-tile>
+</mat-grid-list>

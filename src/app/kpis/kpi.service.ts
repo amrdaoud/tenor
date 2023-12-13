@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 import { KpiListViewModel,  KpiViewModel, KpiBindingModel} from './kpi';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,15 @@ export class KpiService {
   get loadingDownload$(): Observable<boolean> {
     return this.loadingDownload.asObservable();
   }
+  //Creating Form
+  createForm(model?: KpiViewModel): FormGroup {
+    return new FormGroup({
+      id: new FormControl(model?.id ?? 0, Validators.required),
+      name: new FormControl(model?.name, Validators.required),
+      extraProperty: new FormControl(model?.extraProperty)
+    })
+  }
+
   //Requests
   getByFilter(filter: GeneralFilterModel): Observable<{data: KpiListViewModel[], dataSize: number}> {
     this.loadingList.next(true);

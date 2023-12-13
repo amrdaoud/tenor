@@ -5,8 +5,10 @@ export interface DeviceListViewModel {
 export interface DeviceViewModel {
     id: number;
     name: string;
+    extraProperty: string;
 }
 export interface DeviceBindingModel {
     id: number;
     name: string;
+    extraProperty: string;
 }

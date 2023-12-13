@@ -1,0 +1,16 @@
+.techteec-form-card {
+    min-width: 250px;
+    .mat-mdc-card-header {
+        margin-bottom: 20px;
+    }
+    .mat-mdc-card-content {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    .mat-mdc-card-actions {
+        gap: 10px;
+    }
+}
+.techteec-control-full-width {
+    width: 100%;
+}

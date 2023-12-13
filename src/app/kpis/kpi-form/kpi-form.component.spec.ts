@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CounterListComponent } from './counter-list.component';
+import { KpiFormComponent } from './kpi-form.component';
 
-describe('CounterListComponent', () => {
-  let component: CounterListComponent;
-  let fixture: ComponentFixture<CounterListComponent>;
+describe('KpiFormComponent', () => {
+  let component: KpiFormComponent;
+  let fixture: ComponentFixture<KpiFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CounterListComponent]
+      imports: [KpiFormComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(CounterListComponent);
+    fixture = TestBed.createComponent(KpiFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

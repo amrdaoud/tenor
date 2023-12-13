@@ -6,8 +6,10 @@ export interface KpiListViewModel {
 export interface KpiViewModel {
     id: number;
     name: string;
+    extraProperty: string;
 }
 export interface KpiBindingModel {
     id: number;
-    name: string;
+    name?: string;
+    extraProperty: string;
 }
