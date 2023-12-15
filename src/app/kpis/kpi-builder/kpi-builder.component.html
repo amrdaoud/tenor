@@ -1,0 +1,25 @@
+<mat-grid-list class="page-with-toolbar" cols="4" rowHeight="fit">
+    <mat-grid-tile rowspan="3">
+        <div style="height:100%; width:100%">
+            <app-counter-side-list></app-counter-side-list>
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="3" rowspan="4">
+        <div class="formula-container">
+            <mat-form-field class="formula-control" appearance="outline" >
+                <mat-label>
+                    KPI formula
+                </mat-label>
+                <textarea matInput rows="0"></textarea>
+            </mat-form-field>
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile rowspan="3">
+        <div style="height:100%; width:100%">
+            <app-kpi-side-list></app-kpi-side-list>
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="3" rowspan="2">
+
+    </mat-grid-tile>
+</mat-grid-list>

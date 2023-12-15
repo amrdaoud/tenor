@@ -5,6 +5,8 @@ export const routes: Routes = [
         {path: 'subsets', loadComponent: () => import('./subsets/subset-list/subset-list.component').then(c => c.SubsetListComponent)},
         {path: 'devices', loadComponent: () => import('./devices/device-list/device-list.component').then(c => c.DeviceListComponent)},
         {path: 'counters', loadComponent: () => import('./counters/counter-list/counter-list.component').then(c => c.CounterListComponent)},
-        {path: 'kpis', loadComponent: () => import('./kpis/kpi-list/kpi-list.component').then(c => c.KpiListComponent)}    
+        {path: 'kpis/list', loadComponent: () => import('./kpis/kpi-list/kpi-list.component').then(c => c.KpiListComponent)},    
+        
+        {path: 'kpis/builder', loadComponent: () => import('./kpis/kpi-builder/kpi-builder.component').then(c => c.KpiBuilderComponent)},
     ]}
 ];

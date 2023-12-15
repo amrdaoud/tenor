@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, finalize, map } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 import { DataWithSize } from '../common/generic';
 import { SubsetBindingModel, SubsetListViewModel, SubsetViewModel } from './subset';
@@ -13,7 +13,7 @@ export class SubsetService {
 
   constructor() { }
   private url = environment.apiUrl + 'subsets';
-  private http = inject(HttpClient);
+   http = inject(HttpClient);
 
   //Loaders
   private loadingList = new BehaviorSubject<boolean>(false);
@@ -43,6 +43,21 @@ export class SubsetService {
       finalize(() => this.loadingList.next(false))
     )
   }
+  getBySearchQuery(searchQuery: string): Observable<SubsetListViewModel[]> {
+    let filter = {
+      PageIndex: 0,
+      PageSize: 10,
+      SortActive: 'name',
+      SortDirection: 'asc',
+      SearchQuery: searchQuery
+    };
+    this.loadingList.next(true);
+    return this.http.post<DataWithSize<SubsetListViewModel>>(this.url + '/getByFilter/', filter).pipe(
+      map(x => x.data),
+      finalize(() => this.loadingList.next(false))
+    )
+  }
+ 
   getById(id: number): Observable<SubsetViewModel> {
     this.loadingElement.next(true);
     return this.http.get<SubsetViewModel>(this.url + `?id=${id}`).pipe(

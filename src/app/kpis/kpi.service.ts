@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 import { KpiListViewModel,  KpiViewModel, KpiBindingModel} from './kpi';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ExtraField } from '../common/generic';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,11 @@ export class KpiService {
   get loadingDownload$(): Observable<boolean> {
     return this.loadingDownload.asObservable();
   }
+  private loadingExtraFields = new BehaviorSubject<boolean>(false);
+  get loadingExtraFields$(): Observable<boolean> {
+    return this.loadingExtraFields.asObservable();
+  }
+  
   //Creating Form
   createForm(model?: KpiViewModel): FormGroup {
     return new FormGroup({
@@ -44,7 +50,7 @@ export class KpiService {
   //Requests
   getByFilter(filter: GeneralFilterModel): Observable<{data: KpiListViewModel[], dataSize: number}> {
     this.loadingList.next(true);
-    return this.http.post<{data: KpiListViewModel[], dataSize: number}>(this.url + '/Get', filter).pipe(
+    return this.http.post<{data: KpiListViewModel[], dataSize: number}>(this.url + '/getByFilter', filter).pipe(
       finalize(() => this.loadingList.next(false))
     )
   }
@@ -64,6 +70,12 @@ export class KpiService {
     this.loadingDownload.next(true);
     return this.http.post(this.url + '/exportByFilter', filter, {headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: 'blob'}).pipe(
       finalize(() => this.loadingDownload.next(false))
+    )
+  }
+  getExtraFields(): Observable<ExtraField[]> {
+    this.loadingExtraFields.next(true);
+    return this.http.get<ExtraField[]>(this.url + '/getExtraFields').pipe(
+      finalize(() => this.loadingExtraFields.next(false))
     )
   }
 }

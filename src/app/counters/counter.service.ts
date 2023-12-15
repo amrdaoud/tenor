@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, finalize, of } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 import { CounterListViewModel,  CounterViewModel, CounterBindingModel} from './counter';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ExtraField } from '../common/generic';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,10 @@ export class CounterService {
   private loadingDownload = new BehaviorSubject<boolean>(false);
   get loadingDownload$(): Observable<boolean> {
     return this.loadingDownload.asObservable();
+  }
+  private loadingExtraFields = new BehaviorSubject<boolean>(false);
+  get loadingExtraFields$(): Observable<boolean> {
+    return this.loadingExtraFields.asObservable();
   }
     //Creating Form
   createForm(model?: CounterViewModel): FormGroup {
@@ -63,6 +68,12 @@ export class CounterService {
     this.loadingDownload.next(true);
     return this.http.post(this.url + '/exportByFilter', filter, {headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: 'blob'}).pipe(
       finalize(() => this.loadingDownload.next(false))
+    )
+  }
+  getExtraFields(): Observable<ExtraField[]> {
+    this.loadingExtraFields.next(true);
+    return this.http.get<ExtraField[]>(this.url + '/getExtraFields').pipe(
+      finalize(() => this.loadingExtraFields.next(false))
     )
   }
 }

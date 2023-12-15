@@ -13,11 +13,12 @@ export const items: IconNavItem[] = [
             {
                 title: 'All KPIS',
                 svgIcon: LIST_ICON,
-                routerLink: 'kpis'
+                routerLink: 'kpis/list'
             },
             {
                 title: 'Create New',
-                svgIcon: ADD_ICON
+                svgIcon: ADD_ICON,
+                routerLink: 'kpis/builder'
             }
         ]
     },

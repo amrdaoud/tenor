@@ -1,0 +1,61 @@
+
+.measure-list-container {
+    height:100%;
+    padding: 10px;
+    .header-text {
+        height:40px;
+        line-height: 40px;
+        font-weight: bold;
+        letter-spacing: 0.7px;
+    }
+    .form-container {
+        height: 50px;
+        display: flex;
+        flex-direction: row;
+        .search-container {
+            flex: 1 1 auto;
+            max-width: calc(100% - 40px);
+        }
+        .menu-button-container {
+            width:40px;
+            button {
+                padding: 0px;
+            }
+        }
+    }
+    .list-container {
+        height:calc(100% - 75px);
+        padding-top: 0px;
+        overflow-y: auto;
+        font-size: 12px;
+        .mdc-list-item.mdc-list-item--with-one-line {
+            height:32px !important;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .mdc-list-item.mdc-list-item--with-one-line:not(.load-more-item):hover {
+            background-color: #ccd;
+            
+        }
+        .load-more-item {
+            text-align: center;
+            align-items: center;
+        }
+        .no-data {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            border: dashed 1px;
+            border-radius: 5px;
+        }
+    }
+}
+::ng-deep .measure-list-filter-menu-controls {
+    padding: 15px;
+    .mat-mdc-form-field-bottom-align {
+        height: 8px !important;
+    }
+}
