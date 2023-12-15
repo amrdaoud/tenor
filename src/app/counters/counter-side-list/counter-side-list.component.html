@@ -29,20 +29,20 @@
                 </div>
             </mat-menu>
         </div>
-        
-            <mat-list class="list-container" (scroll)="onScroll($event)">
-                <div style="height:8px">
-                    <mat-progress-bar *ngIf="loadingList$ | async" mode="buffer" color="primary"></mat-progress-bar>
-                </div>
-                <mat-list-item *ngFor="let item of itemList">
-                    {{item.id}}: {{item.name}}
-                </mat-list-item>
-                <mat-list-item *ngIf="listSize > itemList.length && !(loadingList$ | async); else loading"
-                    class="load-more-item">
-                    <button mat-button (click)="loadMore()" color="primary">Load More</button>
-                </mat-list-item>
-            </mat-list>
-        
+        <div style="height:8px">
+            <mat-progress-bar *ngIf="loadingList$ | async" mode="buffer" color="primary"></mat-progress-bar>
+        </div>
+        <mat-list class="list-container" (scroll)="onScroll($event)">
+
+            <mat-list-item *ngFor="let item of itemList">
+                {{item.id}}: {{item.name}}
+            </mat-list-item>
+            <mat-list-item *ngIf="listSize > itemList.length && !(loadingList$ | async); else loading"
+                class="load-more-item">
+                <button mat-button (click)="loadMore()" color="primary">Load More</button>
+            </mat-list-item>
+        </mat-list>
+
     </div>
 </form>
 <ng-template #loading>

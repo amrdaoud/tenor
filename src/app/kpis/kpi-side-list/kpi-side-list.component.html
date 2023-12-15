@@ -2,36 +2,43 @@
     <div class="measure-list-container">
         <div class="form-container">
             <div class="search-container">
-                <amr-input controlName="searchQuery" label="KPIs" placeHolder="Search for KPIs"
-                    appearance="outline" [prefixIcon]="'search'"></amr-input>
+                <amr-input controlName="searchQuery" label="KPIs" placeHolder="Search for KPIs" appearance="outline"
+                    [prefixIcon]="'search'"></amr-input>
             </div>
             <div class="menu-button-container">
-                <button mat-icon-button [disableRipple]="true" [mat-menu-trigger-for]="otherFiltersMenu" color="primary"><mat-icon>tune</mat-icon></button>
+                <button mat-icon-button [disableRipple]="true" [mat-menu-trigger-for]="otherFiltersMenu"
+                    color="primary"><mat-icon>tune</mat-icon></button>
             </div>
             <mat-menu #otherFiltersMenu="matMenu" class="measure-list-filter-menu">
                 <div class="measure-list-filter-menu-controls">
-                <div *ngFor="let field of extraFields"  (click)="$event.stopPropagation()">
-                    <ng-container [ngSwitch]="field.type" >
-                        <amr-input size="small" *ngSwitchCase="'Text'" [controlName]="field.name" [label]="field.name" [placeHolder]="field.name" appearance="outline"></amr-input>
-                        <amr-select size="small" *ngSwitchCase="'List'" [controlName]="field.name" [label]="field.name" [placeHolder]="field.name" [options]="field.content" appearance="outline" [haveNull]="true"></amr-select>
-                        <amr-select size="small" *ngSwitchCase="'MultiSelectList'" [controlName]="field.name" [label]="field.name" [placeHolder]="field.name" [options]="field.content" [isMulty]="true" appearance="outline"></amr-select>
-                    </ng-container>
+                    <div *ngFor="let field of extraFields" (click)="$event.stopPropagation()">
+                        <ng-container [ngSwitch]="field.type">
+                            <amr-input size="small" *ngSwitchCase="'Text'" [controlName]="field.name"
+                                [label]="field.name" [placeHolder]="field.name" appearance="outline"></amr-input>
+                            <amr-select size="small" *ngSwitchCase="'List'" [controlName]="field.name"
+                                [label]="field.name" [placeHolder]="field.name" [options]="field.content"
+                                appearance="outline" [haveNull]="true"></amr-select>
+                            <amr-select size="small" *ngSwitchCase="'MultiSelectList'" [controlName]="field.name"
+                                [label]="field.name" [placeHolder]="field.name" [options]="field.content"
+                                [isMulty]="true" appearance="outline"></amr-select>
+                        </ng-container>
+                    </div>
                 </div>
-            </div>
             </mat-menu>
         </div>
-            <mat-list class="list-container" (scroll)="onScroll($event)">
-                <div style="height:8px">
-                    <mat-progress-bar *ngIf="loadingList$ | async" mode="buffer" color="primary"></mat-progress-bar>
-                </div>
-                <mat-list-item *ngFor="let item of itemList">
-                    {{item.id}}: {{item.name}}
-                </mat-list-item>
-                <mat-list-item *ngIf="listSize > itemList.length && !(loadingList$ | async); else loading"
-                    class="load-more-item">
-                    <button mat-button (click)="loadMore()" color="primary">Load More</button>
-                </mat-list-item>
-            </mat-list>
+        <div style="height:8px">
+            <mat-progress-bar *ngIf="loadingList$ | async" mode="buffer" color="primary"></mat-progress-bar>
+        </div>
+        <mat-list class="list-container" (scroll)="onScroll($event)">
+
+            <mat-list-item *ngFor="let item of itemList">
+                {{item.id}}: {{item.name}}
+            </mat-list-item>
+            <mat-list-item *ngIf="listSize > itemList.length && !(loadingList$ | async); else loading"
+                class="load-more-item">
+                <button mat-button (click)="loadMore()" color="primary">Load More</button>
+            </mat-list-item>
+        </mat-list>
     </div>
 </form>
 <ng-template #loading>
