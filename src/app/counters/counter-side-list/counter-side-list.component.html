@@ -14,6 +14,25 @@
                     <!-- <div (click)="$event.stopPropagation()">
                         <amr-auto-complete displayAccessor="name" valueAccessor="id" controlName="subsetId" [options$]="subsets$!" [isAsync]="true" searchFor="name"></amr-auto-complete>
                     </div> -->
+                    <div (click)="$event.stopPropagation()">
+                        <amr-select-with-search controlName="deviceId"
+                        label="Device"
+                        (searchChanges)="deviceSearchChanged($event)"
+                        [options]="devices" appearance="outline"
+                        size="small" displayAccessor="name"
+                        valueAccessor="id"
+                        [isMulty]="false"></amr-select-with-search>
+                    </div>
+                    <div (click)="$event.stopPropagation()">
+                        <amr-select-with-search controlName="subsetId"
+                        label="Subsets"
+                        (searchChanges)="subsetSearchChanged($event)"
+                        [options]="subsets" appearance="outline"
+                        size="small" displayAccessor="name"
+                        valueAccessor="id"
+                        [isMulty]="true"></amr-select-with-search>
+                    </div>
+                    
                     <div *ngFor="let field of extraFields" (click)="$event.stopPropagation()">
                         <ng-container [ngSwitch]="field.type">
                             <amr-input *ngSwitchCase="'Text'" [controlName]="field.name" [label]="field.name"

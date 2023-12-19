@@ -12,20 +12,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatList, MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { AutoCompleteComponent, InputComponent, SelectComponent } from 'techteec-lib/controls';
+import { AutoCompleteComponent, InputComponent, SelectComponent, SelectWithSearchComponent } from 'techteec-lib/controls';
 import { SubsetService } from '../../subsets/subset.service';
-import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
+import { SubsetListViewModel } from '../../subsets/subset';
+import { DeviceService } from '../../devices/device.service';
+import { DeviceListViewModel } from '../../devices/device';
 
 @Component({
   selector: 'app-counter-side-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule ,MatListModule, InputComponent, MatButtonModule, MatIconModule, MatProgressBarModule, MatDividerModule, MatMenuModule, SelectComponent, AutoCompleteComponent],
+  imports: [CommonModule, ReactiveFormsModule ,MatListModule, InputComponent, MatButtonModule, MatIconModule, MatProgressBarModule, MatDividerModule, MatMenuModule, SelectComponent, AutoCompleteComponent, SelectWithSearchComponent],
   templateUrl: './counter-side-list.component.html',
   styleUrl: './counter-side-list.component.scss'
 })
 export class CounterSideListComponent extends Unsubscriber {
   private counterService = inject(CounterService);
   private subsetService = inject(SubsetService);
+  private deviceService = inject(DeviceService);
   loadingList$ = this.counterService.loadingList$;
   frm = new FormGroup<any>({
     searchQuery: new FormControl(''),
@@ -33,25 +36,14 @@ export class CounterSideListComponent extends Unsubscriber {
     pageSize: new FormControl(20),
     sortActive: new FormControl('name'),
     sortDirection: new FormControl('asc'),
-    subsetId: new FormControl('')
+    subsetId: new FormControl([]),
+    deviceId: new FormControl<string>('')
   });
   itemList: CounterListViewModel[] = [];
   listSize = 0;
   extraFields: ExtraField[] = [];
-  // subsets$ = this.frm.get('subsetId')?.valueChanges.pipe(
-  //   startWith(''),
-  //   distinctUntilChanged(),
-  //   debounceTime(400),
-  //   switchMap(val => {
-  //     const f: any = {
-  //       pageIndex: 0,
-  //       pageSize: 10,sortActive: 'name', sortDirection: 'asc', searchQuery: val
-  //     };
-  //     return this.subsetService.getByFilter(f);
-  //   }),
-  //   map(x => x.data)
-  // )
-  // loadingSubsetList$ = this.subsetService.loadingList$;
+  subsets: SubsetListViewModel[] = [];
+  devices: DeviceListViewModel[] = [];
   constructor(){
     super();
     this._otherSubscription = this.counterService.getExtraFields().pipe(
@@ -66,7 +58,7 @@ export class CounterSideListComponent extends Unsubscriber {
       distinctUntilChanged(),
       debounceTime(400),
       tap(() => this.frm.get('pageIndex')?.setValue(0,{ emitEvent: false })),
-      switchMap(() => this.counterService.getByFilter(this.frm.value))
+      switchMap(() => this.counterService.getByFilter({...this.frm.value, deviceId: this.frm.value.deviceId.toString()}))
     ).subscribe(c => {
       this.itemList = c.data;
       this.listSize = c.dataSize
@@ -82,5 +74,23 @@ export class CounterSideListComponent extends Unsubscriber {
        this.loadMore();
       }
     }
+  }
+  subsetSearchChanged(searchQuery: string | null) {
+    this._otherSubscription = this.subsetService.getByFilter({
+      PageIndex: 0,
+      SortActive: 'name',
+      PageSize: 10,
+      SortDirection: 'asc',
+      SearchQuery: searchQuery
+    }).subscribe(x => this.subsets = x.data)
+  }
+  deviceSearchChanged(searchQuery: string | null) {
+    this._otherSubscription = this.deviceService.getByFilter({
+      PageIndex: 0,
+      SortActive: 'name',
+      PageSize: 10,
+      SortDirection: 'asc',
+      SearchQuery: searchQuery
+    } as any).subscribe(x => this.devices = x.data)
   }
 }
