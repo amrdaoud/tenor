@@ -1,0 +1,38 @@
+<mat-chip-listbox aria-label="select a shirt size" style="width: 100%; display: flex;">
+  <div
+    cdkDropList
+    [cdkDropListData]="operationList"
+    (cdkDropListDropped)="kpiService.drop($event)"
+    style="display: flex; width:100%"
+  >
+    <div *ngFor="let item of operationList" style="display: flex;">
+      <mat-chip>
+        <div
+          cdkDrag
+          class="mat-chip"
+          style="width: 40px; overflow: hidden; text-align: center"
+        >
+          {{ item.name }}
+        </div>
+      </mat-chip>
+    </div>
+  </div>
+   <div
+    cdkDropList
+    [cdkDropListData]="functionList"
+    (cdkDropListDropped)="kpiService.drop($event)"
+    style="display: flex; width:100%"
+  >
+    <div *ngFor="let item of functionList" style="display: flex;">
+      <mat-chip>
+        <div
+          cdkDrag
+          class="mat-chip"
+          style="width: 40px; overflow: hidden; text-align: center"
+        >
+          {{ item.name }}
+        </div>
+      </mat-chip>
+    </div>
+  </div>
+</mat-chip-listbox>

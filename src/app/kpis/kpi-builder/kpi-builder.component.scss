@@ -37,3 +37,13 @@
 ::ng-deep .formula-control .mat-mdc-form-field-infix {
     height:100% !important
 }
+
+.chip-value {
+    transform: 0 !important;
+
+}
+
+.chip-name {
+    width: 50px;
+    overflow-x: hidden;
+}

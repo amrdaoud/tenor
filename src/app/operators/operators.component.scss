@@ -1,0 +1,18 @@
+mat-chip, mat-chip:focus {
+   background-color: green;
+}
+
+.mat-mdc-chip:focus{
+  background-color: green !important;
+}
+
+// .mat-mdc-standard-chip:not(.mdc-evolution-chip--disabled):hover{
+//     background-color: red;
+// }
+
+.mat-mdc-standard-chip  .mdc-evolution-chip__action--primary:hover, .mat-mdc-standard-chip:hover {
+            background-color: #ccd;
+            
+        }
+
+        
