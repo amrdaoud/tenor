@@ -2,21 +2,11 @@
   <div class="measure-list-container">
     <div class="form-container">
       <div class="search-container">
-        <amr-input
-          controlName="searchQuery"
-          label="Counters"
-          placeHolder="Search for Counters"
-          appearance="outline"
-          [prefixIcon]="'search'"
-        ></amr-input>
+        <amr-input controlName="searchQuery" label="Counters" placeHolder="Search for Counters" appearance="outline"
+          [prefixIcon]="'search'"></amr-input>
       </div>
       <div class="menu-button-container">
-        <button
-          mat-icon-button
-          [disableRipple]="true"
-          [mat-menu-trigger-for]="otherFiltersMenu"
-          color="primary"
-        >
+        <button mat-icon-button [disableRipple]="true" [mat-menu-trigger-for]="otherFiltersMenu" color="primary">
           <mat-icon>tune</mat-icon>
         </button>
       </div>
@@ -26,17 +16,9 @@
                         <amr-auto-complete displayAccessor="name" valueAccessor="id" controlName="subsetId" [options$]="subsets$!" [isAsync]="true" searchFor="name"></amr-auto-complete>
                     </div> -->
           <div (click)="$event.stopPropagation()">
-            <amr-select-with-search
-              controlName="deviceId"
-              label="Device"
-              (searchChanges)="deviceSearchChanged($event)"
-              [options]="devices"
-              appearance="outline"
-              size="small"
-              displayAccessor="name"
-              valueAccessor="id"
-              [isMulty]="false"
-            ></amr-select-with-search>
+            <amr-select-with-search controlName="deviceId" label="Device" (searchChanges)="deviceSearchChanged($event)"
+              [options]="devices" appearance="outline" size="small" displayAccessor="name" valueAccessor="id"
+              [isMulty]="false"></amr-select-with-search>
           </div>
           <div (click)="$event.stopPropagation()">
             <amr-select-with-search
@@ -48,53 +30,28 @@
               size="small"
               displayAccessor="name"
               valueAccessor="id"
+              [isMulty]="true"
             ></amr-select-with-search>
           </div>
-
-          <div
-            *ngFor="let field of extraFields"
-            (click)="$event.stopPropagation()"
-          >
-            <ng-container [ngSwitch]="field.type">
-              <amr-input
-                *ngSwitchCase="'Text'"
-                [controlName]="field.name"
-                [label]="field.name"
-                [placeHolder]="field.name"
-                appearance="outline"
-                size="small"
-              ></amr-input>
-              <amr-select
-                *ngSwitchCase="'List'"
-                [controlName]="field.name"
-                [label]="field.name"
-                [placeHolder]="field.name"
-                [options]="field.content"
-                appearance="outline"
-                [haveNull]="true"
-                size="small"
-              ></amr-select>
-              <amr-select
-                *ngSwitchCase="'MultiSelectList'"
-                [controlName]="field.name"
-                [label]="field.name"
-                [placeHolder]="field.name"
-                [options]="field.content"
-                [isMulty]="true"
-                appearance="outline"
-                size="small"
-              ></amr-select>
-            </ng-container>
+          <div formGroupName="extraFields">
+            <div *ngFor="let field of extraFields" (click)="$event.stopPropagation()">
+              <ng-container [ngSwitch]="field.type">
+                <amr-input *ngSwitchCase="'Text'" [controlName]="field.name" [label]="field.name"
+                  [placeHolder]="field.name" appearance="outline" size="small"></amr-input>
+                <amr-select *ngSwitchCase="'List'" [controlName]="field.name" [label]="field.name"
+                  [placeHolder]="field.name" [options]="field.content" appearance="outline" [haveNull]="true"
+                  size="small"></amr-select>
+                <amr-select *ngSwitchCase="'MultiSelectList'" [controlName]="field.name" [label]="field.name"
+                  [placeHolder]="field.name" [options]="field.content" [isMulty]="true" appearance="outline"
+                  size="small"></amr-select>
+              </ng-container>
+            </div>
           </div>
         </div>
       </mat-menu>
     </div>
     <div style="height: 8px">
-      <mat-progress-bar
-        *ngIf="loadingList$ | async"
-        mode="buffer"
-        color="primary"
-      ></mat-progress-bar>
+      <mat-progress-bar *ngIf="loadingList$ | async" mode="buffer" color="primary"></mat-progress-bar>
     </div>
     <mat-list class="list-container" (scroll)="onScroll($event)">
       <div
@@ -102,19 +59,15 @@
         [cdkDropListData]="itemList"
         (cdkDropListDropped)="kpiService.drop($event)"
         style="width: 100%"
-       
       >
         <mat-list-item *ngFor="let item of itemList">
           <div cdkDrag  class="aya" ><div class="a">{{ item.id }}: {{ item.name }}</div></div>
         </mat-list-item>
       </div>
-      <mat-list-item
-        *ngIf="
+      <mat-list-item *ngIf="
           listSize > itemList.length && !(loadingList$ | async);
           else loading
-        "
-        class="load-more-item"
-      >
+        " class="load-more-item">
         <button mat-button (click)="loadMore()" color="primary">
           Load More
         </button>
@@ -123,10 +76,7 @@
   </div>
 </form>
 <ng-template #loading>
-  <mat-list-item
-    *ngIf="loadingList$ | async; else noData"
-    class="load-more-item"
-  >
+  <mat-list-item *ngIf="loadingList$ | async; else noData" class="load-more-item">
     <div>Getting More..</div>
   </mat-list-item>
 </ng-template>
