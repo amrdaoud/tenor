@@ -48,7 +48,6 @@
               size="small"
               displayAccessor="name"
               valueAccessor="id"
-              [isMulty]="true"
             ></amr-select-with-search>
           </div>
 
@@ -103,9 +102,10 @@
         [cdkDropListData]="itemList"
         (cdkDropListDropped)="kpiService.drop($event)"
         style="width: 100%"
+       
       >
         <mat-list-item *ngFor="let item of itemList">
-          <div cdkDrag style="width: 100%">{{ item.id }}: {{ item.name }}</div>
+          <div cdkDrag  class="aya" ><div class="a">{{ item.id }}: {{ item.name }}</div></div>
         </mat-list-item>
       </div>
       <mat-list-item

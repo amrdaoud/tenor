@@ -65,14 +65,15 @@ export class CounterSideListComponent extends Unsubscriber {
     pageSize: new FormControl(20),
     sortActive: new FormControl('name'),
     sortDirection: new FormControl('asc'),
-    subsetId: new FormControl([]),
-    deviceId: new FormControl<string>(''),
+    subsetId: new FormControl<string>(''),
+    deviceId: new FormControl(0),
   });
   itemList: any = [];
   listSize = 0;
   extraFields: ExtraField[] = [];
   subsets: SubsetListViewModel[] = [];
   devices: DeviceListViewModel[] = [];
+  todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
   constructor() {
     super();
     this._otherSubscription = this.counterService
@@ -127,6 +128,12 @@ export class CounterSideListComponent extends Unsubscriber {
         PageSize: 10,
         SortDirection: 'asc',
         SearchQuery: searchQuery,
+        subsetId: '',
+        deviceId: 0,
+        extraFields: {
+          Technology: [],
+          Domain: '',
+        },
       })
       .subscribe((x) => (this.subsets = x.data));
   }

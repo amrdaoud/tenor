@@ -17,7 +17,7 @@ import {
 import { Unsubscriber } from 'techteec-lib/common';
 import { InputComponent, SelectComponent } from 'techteec-lib/controls';
 import { ExtraField } from '../../common/generic';
-import { KpiListViewModel } from '../kpi';
+import { KpiListViewModel, KpiModel } from '../kpi';
 import { KpiService } from '../kpi.service';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 @Component({
@@ -71,7 +71,11 @@ export class KpiSideListComponent extends Unsubscriber {
         switchMap(() => this.kpiService.getByFilter(this.frm.value))
       )
       .subscribe((c) => {
-        this.itemList = c.data.map((x) => ({ ...x, type: 0 }));
+        this.itemList = c.data.map((x) => {
+          let temp = new KpiModel();
+          temp.name = x.name;
+          return temp;
+        });
         this.listSize = c.dataSize;
       });
   }

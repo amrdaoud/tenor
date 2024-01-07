@@ -14,39 +14,19 @@
             cdkDropList
             [cdkDropListData]="kpiService.kpiResult"
             class="example-list-pos"
-            style="width: 100%; height: 100%"
+            style="height: 100%; width: 100%;"
+           
             (cdkDropListDropped)="kpiService.drop($event)"
           >
             <!-- <input matInput rows="0" style="background-color: red;" /> -->
-
-            <mat-chip-grid
-              #chipGrid
-              style="
-                border-top: 0px;
-                width: 100%;
-                height: 100%;
-                display: list-item !important;
-              "
-            >
-              @for (item of kpiService.kpiResult; track item) {
-              <mat-chip-row
-                [editable]="true"
-                (removed)="kpiService.removeNumber(item)"
-                [aria-description]="'press enter to edit ' + item.name"
-                (edited)="kpiService.editNumber(item, $event)"
-                cdkDrag
-                class="chip-item"
-              >
-                <div class="chip-name">
-                  {{ item.name }}
-                </div>
-
-                <button matChipRemove [attr.aria-label]="'remove ' + item.name">
-                  <mat-icon>cancel</mat-icon>
-                </button>
-              </mat-chip-row>
-
-              }
+            <mat-chip-grid #chipGrid>
+              <div *ngFor="let item of kpiService.kpiResult; let i = index">
+                <mat-chip-row cdkDrag class="chip-item"  cdkDragBoundary=".kpi_boundary">
+                  <div class="chip-name">
+                    {{ item.name }}
+                  </div>
+                </mat-chip-row>
+              </div>
               <input
                 [matChipInputFor]="chipGrid"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
@@ -68,15 +48,8 @@
     <mat-grid-tile colspan="3" rowspan="2">
       <div style="height: 100%; width: 100%; padding: 16px">
         <app-operators></app-operators>
-        <button
-          mat-raised-button
-          color="primary"
-          style="margin-top: 60px; margin-left: 80%"
-          (click)="kpiService.submit()"
-        >
-          Submit
-        </button>
-      </div>
+           <button mat-button color="primary" (click)="kpiService.submit()">Submit</button>
+       </div>
     </mat-grid-tile>
   </div>
 </mat-grid-list>
