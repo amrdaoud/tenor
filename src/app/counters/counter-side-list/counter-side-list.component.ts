@@ -65,8 +65,9 @@ export class CounterSideListComponent extends Unsubscriber {
     pageSize: new FormControl(20),
     sortActive: new FormControl('name'),
     sortDirection: new FormControl('asc'),
-    subsetId: new FormControl([]),
-    deviceId: new FormControl<string>(''),
+    subsetId: new FormControl(''),
+    deviceId: new FormControl(),
+    extraFields: new FormGroup({})
   });
   itemList: any = [];
   listSize = 0;
@@ -80,7 +81,7 @@ export class CounterSideListComponent extends Unsubscriber {
       .pipe(
         tap((extraFields: ExtraField[]) => {
           extraFields.forEach((field) => {
-            this.frm.addControl(field.name, new FormControl());
+            (this.frm.get('extraFields') as FormGroup)?.addControl(field.name, new FormControl());
           });
         }),
         tap((extraFields: ExtraField[]) => (this.extraFields = extraFields)),
@@ -90,10 +91,7 @@ export class CounterSideListComponent extends Unsubscriber {
         debounceTime(400),
         tap(() => this.frm.get('pageIndex')?.setValue(0, { emitEvent: false })),
         switchMap(() =>
-          this.counterService.getByFilter({
-            ...this.frm.value,
-            deviceId: this.frm.value.deviceId.toString(),
-          })
+          this.counterService.getByFilter(this.frm.value)
         )
       )
       .subscribe((c) => {
