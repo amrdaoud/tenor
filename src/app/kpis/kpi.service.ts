@@ -164,7 +164,11 @@ export class KpiService {
         this.kpiResult[this.i].type == 5
       ) {
         let kpi = new KpiModel();
-        kpi = this.kpiResult[this.i];
+        // kpi = this.kpiResult[this.i];
+        if (this.kpiResult[this.i].type == 5) {
+          console.log('***');
+          kpi.FunctionId = this.kpiResult[this.i].id;
+        }
         kpi.name = this.kpiResult[this.i].name;
         kpi.type = this.kpiResult[this.i].type;
         kpi.order = ++order;
@@ -183,9 +187,7 @@ export class KpiService {
         kpi.name = this.kpiResult[this.i].name;
         kpi.order = ++order;
         kpi.value = this.kpiResult[this.i].name;
-        if (this.kpiResult[this.i].type == 5) {
-          kpi.FunctionId = this.kpiResult[this.i].id;
-        }
+
         //   kpi.operatorId = this.kpiResult[this.i].id;
         //  kpi.counterId = this.kpiResult[this.i].id;
         if (this.kpiResult[this.i].type == 2) {
