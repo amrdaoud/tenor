@@ -4,15 +4,8 @@ import { Component, inject } from '@angular/core';
 import { FunctionModel, OperationModel } from './operator';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CommonModule } from '@angular/common';
-import {
-
-  MatChipsModule,
-
-} from '@angular/material/chips';
-import {
-  DragDropModule,
-
-} from '@angular/cdk/drag-drop';
+import { MatChipsModule } from '@angular/material/chips';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { KpiService } from './../kpis/kpi.service';
 @Component({
   selector: 'app-operators',

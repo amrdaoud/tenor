@@ -1,11 +1,13 @@
-<mat-chip-listbox aria-label="select a shirt size" style="width: 100%; display: flex;">
+<mat-chip-listbox
+  aria-label="select a shirt size"
+  style="width: 100%; display: flex"
+>
   <div
     cdkDropList
     [cdkDropListData]="operationList"
-    (cdkDropListDropped)="kpiService.drop($event)"
-    style="display: flex; width:100%"
+    style="display: flex; width: 100%"
   >
-    <div *ngFor="let item of operationList" style="display: flex;">
+    <div *ngFor="let item of operationList" style="display: flex">
       <mat-chip>
         <div
           cdkDrag
@@ -17,13 +19,12 @@
       </mat-chip>
     </div>
   </div>
-   <div
+  <div
     cdkDropList
     [cdkDropListData]="functionList"
-    (cdkDropListDropped)="kpiService.drop($event)"
-    style="display: flex; width:100%"
+    style="display: flex; width: 100%"
   >
-    <div *ngFor="let item of functionList" style="display: flex;">
+    <div *ngFor="let item of functionList" style="display: flex">
       <mat-chip>
         <div
           cdkDrag

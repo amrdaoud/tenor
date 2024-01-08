@@ -4,16 +4,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, finalize, map } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 import { DataWithSize } from '../common/generic';
-import { SubsetBindingModel, SubsetListViewModel, SubsetViewModel } from './subset';
+import {
+  SubsetBindingModel,
+  SubsetListViewModel,
+  SubsetViewModel,
+} from './subset';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SubsetService {
-
-  constructor() { }
+  constructor() {}
   private url = environment.apiUrl + 'subsets';
-   http = inject(HttpClient);
+  http = inject(HttpClient);
 
   //Loaders
   private loadingList = new BehaviorSubject<boolean>(false);
@@ -37,11 +40,16 @@ export class SubsetService {
   }
 
   //Requests
-  getByFilter(filter: GeneralFilterModel): Observable<DataWithSize<SubsetListViewModel>> {
+  getByFilter(
+    filter: GeneralFilterModel
+  ): Observable<DataWithSize<SubsetListViewModel>> {
     this.loadingList.next(true);
-    return this.http.post<DataWithSize<SubsetListViewModel>>(this.url + '/getByFilter/', filter).pipe(
-      finalize(() => this.loadingList.next(false))
-    )
+    return this.http
+      .post<DataWithSize<SubsetListViewModel>>(
+        this.url + '/getByFilter/',
+        filter
+      )
+      .pipe(finalize(() => this.loadingList.next(false)));
   }
   getBySearchQuery(searchQuery: string): Observable<SubsetListViewModel[]> {
     let filter = {
@@ -49,31 +57,39 @@ export class SubsetService {
       PageSize: 10,
       SortActive: 'name',
       SortDirection: 'asc',
-      SearchQuery: searchQuery
+      SearchQuery: searchQuery,
     };
     this.loadingList.next(true);
-    return this.http.post<DataWithSize<SubsetListViewModel>>(this.url + '/getByFilter/', filter).pipe(
-      map(x => x.data),
-      finalize(() => this.loadingList.next(false))
-    )
+    return this.http
+      .post<DataWithSize<SubsetListViewModel>>(
+        this.url + '/getByFilter/',
+        filter
+      )
+      .pipe(
+        map((x) => x.data),
+        finalize(() => this.loadingList.next(false))
+      );
   }
- 
+
   getById(id: number): Observable<SubsetViewModel> {
     this.loadingElement.next(true);
-    return this.http.get<SubsetViewModel>(this.url + `?id=${id}`).pipe(
-      finalize(() => this.loadingElement.next(false))
-    )
+    return this.http
+      .get<SubsetViewModel>(this.url + `?id=${id}`)
+      .pipe(finalize(() => this.loadingElement.next(false)));
   }
   addElement(model: SubsetBindingModel): Observable<SubsetViewModel> {
     this.loadingAddElement.next(true);
-    return this.http.post<SubsetViewModel>(this.url + '', model).pipe(
-      finalize(() => this.loadingAddElement.next(false))
-    )
+    return this.http
+      .post<SubsetViewModel>(this.url + '', model)
+      .pipe(finalize(() => this.loadingAddElement.next(false)));
   }
   downloadByFilter(filter: GeneralFilterModel): Observable<any> {
     this.loadingDownload.next(true);
-    return this.http.post(this.url + '/filter/export', filter, {headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: 'blob'}).pipe(
-      finalize(() => this.loadingDownload.next(false))
-    )
+    return this.http
+      .post(this.url + '/filter/export', filter, {
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        responseType: 'blob',
+      })
+      .pipe(finalize(() => this.loadingDownload.next(false)));
   }
 }

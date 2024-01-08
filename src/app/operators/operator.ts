@@ -7,8 +7,8 @@ export interface OperationModel {
 
 export interface FunctionModel {
   id: number;
-  name?:string;
+  name?: string;
   argumentsCount: number;
-  isBool:boolean;
+  isBool: boolean;
   operations: any;
 }

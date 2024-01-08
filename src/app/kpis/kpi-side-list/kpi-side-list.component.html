@@ -68,14 +68,9 @@
       ></mat-progress-bar>
     </div>
     <mat-list class="list-container" (scroll)="onScroll($event)">
-      <div
-        cdkDropList
-        [cdkDropListData]="itemList"
-        (cdkDropListDropped)="kpiService.drop($event)"
-        style="width: 100%"
-      >
+      <div cdkDropList [cdkDropListData]="itemList" style="width: 100%">
         <mat-list-item *ngFor="let item of itemList">
-          <div cdkDrag style="width: 100%; transform:translateZ(0);" class=".item">{{ item.id }}: {{ item.name }}</div>
+          <div cdkDrag style="width: 100%">{{ item.id }}: {{ item.name }}</div>
         </mat-list-item>
       </div>
       <mat-list-item

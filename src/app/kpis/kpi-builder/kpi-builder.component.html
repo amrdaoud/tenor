@@ -14,14 +14,17 @@
             cdkDropList
             [cdkDropListData]="kpiService.kpiResult"
             class="example-list-pos"
-            style="height: 100%; width: 100%;"
-           
+            style="height: 100%; width: 100%"
             (cdkDropListDropped)="kpiService.drop($event)"
           >
             <!-- <input matInput rows="0" style="background-color: red;" /> -->
             <mat-chip-grid #chipGrid>
-              <div *ngFor="let item of kpiService.kpiResult; let i = index">
-                <mat-chip-row cdkDrag class="chip-item"  cdkDragBoundary=".kpi_boundary">
+              <div *ngFor="let item of kpiService.kpiResult; let i = index" >
+                <mat-chip-row 
+                  cdkDrag
+                  class="chip-item"
+                  cdkDragBoundary=".kpi_boundary"
+                >
                   <div class="chip-name">
                     {{ item.name }}
                   </div>
@@ -48,8 +51,10 @@
     <mat-grid-tile colspan="3" rowspan="2">
       <div style="height: 100%; width: 100%; padding: 16px">
         <app-operators></app-operators>
-           <button mat-button color="primary" (click)="kpiService.submit()">Submit</button>
-       </div>
+        <button mat-button color="primary" (click)="kpiService.submit()">
+          Submit
+        </button>
+      </div>
     </mat-grid-tile>
   </div>
 </mat-grid-list>

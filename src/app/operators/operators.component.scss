@@ -1,8 +1,9 @@
-mat-chip, mat-chip:focus {
-   background-color: green;
+mat-chip,
+mat-chip:focus {
+  background-color: green;
 }
 
-.mat-mdc-chip:focus{
+.mat-mdc-chip:focus {
   background-color: green !important;
 }
 
@@ -10,9 +11,8 @@ mat-chip, mat-chip:focus {
 //     background-color: red;
 // }
 
-.mat-mdc-standard-chip  .mdc-evolution-chip__action--primary:hover, .mat-mdc-standard-chip:hover {
-            background-color: #ccd;
-            
-        }
+.mat-mdc-standard-chip .mdc-evolution-chip__action--primary:hover,
+.mat-mdc-standard-chip:hover {
+  background-color: #ccd;
 
-        
+}

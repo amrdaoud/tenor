@@ -164,6 +164,7 @@ export class KpiService {
         this.kpiResult[this.i].type == 5
       ) {
         let kpi = new KpiModel();
+        kpi = this.kpiResult[this.i];
         kpi.name = this.kpiResult[this.i].name;
         kpi.type = this.kpiResult[this.i].type;
         kpi.order = ++order;
@@ -317,6 +318,7 @@ export class KpiService {
     }
   }
   drop(event: CdkDragDrop<string[]>) {
+    console.log(event);
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
