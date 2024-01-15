@@ -98,9 +98,13 @@
     </div>
     <mat-list class="list-container" (scroll)="onScroll($event)">
       <div cdkDropList [cdkDropListData]="itemList" style="width: 100%">
-        <mat-list-item *ngFor="let item of itemList">
-          <div cdkDrag class="aya">
+        <mat-list-item
+          *ngFor="let item of itemList"
+          (dblclick)="kpiService.dblclick(item)"
+        >
+          <div cdkDrag class="">
             <div class="a">{{ item.id }}: {{ item.name }}</div>
+             <div  *cdkDragPlaceholder style="width:50px;overflow-x: hidden;">{{ item.name }}</div>
           </div>
         </mat-list-item>
       </div>

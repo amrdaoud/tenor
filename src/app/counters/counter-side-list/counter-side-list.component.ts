@@ -97,7 +97,7 @@ export class CounterSideListComponent extends Unsubscriber {
         )
       )
       .subscribe((c) => {
-        this.itemList = c.data.map((x) => ({ ...x, type: 1 }));
+        this.itemList = c.data.map((x) => ({ ...x, type: 0 }));
         this.listSize = c.dataSize;
       });
   }

@@ -15,21 +15,21 @@ export interface KpiBindingModel {
 }
 
 export class KpiModel {
-  type!: number;
+  type: number = 0;
   name!: string;
   value = name;
   order!: number;
-  parent!: number;
-  aggregation!: number;
-  counterId!: number;
-  operatorId!: number;
-  FunctionId!: number;
-  kpiId!: number;
+  parent: number = 0;
+  aggregation: any;
+  counterId: any;
+  operatorId: any;
+  functionId: any;
+  kpiId: any;
   childs = new Array<KpiModel>();
 }
 
 export class KpiModelInit {
-  id: number = 0;
+  id: any = 0;
   name: string = '';
   operation!: KpiModel;
   deviceId = 400;

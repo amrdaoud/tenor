@@ -79,7 +79,7 @@
 }
 
 ::ng-deep.cdk-drag:not(.cdk-drag-preview) {
-    transform: none !important;
+    // transform: none !important;
 }
 
 ::ng-deep .cdk-drag-preview {

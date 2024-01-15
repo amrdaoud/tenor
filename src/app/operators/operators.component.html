@@ -7,7 +7,11 @@
     [cdkDropListData]="operationList"
     style="display: flex; width: 100%"
   >
-    <div *ngFor="let item of operationList" style="display: flex">
+    <div
+      *ngFor="let item of operationList"
+      style="display: flex"
+      (dblclick)="kpiService.dblclick(item)"
+    >
       <mat-chip>
         <div
           cdkDrag
@@ -24,7 +28,11 @@
     [cdkDropListData]="functionList"
     style="display: flex; width: 100%"
   >
-    <div *ngFor="let item of functionList" style="display: flex">
+    <div
+      *ngFor="let item of functionList"
+      style="display: flex"
+      (dblclick)="kpiService.dblclick(item)"
+    >
       <mat-chip>
         <div
           cdkDrag
@@ -32,6 +40,7 @@
           style="width: 40px; overflow: hidden; text-align: center"
         >
           {{ item.name }}
+           <div  *cdkDragPlaceholder style="width:50px;overflow-x: hidden;">{{ item.name }}</div>
         </div>
       </mat-chip>
     </div>

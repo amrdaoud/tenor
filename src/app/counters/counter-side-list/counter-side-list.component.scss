@@ -30,9 +30,9 @@
 
     .list-container {
         height: calc(100% - 75px);
-        padding-top: 0px;
         overflow-y: auto;
         font-size: 12px;
+        padding-top: 0px;
 
         .mdc-list-item.mdc-list-item--with-one-line {
             height: 32px !important;
@@ -74,32 +74,26 @@
     }
 }
 
-.aya {
-
-    width: 100%;
-    height: 100%;
+::ng-deep .cdk-drop-list-receiving {
+    display: block;
 }
 
-.cdk-drag-preview {
+::ng-deep.cdk-drag:not(.cdk-drag-preview) {
+    // transform: none !important;
+}
+
+::ng-deep .cdk-drag-preview {
     box-sizing: border-box;
     border-radius: 4px;
-    box-shadow: 0 5px 5px -3px red,
-        0 8px 10px 1px blue,
-        0 3px 14px 2px green($color: #000000);
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    height: max-content !important;
+    width: 100px !important;
+    overflow: hidden;
+
 }
 
-.cdk-drag-placeholder {
-    opacity: 0;
-}
-
-.cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-
-.aya .cdk-drop-list-dragging .a:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-    width: 30px;
-    overflow-x: hidden;
-    background-color: #881f1f;
+.chip-name:hover {
+    width: 100% !important;
 }

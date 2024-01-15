@@ -14,6 +14,8 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 @Component({
   selector: 'app-kpi-builder',
   standalone: true,
@@ -31,6 +33,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatTabsModule,
     MatChipsModule,
     DragDropModule,
+    MatTooltipModule,
   ],
   templateUrl: './kpi-builder.component.html',
   styleUrl: './kpi-builder.component.scss',

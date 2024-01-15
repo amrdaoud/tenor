@@ -17,9 +17,9 @@ import {
 import { Unsubscriber } from 'techteec-lib/common';
 import { InputComponent, SelectComponent } from 'techteec-lib/controls';
 import { ExtraField } from '../../common/generic';
-import { KpiListViewModel, KpiModel } from '../kpi';
+import { KpiListViewModel } from '../kpi';
 import { KpiService } from '../kpi.service';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkDragMove, DragDropModule } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-kpi-side-list',
   standalone: true,
@@ -49,7 +49,7 @@ export class KpiSideListComponent extends Unsubscriber {
     sortActive: new FormControl('name'),
     sortDirection: new FormControl('asc'),
   });
-  itemList: any= [];
+  itemList: any = [];
   listSize = 0;
   extraFields: ExtraField[] = [];
   constructor() {
@@ -71,11 +71,7 @@ export class KpiSideListComponent extends Unsubscriber {
         switchMap(() => this.kpiService.getByFilter(this.frm.value))
       )
       .subscribe((c) => {
-        this.itemList = c.data.map((x) => {
-          let temp = new KpiModel();
-          temp.name = x.name;
-          return temp;
-        });
+        this.itemList = c.data.map((x) => ({ ...x, type: 2 }));
         this.listSize = c.dataSize;
       });
   }
@@ -97,4 +93,8 @@ export class KpiSideListComponent extends Unsubscriber {
       }
     }
   }
+  offset: any = null;
+
+  setStyle(event: MouseEvent) {}
+  public onDragMove(event: any): void {}
 }

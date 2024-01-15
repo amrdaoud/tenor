@@ -9,33 +9,62 @@
       <div class="formula-container">
         <mat-form-field class="formula-control" appearance="outline">
           <mat-label> KPI formula </mat-label>
+
           <div
             cdkDropListOrientation="horizontal"
             cdkDropList
             [cdkDropListData]="kpiService.kpiResult"
-            class="example-list-pos"
             style="height: 100%; width: 100%"
             (cdkDropListDropped)="kpiService.drop($event)"
+            class="example-list"
           >
             <!-- <input matInput rows="0" style="background-color: red;" /> -->
             <mat-chip-grid #chipGrid>
-              <div *ngFor="let item of kpiService.kpiResult; let i = index" >
-                <mat-chip-row 
+              <div
+                class="example-box"
+                *ngFor="let item of kpiService.kpiResult; let i = index"
+              >
+                <mat-chip-row
                   cdkDrag
                   class="chip-item"
-                  cdkDragBoundary=".kpi_boundary"
+                  [ngClass]="
+                    item.type == 0
+                      ? 'conter-view'
+                      : item.type == 1
+                      ? 'function-view'
+                      : item.type == 2
+                      ? 'kpi-view'
+                      : item.type == 3
+                      ? 'opt-view'
+                      : item.type == 4
+                      ? 'voidFunction-view'
+                      : 'number-view'
+                  "
                 >
-                  <div class="chip-name">
+                  <div class="chip-name" matTooltip="{{ item.name }}">
                     {{ item.name }}
+                    <div
+                      *cdkDragPlaceholder
+                      style="width: 30px; overflow-x: hidden"
+                    >
+                      {{ item.name }}
+                    </div>
                   </div>
+                  <button
+                    matChipRemove
+                    [attr.aria-label]="'remove ' + item.name"
+                    (click)="kpiService.remove(item)"
+                  >
+                    <mat-icon>cancel</mat-icon>
+                  </button>
                 </mat-chip-row>
               </div>
               <input
+                placeholder="Enter number here"
                 [matChipInputFor]="chipGrid"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                [matChipInputAddOnBlur]="false"
+                [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="kpiService.addNumber($event)"
-                style="width: 30px; height: 30px"
                 class="input"
               />
             </mat-chip-grid>

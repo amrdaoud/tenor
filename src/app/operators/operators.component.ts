@@ -26,28 +26,29 @@ export class OperatorsComponent extends Unsubscriber {
     this._otherSubscription = this.operationService
       .getOperations()
       .subscribe((c) => {
-        this.operationList = c.map((x) => ({ ...x, type: 2 }));
+        this.operationList = c.map((x) => ({ ...x, type: 3 }));
       });
     this._otherSubscription = this.operationService
       .getFunctions()
       .subscribe((c) => {
         this.functionList = c;
-        this.functionList = c.map((x) => ({ ...x, type: 5 }));
+        this.functionList = c.map((x) => ({ ...x, type: 1 }));
+
         this.functionList.push({
           id: 100,
           name: '(',
           argumentsCount: null,
           isBool: false,
           operations: null,
-          type: 3,
+          type: 4,
         });
         this.functionList.push({
-          id: 101,
+          id: 100,
           name: ')',
           argumentsCount: null,
           isBool: false,
           operations: null,
-          type: 3,
+          type: 4,
         });
         this.functionList.push({
           id: 102,
@@ -55,7 +56,7 @@ export class OperatorsComponent extends Unsubscriber {
           argumentsCount: null,
           isBool: false,
           operations: null,
-          type: 6,
+          type: 3,
         });
       });
   }
