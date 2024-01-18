@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, finalize } from 'rxjs';
+import { BehaviorSubject, Observable, finalize, map } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 import {
   KpiListViewModel,
@@ -99,7 +99,7 @@ export class KpiService {
   getExtraFields(): Observable<ExtraField[]> {
     this.loadingExtraFields.next(true);
     return this.http
-      .get<ExtraField[]>(this.url + '/getExtraFields')
+      .get<ExtraField[]>(this.url + '/GetExtraFields')
       .pipe(finalize(() => this.loadingExtraFields.next(false)));
   }
 
@@ -128,15 +128,23 @@ export class KpiService {
   tt = new Array<KpiModel>();
   j = 0;
 
-  submit() {
+  submit(extraField: any, name: any) {
     // this.formateKpi;
+    let kpiFields = new Array<any>();
+    /*console.log({id: value: extraField.code })*/
 
     this.i = 0;
     this.parent = 0;
     console.log(this.kpiResult);
     this.formateKpi();
     let kpiInit = new KpiModelInit();
-    kpiInit.name = 'kpi' + Math.floor((1 + Math.random()) * 0x10000);
+    if (extraField != null) {
+      for (const key of Object.keys(extraField))
+        kpiFields.push({ id: 0, fieldId: key, value: extraField[key] });
+    }
+    console.log('kpiFields ..', kpiFields);
+    kpiInit.kpiFields = kpiFields;
+    kpiInit.name = name;
     var child = new KpiModel();
     // child.id = 0;
     child.name = '(';
@@ -649,7 +657,35 @@ export class KpiService {
       );
       console.log('********************************************');
       let i = Math.floor((1 + Math.random()) * 0x10000);
- 
+      if (this.kpiResult[event.currentIndex].type == 1) {
+        this.kpiResult.splice(
+          event.currentIndex + 1,
+          0,
+          {
+            id: i,
+            name: '(',
+            argumentsCount: null,
+            isBool: false,
+            operations: null,
+            type: 4,
+          },
+          {
+            name: ',',
+            argumentsCount: null,
+            isBool: false,
+            operations: null,
+            type: 3,
+          },
+          {
+            id: i,
+            name: ')',
+            argumentsCount: null,
+            isBool: false,
+            operations: null,
+            type: 4,
+          }
+        );
+      }
     }
   }
 }
