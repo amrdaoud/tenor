@@ -1,46 +1,19 @@
-<mat-chip-listbox
-  aria-label="select a shirt size"
-  style="width: 100%; display: flex"
->
-  <div
-    cdkDropList
-    [cdkDropListData]="operationList"
-    style="display: flex; width: 100%"
-  >
-    <div
-      *ngFor="let item of operationList"
-      style="display: flex"
-      (dblclick)="kpiService.dblclick(item)"
-    >
+<mat-chip-listbox aria-label="select a shirt size" style="width: 100%; display: flex">
+  <div cdkDropList [cdkDropListData]="operationList" style="display: flex; width: 100%">
+    <div *ngFor="let item of operationList" style="display: flex" (dblclick)="kpiService.dblclickOnItem(item)">
       <mat-chip>
-        <div
-          cdkDrag
-          class="mat-chip"
-          style="width: 40px; overflow: hidden; text-align: center"
-        >
+        <div cdkDrag class="mat-chip" style="width: 40px; overflow: hidden; text-align: center">
           {{ item.name }}
         </div>
       </mat-chip>
     </div>
   </div>
-  <div
-    cdkDropList
-    [cdkDropListData]="functionList"
-    style="display: flex; width: 100%"
-  >
-    <div
-      *ngFor="let item of functionList"
-      style="display: flex"
-      (dblclick)="kpiService.dblclick(item)"
-    >
+  <div cdkDropList [cdkDropListData]="functionList" style="display: flex; width: 100%">
+    <div *ngFor="let item of functionList" style="display: flex" (dblclick)="kpiService.dblclickOnItem(item)">
       <mat-chip>
-        <div
-          cdkDrag
-          class="mat-chip"
-          style="width: 40px; overflow: hidden; text-align: center"
-        >
+        <div cdkDrag class="mat-chip" style="width: 40px; overflow: hidden; text-align: center">
           {{ item.name }}
-           <div  *cdkDragPlaceholder style="width:50px;overflow-x: hidden;">{{ item.name }}</div>
+          <div *cdkDragPlaceholder style="width:50px;overflow-x: hidden;">{{ item.name }}</div>
         </div>
       </mat-chip>
     </div>

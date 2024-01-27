@@ -1,11 +1,11 @@
 <mat-stepper headerPosition="top" #stepper>
-  <mat-step style="width: 100%; height: 100%;">
+  <mat-step class="width-100 height-100">
     <ng-template matStepLabel>Build Your Kpi</ng-template>
     <div>
       <mat-grid-list cols="4" rowHeight="3:1">
         <div cdkDropListGroup>
           <mat-grid-tile rowspan="3">
-            <div style="height: 100%; width: 100%">
+            <div class="width-100 height-100">
               <app-counter-side-list></app-counter-side-list>
             </div>
           </mat-grid-tile>
@@ -13,9 +13,8 @@
             <div class="formula-container">
               <mat-form-field class="formula-control" appearance="outline">
                 <mat-label> KPI formula </mat-label>
-
                 <div cdkDropListOrientation="horizontal" cdkDropList [cdkDropListData]="kpiService.kpiResult"
-                  style="height: 100%; width: 100%" (cdkDropListDropped)="kpiService.drop($event)" class="example-list">
+                  (cdkDropListDropped)="kpiService.drop($event)" class="example-list width-100 height-100">
                   <!-- <input matInput rows="0" style="background-color: red;" /> -->
                   <mat-chip-grid #chipGrid>
                     <div class="example-box" *ngFor="let item of kpiService.kpiResult; let i = index">
@@ -34,12 +33,12 @@
                       ">
                         <div class="chip-name" matTooltip="{{ item.name }}">
                           {{ item.name }}
-                          <div *cdkDragPlaceholder style="width: 30px; overflow-x: hidden">
+                          <div *cdkDragPlaceholder class="item-view">
                             {{ item.name }}
                           </div>
                         </div>
                         <button matChipRemove [attr.aria-label]="'remove ' + item.name"
-                          (click)="kpiService.remove(item)">
+                          (click)="kpiService.removeItem(item)">
                           <mat-icon>cancel</mat-icon>
                         </button>
                       </mat-chip-row>
@@ -49,38 +48,46 @@
                       (matChipInputTokenEnd)="kpiService.addNumber($event)" class="input" />
                   </mat-chip-grid>
                 </div>
+
               </mat-form-field>
+              <button mat-button color="primary" class="check-valid " (click)="CheckFormatValidation()">
+                <mat-icon *ngIf="!(loadingList|async)">published_with_changes
+                </mat-icon>
+                <div *ngIf="(loadingList|async)">Checking...
+                </div>
+              </button>
             </div>
           </mat-grid-tile>
           <mat-grid-tile rowspan="3">
-            <div style="height: 100%; width: 100%">
+            <div class="width-100 height-100">
               <app-kpi-side-list></app-kpi-side-list>
             </div>
           </mat-grid-tile>
           <mat-grid-tile colspan="3" rowspan="2">
-            <div style="height: 100%; width: 100%; padding: 16px">
+            <div class="width-100 height-100">
               <app-operators></app-operators>
-              <button mat-button color="primary" (click)="submit()">
-                Submit
-              </button>
+
             </div>
           </mat-grid-tile>
         </div>
       </mat-grid-list>
     </div>
   </mat-step>
-  <mat-step>
+  <mat-step *ngIf="KpiValid">
+    <mat-progress-bar *ngIf="loadingList|async" mode="buffer"></mat-progress-bar>
     <ng-template matStepLabel>Select Kpi Fieldes</ng-template>
     <mat-grid-list class="page-with-toolbar" cols="1" rowHeight="100px">
-      <mat-grid-tile>
-        <mat-form-field appearance="outline" style="height: 15px;">
-          <mat-label>Kpi NAme</mat-label>
+      <mat-grid-tile [rowspan]="1">
+        <mat-form-field appearance="fill" style="height: auto;width: 500px;">
+          <mat-label>Kpi Name *</mat-label>
           <input matInput [(ngModel)]="Name" appearance="outline" size="small">
         </mat-form-field>
-      </mat-grid-tile>
-      <mat-grid-tile>
 
-        <form [formGroup]="frm" style="height: 100%;width: 100%;display: flex;" class="mat-elevation-z8">
+      </mat-grid-tile>
+      <mat-grid-tile rowspan="3">
+        <mat-divider></mat-divider>
+
+        <form [formGroup]="frm" class=" height-100" style="width: 50%;">
 
           <div *ngFor="let field of extraFields" (click)="$event.stopPropagation()" style="margin: 10px;">
             <ng-container [ngSwitch]="field.type">
@@ -94,15 +101,17 @@
                 size="small"></amr-select>
             </ng-container>
           </div>
+          <div>
+            <button mat-raised-button [disabled]="loadingList|async" color="primary" (click)="submit()"
+              *ngIf="frm.valid&&Name" class="width-100">
+              Submit
+            </button>
+
+          </div>
         </form>
+
       </mat-grid-tile>
-      <mat-grid-tile>
-        <div style="width: 100%;text-align: right;">
-          <button mat-button color="primary" (click)="submit()">
-            Submit
-          </button>
-        </div>
-      </mat-grid-tile>
+
     </mat-grid-list>
   </mat-step>
 </mat-stepper>

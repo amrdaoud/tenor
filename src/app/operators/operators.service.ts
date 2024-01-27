@@ -4,15 +4,13 @@ import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class OperatorsService {
   private url = environment.apiUrl + 'kpis';
   private http = inject(HttpClient);
-  constructor() {
-  }
+  constructor() {}
   getOperations(): Observable<OperationModel[]> {
     return this.http.get<OperationModel[]>(this.url + '/GetOperators');
   }

@@ -2,7 +2,7 @@
     <form [formGroup]="frm" (ngSubmit)="submit()">
         <mat-card-header>
             <mat-card-title>
-                <span *ngIf= "device; else add">Edit Device #{{device.id}}</span>
+                <span *ngIf="device; else add">Edit Device #{{device.id}}</span>
                 <ng-template #add>Add new Device</ng-template>
             </mat-card-title>
             <mat-card-subtitle>

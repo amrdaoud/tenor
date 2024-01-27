@@ -21,9 +21,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { InputComponent, SelectComponent } from 'techteec-lib/controls';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { ExtraField } from '../../common/generic';
-import { FormControl, FormGroup } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  RequiredValidator,
+  Validators,
+} from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
 import {
   debounceTime,
   distinctUntilChanged,
@@ -57,23 +67,32 @@ import { Unsubscriber } from 'techteec-lib/common';
     MatStepperModule,
     ReactiveFormsModule,
     FormsModule,
+    MatProgressBarModule,
+    MatDividerModule,
+    MatSnackBarModule,
   ],
   templateUrl: './kpi-builder.component.html',
   styleUrl: './kpi-builder.component.scss',
 })
 export class KpiBuilderComponent extends Unsubscriber {
+  public kpiService = inject(KpiService);
+  public loadingList = this.kpiService.loadingDownload$;
   extraFields: ExtraField[] = [];
   Name: any;
+  KpiValid: any = false;
   ngOnInit(): void {}
   frm = new FormGroup<any>({});
-  constructor() {
+  constructor(private SnakBar: MatSnackBar) {
     super();
     this.kpiService
       .getExtraFields()
       .pipe(
         tap((extraFields: ExtraField[]) => {
           extraFields.forEach((field) => {
-            this.frm.addControl(field.id.toString(), new FormControl());
+            this.frm.addControl(
+              field.id.toString(),
+              new FormControl('', Validators.required)
+            );
           });
         }),
         tap(
@@ -89,11 +108,27 @@ export class KpiBuilderComponent extends Unsubscriber {
       )
       .subscribe((c: any) => {});
   }
-  public kpiService = inject(KpiService);
 
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   submit() {
     this.kpiService.submit(this.frm.value, this.Name);
+  }
+  CheckFormatValidation() {
+    this.kpiService
+      .CheckFormatValidation(this.kpiService.initObject([], '1234'))
+      .subscribe(
+        (x) => {
+          console.log(x);
+          this.KpiValid = x;
+          this.SnakBar.open(
+            this.KpiValid ? 'KPi is valid' : this.KpiValid,
+            'close'
+          );
+        },
+        (error: any) => {
+          this.SnakBar.open('KPI format is invalid', 'close');
+        }
+      );
   }
 }

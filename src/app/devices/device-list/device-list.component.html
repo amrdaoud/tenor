@@ -1,28 +1,12 @@
-<mat-grid-list class="page-with-toolbar" cols="1"  rowHeight="fit">
+<mat-grid-list class="page-with-toolbar" cols="1" rowHeight="fit">
     <mat-grid-tile>
         <div class="overall-spinner-container" *ngIf="loadingElement$ | async">
             <mat-spinner diameter="40"></mat-spinner>
         </div>
-        <amr-data-table
-        title="Device"
-        [data]="data"
-        [dataSize]="dataSize"
-        [columnDefs]="columns"
-        [filters]="filters!"
-        [isAsync]="true"
-        [pageSize]="30"
-        [sortActive]="'id'"
-        [sortDirection]="'desc'"
-        [clickable]="true"
-        [isLoading]="(loadingList$ | async)"
-        (changed)="changed($event)"
-        [showSubmit]="false"
-        [preserveSearchQuery]="true"
-        [isReport]="true"
-        [haveDownload]="true"
-        [btns]="btns"
-        (btnClicked)="btnClicked($event)"
-        (rowClicked)="rowClicked($event)"
-        ></amr-data-table>
+        <amr-data-table title="Device" [data]="data" [dataSize]="dataSize" [columnDefs]="columns" [filters]="filters!"
+            [isAsync]="true" [pageSize]="30" [sortActive]="'id'" [sortDirection]="'desc'" [clickable]="true"
+            [isLoading]="(loadingList$ | async)" (changed)="changed($event)" [showSubmit]="false"
+            [preserveSearchQuery]="true" [isReport]="true" [haveDownload]="true" [btns]="btns"
+            (btnClicked)="btnClicked($event)" (rowClicked)="rowClicked($event)"></amr-data-table>
     </mat-grid-tile>
 </mat-grid-list>

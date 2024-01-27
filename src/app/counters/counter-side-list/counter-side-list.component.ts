@@ -31,6 +31,7 @@ import { DeviceService } from '../../devices/device.service';
 import { DeviceListViewModel } from '../../devices/device';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { KpiService } from '../../kpis/kpi.service';
+import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 @Component({
   selector: 'app-counter-side-list',
   standalone: true,
@@ -137,8 +138,11 @@ export class CounterSideListComponent extends Unsubscriber {
         SortActive: 'name',
         PageSize: 10,
         SortDirection: 'asc',
+
+        deviceId:
+          this.frm.value.deviceId != '' ? this.frm.value.deviceId : false,
         SearchQuery: searchQuery,
-      } as any)
+      } as GeneralFilterModel)
       .subscribe((x) => (this.devices = x.data));
   }
 }

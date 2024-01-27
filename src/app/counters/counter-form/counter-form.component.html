@@ -2,7 +2,7 @@
     <form [formGroup]="frm" (ngSubmit)="submit()">
         <mat-card-header>
             <mat-card-title>
-                <span *ngIf= "counter; else add">Edit Counter #{{counter.id}}</span>
+                <span *ngIf="counter; else add">Edit Counter #{{counter.id}}</span>
                 <ng-template #add>Add new Counter</ng-template>
             </mat-card-title>
             <mat-card-subtitle>
