@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, provideRouter, withHashLocation } from '@angular/router';
 import { SideNavComponent } from './side-nav/side-nav.component';
 
 @Component({
@@ -8,7 +8,7 @@ import { SideNavComponent } from './side-nav/side-nav.component';
   standalone: true,
   imports: [CommonModule, RouterOutlet, SideNavComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'tenor';

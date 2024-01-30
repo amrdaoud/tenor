@@ -20,7 +20,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { InputComponent, SelectComponent } from 'techteec-lib/controls';
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -114,21 +114,30 @@ export class KpiBuilderComponent extends Unsubscriber {
   submit() {
     this.kpiService.submit(this.frm.value, this.Name);
   }
-  CheckFormatValidation() {
+  CheckFormatValidation(stepper: MatStepper) {
     this.kpiService
       .CheckFormatValidation(this.kpiService.initObject([], '1234'))
       .subscribe(
         (x) => {
           console.log(x);
           this.KpiValid = x;
-          this.SnakBar.open(
-            this.KpiValid ? 'KPi is valid' : this.KpiValid,
-            'close'
-          );
+          if (this.KpiValid)
+            setTimeout(() => {
+              stepper.next();
+            }, 1000);
+          else this.SnakBar.open(this.KpiValid, 'close');
         },
         (error: any) => {
           this.SnakBar.open('KPI format is invalid', 'close');
         }
       );
+  }
+  drop(event: any) {
+    this.KpiValid = false;
+    this.kpiService.drop(event);
+  }
+  removeItem(event: any) {
+    this.KpiValid = false;
+    this.kpiService.removeItem(event);
   }
 }

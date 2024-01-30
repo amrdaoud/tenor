@@ -5,12 +5,20 @@ import { FunctionModel, OperationModel } from './operator';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CommonModule } from '@angular/common';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { KpiService } from './../kpis/kpi.service';
 @Component({
   selector: 'app-operators',
   standalone: true,
-  imports: [CommonModule, MatGridListModule, MatChipsModule, DragDropModule],
+  imports: [
+    CommonModule,
+    MatGridListModule,
+    MatChipsModule,
+    DragDropModule,
+    MatDividerModule,
+  ],
 
   templateUrl: './operators.component.html',
   styleUrl: './operators.component.scss',

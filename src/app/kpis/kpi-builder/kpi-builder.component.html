@@ -2,19 +2,19 @@
   <mat-step class="width-100 height-100">
     <ng-template matStepLabel>Build Your Kpi</ng-template>
     <div>
-      <mat-grid-list cols="4" rowHeight="3:1">
+      <mat-grid-list cols="4" rowHeight="4:1">
         <div cdkDropListGroup>
           <mat-grid-tile rowspan="3">
             <div class="width-100 height-100">
               <app-counter-side-list></app-counter-side-list>
             </div>
           </mat-grid-tile>
-          <mat-grid-tile colspan="3" rowspan="4">
+          <mat-grid-tile colspan="3" rowspan="6">
             <div class="formula-container">
               <mat-form-field class="formula-control" appearance="outline">
                 <mat-label> KPI formula </mat-label>
                 <div cdkDropListOrientation="horizontal" cdkDropList [cdkDropListData]="kpiService.kpiResult"
-                  (cdkDropListDropped)="kpiService.drop($event)" class="example-list width-100 height-100">
+                  (cdkDropListDropped)="drop($event)" class="example-list width-100 height-100">
                   <!-- <input matInput rows="0" style="background-color: red;" /> -->
                   <mat-chip-grid #chipGrid>
                     <div class="example-box" *ngFor="let item of kpiService.kpiResult; let i = index">
@@ -37,8 +37,7 @@
                             {{ item.name }}
                           </div>
                         </div>
-                        <button matChipRemove [attr.aria-label]="'remove ' + item.name"
-                          (click)="kpiService.removeItem(item)">
+                        <button matChipRemove [attr.aria-label]="'remove ' + item.name" (click)="removeItem(item)">
                           <mat-icon>cancel</mat-icon>
                         </button>
                       </mat-chip-row>
@@ -50,12 +49,19 @@
                 </div>
 
               </mat-form-field>
-              <button mat-button color="primary" class="check-valid " (click)="CheckFormatValidation()">
-                <mat-icon *ngIf="!(loadingList|async)">published_with_changes
-                </mat-icon>
-                <div *ngIf="(loadingList|async)">Checking...
-                </div>
+              <button mat-button color="primary" class="check-valid " (click)="CheckFormatValidation(stepper)">
+                <button mat-raised-button color="primary">
+                  <div *ngIf="!(loadingList|async)">Next</div>
+                  <div *ngIf="(loadingList|async)">Checking...
+                  </div>
+                </button>
+
               </button>
+              <mat-card class="mat-elevation-z8 width-100">
+                <app-operators></app-operators>
+              </mat-card>
+
+
             </div>
           </mat-grid-tile>
           <mat-grid-tile rowspan="3">
@@ -63,12 +69,7 @@
               <app-kpi-side-list></app-kpi-side-list>
             </div>
           </mat-grid-tile>
-          <mat-grid-tile colspan="3" rowspan="2">
-            <div class="width-100 height-100">
-              <app-operators></app-operators>
 
-            </div>
-          </mat-grid-tile>
         </div>
       </mat-grid-list>
     </div>
