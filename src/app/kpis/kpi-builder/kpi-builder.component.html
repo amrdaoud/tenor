@@ -1,15 +1,15 @@
 <mat-stepper headerPosition="top" #stepper>
-  <mat-step class="width-100 height-100">
+  <mat-step class="width-100 height-100" style="overflow-y: auto;">
     <ng-template matStepLabel>Build Your Kpi</ng-template>
     <div>
-      <mat-grid-list cols="4" rowHeight="4:1">
+      <mat-grid-list cols="4" rowHeight="50px">
         <div cdkDropListGroup>
-          <mat-grid-tile rowspan="3">
+          <mat-grid-tile rowspan="6">
             <div class="width-100 height-100">
               <app-counter-side-list></app-counter-side-list>
             </div>
           </mat-grid-tile>
-          <mat-grid-tile colspan="3" rowspan="6">
+          <mat-grid-tile colspan="3" rowspan="12" style="overflow-y: auto;">
             <div class="formula-container">
               <mat-form-field class="formula-control" appearance="outline">
                 <mat-label> KPI formula </mat-label>
@@ -57,14 +57,14 @@
                 </button>
 
               </button>
-              <mat-card class="mat-elevation-z8 width-100">
+              <mat-card class="mat-elevation-z8 width-100 height-100">
                 <app-operators></app-operators>
               </mat-card>
 
 
             </div>
           </mat-grid-tile>
-          <mat-grid-tile rowspan="3">
+          <mat-grid-tile rowspan="6">
             <div class="width-100 height-100">
               <app-kpi-side-list></app-kpi-side-list>
             </div>

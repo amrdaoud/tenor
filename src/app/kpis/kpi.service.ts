@@ -32,6 +32,7 @@ export class KpiService {
   currentParent = new Array<number>();
   orderList = new Array<number>();
   arrayResult!: any;
+  public editKpi: any;
   index = 0;
   //Loaders
   private loadingList = new BehaviorSubject<boolean>(false);
@@ -79,7 +80,7 @@ export class KpiService {
   getById(id: number): Observable<KpiViewModel> {
     this.loadingElement.next(true);
     return this.http
-      .get<KpiViewModel>(this.url + '/Get' + `?id=${id}`)
+      .get<KpiViewModel>(this.url + '/getById' + `?id=${id}`)
       .pipe(finalize(() => this.loadingElement.next(false)));
   }
   addElement(model: KpiBindingModel): Observable<KpiViewModel> {
@@ -215,6 +216,23 @@ export class KpiService {
         this.changeCycleOfFunction();
       }
     }
+  }
+
+  createkpi(array: any) {
+    if (this.i == array.length ) return;
+    if (array.value == '(' || array.type=="function") {
+      this.kpiResult.push({
+        id: array[this.i].id,
+        value: array[this.i].value,
+      });
+      this.createkpi(array[this.i].childs);
+    }
+    else
+       this.kpiResult.push({
+         id: array[this.i].id,
+         value: array[this.i].value,
+       });
+    this.i = this.i ++;
   }
   removeItem(item: KpiModel): void {
     const index = this.kpiResult.indexOf(item);

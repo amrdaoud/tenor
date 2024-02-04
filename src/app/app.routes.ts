@@ -43,6 +43,14 @@ export const routes: Routes = [
             (c) => c.KpiBuilderComponent
           ),
       },
+
+      {
+        path: 'kpis/edit/:id',
+        loadComponent: () =>
+          import('./kpis/kpi-edit/kpi-edit.component').then(
+            (c) => c.KpiEditComponent
+          ),
+      },
     ],
   },
   {

@@ -52,7 +52,7 @@
 }
 
 .voidFunction-view {
-    background-color: #eee !important;
+    background-color: grey !important;
 }
 
 .number-view {
@@ -99,6 +99,7 @@
 
 .example-box:last-child {
     border: none;
+
 }
 
 .chip-name.cdk-drop-list-dragging .chip-name:not(.cdk-drag-placeholder) {

@@ -4,19 +4,28 @@ import { btns, columns, filters } from '../kpi.const';
 import { KpiBindingModel, KpiListViewModel } from '../kpi';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { DataTableComponent } from 'techteec-lib/components/data-table';
-import { DataTableFilter, GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
+import {
+  DataTableFilter,
+  GeneralFilterModel,
+} from 'techteec-lib/components/data-table/src/data-table.model';
 import { Unsubscriber } from 'techteec-lib/common';
 import { CommonModule } from '@angular/common';
 import { filter, of, switchMap } from 'rxjs';
-import { MatDialog, MatDialogModule }  from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { KpiFormComponent } from '../kpi-form/kpi-form.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'amr-kpi-list',
   standalone: true,
-  imports: [CommonModule, MatGridListModule, DataTableComponent, MatDialogModule],
+  imports: [
+    CommonModule,
+    MatGridListModule,
+    DataTableComponent,
+    MatDialogModule,
+  ],
   templateUrl: './kpi-list.component.html',
-  styleUrl: './kpi-list.component.scss'
+  styleUrl: './kpi-list.component.scss',
 })
 export class KpiListComponent extends Unsubscriber {
   private kpiService = inject(KpiService);
@@ -31,7 +40,7 @@ export class KpiListComponent extends Unsubscriber {
   ///add other properties
   ///
   ///////////////////////
-  constructor() {
+  constructor(private route: Router) {
     super();
     const dynamicFilters: DataTableFilter[] = [
       {
@@ -40,29 +49,42 @@ export class KpiListComponent extends Unsubscriber {
         Label: 'Extra Field',
         PlaceHolder: 'Extra Field',
         Data$: of([
-          {name: 'a', value: '1'},
-          {name: 'b', value: '2'},
-          {name: 'c', value: '3'}
+          { name: 'a', value: '1' },
+          { name: 'b', value: '2' },
+          { name: 'c', value: '3' },
         ]),
         DisplayProperty: 'name',
-        ValueProperty: 'value'
-      }
+        ValueProperty: 'value',
+      },
     ];
-    this.filters.push(...dynamicFilters)
+    this.filters.push(...dynamicFilters);
   }
   changed(filter: GeneralFilterModel) {
+    console.log('filter', filter);
     this.latestFilter = filter;
-    this._otherSubscription = this.kpiService.getByFilter(filter).subscribe(x => {
-      this.data = x.data;
-      this.dataSize = x.dataSize;
-    })
+    this._otherSubscription = this.kpiService
+      .getByFilter(filter)
+      .subscribe((x) => {
+        this.data = x.data;
+        this.dataSize = x.dataSize;
+      });
+  }
+  rowClick(event: any) {
+    if (confirm('Are yous sure you want to Edit KPI'))
+      this.route.navigate(['kpis/edit', event.id]);
   }
   btnClicked(btnIndex: number) {
-    if(btnIndex == 0) {
-      this._otherSubscription = this.dialog.open(KpiFormComponent, {panelClass: 'techteec-form-dialog'}).afterClosed().pipe(
-        filter(bindingObject => bindingObject),
-        switchMap((bindingObject: KpiBindingModel) => this.kpiService.addElement(bindingObject))
-      ).subscribe(viewObject => this.changed(this.latestFilter))
+    if (btnIndex == 0) {
+      this._otherSubscription = this.dialog
+        .open(KpiFormComponent, { panelClass: 'techteec-form-dialog' })
+        .afterClosed()
+        .pipe(
+          filter((bindingObject) => bindingObject),
+          switchMap((bindingObject: KpiBindingModel) =>
+            this.kpiService.addElement(bindingObject)
+          )
+        )
+        .subscribe((viewObject) => this.changed(this.latestFilter));
     }
   }
 }
