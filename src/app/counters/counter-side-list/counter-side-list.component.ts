@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, ViewChild, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { Unsubscriber } from 'techteec-lib/common';
 import { CounterService } from '../counter.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -54,6 +60,7 @@ import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-
   styleUrl: './counter-side-list.component.scss',
 })
 export class CounterSideListComponent extends Unsubscriber {
+  @Input() deviceId: any;
   private counterService = inject(CounterService);
   private subsetService = inject(SubsetService);
   private deviceService = inject(DeviceService);
@@ -93,7 +100,7 @@ export class CounterSideListComponent extends Unsubscriber {
         switchMap(() =>
           this.counterService.getByFilter({
             ...this.frm.value,
-            deviceId: this.frm.value.deviceId.toString(),
+            deviceId: this.deviceId,
           })
         )
       )

@@ -20,8 +20,21 @@
     height: auto
 }
 
+.mat-tooltip {
+    font-size: 12px !important;
+}
+
+.example-button {
+    margin-top: 16px;
+}
+
+.example-tooltip-uppercase {
+    text-transform: uppercase;
+}
+
 .chip-name {
-    max-width: 70px;
+    font-size: x-small;
+    max-width: 50px;
     color: white !important;
     scroll-snap-type: mandatory !important;
     transform: 0;
@@ -29,19 +42,16 @@
 }
 
 .conter-view {
-    width: 120px;
     background-color: #ce93d8 !important;
 
 }
 
 .function-view {
-    width: 170px;
     background-color: #FFC107 !important;
     color: white !important;
 }
 
 .kpi-view {
-    width: 120px;
     background-color: #26a69a !important;
     color: white !important;
 }
@@ -76,9 +86,8 @@
 }
 
 .check-valid {
-    position: absolute;
-    right: 20px;
-    bottom: 10%;
+    width: 100%;
+    text-align: right;
 
 }
 
@@ -90,6 +99,7 @@
 
 .item-view {
     width: 30px;
+    font-size: small;
     overflow-x: hidden
 }
 

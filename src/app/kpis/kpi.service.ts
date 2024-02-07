@@ -116,12 +116,13 @@ export class KpiService {
   //Aya && Alaa
   tt = new Array<KpiModel>();
   j = 0;
-  initObject(extraField: any, name: any) {
+  initObject(extraField: any, name: any, deviceId: any) {
     let kpiFields = new Array<any>();
     this.i = 0;
     this.parent = 0;
     this.formatKpi();
     let kpiInit = new KpiModelInit();
+    kpiInit.deviceId = deviceId;
     if (extraField != null) {
       for (const key of Object.keys(extraField))
         kpiFields.push({ id: 0, fieldId: key, value: extraField[key] });
@@ -141,14 +142,16 @@ export class KpiService {
     return kpiInit;
   }
 
-  submit(extraField: any, name: any) {
-    this.submitCurrentKPI(this.initObject(extraField, name)).subscribe(
+  submit(extraField: any, name: any, deviceId: any) {
+    this.submitCurrentKPI(
+      this.initObject(extraField, name, deviceId)
+    ).subscribe(
       (x) => {
         this.kpiResult = [];
         this.snakBar.open('kpi Submitted successfully', 'close');
       },
-      (error: any) => {
-        this.snakBar.open('error in submit KPI', 'close');
+      (error: Error) => {
+        this.snakBar.open(error.message, 'close');
       }
     );
   }
@@ -219,20 +222,19 @@ export class KpiService {
   }
 
   createkpi(array: any) {
-    if (this.i == array.length ) return;
-    if (array.value == '(' || array.type=="function") {
+    if (this.i == array.length) return;
+    if (array.value == '(' || array.type == 'function') {
       this.kpiResult.push({
         id: array[this.i].id,
         value: array[this.i].value,
       });
       this.createkpi(array[this.i].childs);
-    }
-    else
-       this.kpiResult.push({
-         id: array[this.i].id,
-         value: array[this.i].value,
-       });
-    this.i = this.i ++;
+    } else
+      this.kpiResult.push({
+        id: array[this.i].id,
+        value: array[this.i].value,
+      });
+    this.i = this.i++;
   }
   removeItem(item: KpiModel): void {
     const index = this.kpiResult.indexOf(item);

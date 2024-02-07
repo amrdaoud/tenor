@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -40,6 +40,7 @@ import { CdkDragMove, DragDropModule } from '@angular/cdk/drag-drop';
   styleUrl: './kpi-side-list.component.scss',
 })
 export class KpiSideListComponent extends Unsubscriber {
+  @Input() deviceId: any;
   public kpiService = inject(KpiService);
   loadingList$ = this.kpiService.loadingList$;
   frm = new FormGroup<any>({
@@ -68,7 +69,12 @@ export class KpiSideListComponent extends Unsubscriber {
         distinctUntilChanged(),
         debounceTime(400),
         tap(() => this.frm.get('pageIndex')?.setValue(0, { emitEvent: false })),
-        switchMap(() => this.kpiService.getByFilter(this.frm.value))
+        switchMap(() =>
+          this.kpiService.getByFilter({
+            ...this.frm.value,
+            deviceId: this.deviceId,
+          })
+        )
       )
       .subscribe((c) => {
         this.itemList = c.data.map((x) => ({ ...x, type: 2 }));

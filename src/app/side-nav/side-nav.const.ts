@@ -1,5 +1,17 @@
-import {IconNavItem} from 'techteec-lib/components/icon-side-nav'
-import { ADD_ICON, ADMIN_ICON, COUNTER_ICON, DASHBOARD_ICON, DEVICE_ICON, HOME_ICON, KPI_ICON, LIST_ICON, REPORT_ICON, SHARE_ICON, SUBSET_ICON } from '../common/app-icons.const'
+import { IconNavItem } from 'techteec-lib/components/icon-side-nav';
+import {
+  ADD_ICON,
+  ADMIN_ICON,
+  COUNTER_ICON,
+  DASHBOARD_ICON,
+  DEVICE_ICON,
+  HOME_ICON,
+  KPI_ICON,
+  LIST_ICON,
+  REPORT_ICON,
+  SHARE_ICON,
+  SUBSET_ICON,
+} from '../common/app-icons.const';
 export const items: IconNavItem[] = [
   {
     title: 'Home',
@@ -18,7 +30,7 @@ export const items: IconNavItem[] = [
       {
         title: 'Create New',
         svgIcon: ADD_ICON,
-        routerLink: 'kpis/builder',
+        routerLink: 'devices',
       },
     ],
   },

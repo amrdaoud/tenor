@@ -14,6 +14,8 @@ import { filter, of, switchMap } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DeviceFormComponent } from '../device-form/device-form.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { routes } from '../../app.routes';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'amr-device-list',
@@ -41,7 +43,7 @@ export class DeviceListComponent extends Unsubscriber {
   ///add other properties
 
   ///////////////////////
-  constructor() {
+  constructor(private route: Router) {
     super();
     const dynamicFilters: DataTableFilter[] = [
       {
@@ -82,8 +84,10 @@ export class DeviceListComponent extends Unsubscriber {
         .subscribe((viewObject) => this.changed(this.latestFilter));
     }
   }
-  rowClicked(element: DeviceListViewModel) {
-    this._otherSubscription = this.deviceService
+  rowClicked(event: any) {
+    console.log(event);
+    this.route.navigate(['kpis/builder', { deviceId: event.id }]);
+    /*  this._otherSubscription = this.deviceService
       .getById(element.id)
       .pipe(
         switchMap((viewObject) =>
@@ -99,6 +103,6 @@ export class DeviceListComponent extends Unsubscriber {
           this.deviceService.editElement(bindingObject)
         )
       )
-      .subscribe((viewObject) => this.changed(this.latestFilter));
+      .subscribe((viewObject) => this.changed(this.latestFilter)); */
   }
 }

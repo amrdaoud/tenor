@@ -118,11 +118,11 @@ export class KpiEditComponent extends Unsubscriber {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   submit() {
-    this.kpiService.submit(this.frm.value, this.Name);
+    this.kpiService.submit(this.frm.value, this.Name, 400);
   }
   CheckFormatValidation(stepper: MatStepper) {
     this.kpiService
-      .CheckFormatValidation(this.kpiService.initObject([], '1234'))
+      .CheckFormatValidation(this.kpiService.initObject([], '1234', 400))
       .subscribe(
         (x) => {
           console.log(x);

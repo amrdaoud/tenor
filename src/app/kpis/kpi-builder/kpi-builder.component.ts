@@ -42,6 +42,7 @@ import {
   tap,
 } from 'rxjs';
 import { Unsubscriber } from 'techteec-lib/common';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-kpi-builder',
@@ -74,15 +75,23 @@ import { Unsubscriber } from 'techteec-lib/common';
   templateUrl: './kpi-builder.component.html',
   styleUrl: './kpi-builder.component.scss',
 })
-export class KpiBuilderComponent extends Unsubscriber {
+export class KpiBuilderComponent extends Unsubscriber implements OnInit {
   public kpiService = inject(KpiService);
   public loadingList = this.kpiService.loadingDownload$;
   extraFields: ExtraField[] = [];
   Name: any;
   KpiValid: any = false;
-  ngOnInit(): void {}
+  deviceId: any;
+  ngOnInit(): void {
+    this.activatedRoute.paramMap.subscribe(
+      (x: any) => (this.deviceId = x.params.deviceId)
+    );
+  }
   frm = new FormGroup<any>({});
-  constructor(private SnakBar: MatSnackBar) {
+  constructor(
+    private SnakBar: MatSnackBar,
+    private activatedRoute: ActivatedRoute
+  ) {
     super();
     this.kpiService
       .getExtraFields()
@@ -107,16 +116,20 @@ export class KpiBuilderComponent extends Unsubscriber {
         tap(() => this.frm.get('pageIndex')?.setValue(0, { emitEvent: false }))
       )
       .subscribe((c: any) => {});
+
+    this.kpiService.kpiResult = [];
   }
 
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   submit() {
-    this.kpiService.submit(this.frm.value, this.Name);
+    this.kpiService.submit(this.frm.value, this.Name, this.deviceId);
   }
   CheckFormatValidation(stepper: MatStepper) {
     this.kpiService
-      .CheckFormatValidation(this.kpiService.initObject([], '1234'))
+      .CheckFormatValidation(
+        this.kpiService.initObject([], '1234', this.deviceId)
+      )
       .subscribe(
         (x) => {
           console.log(x);

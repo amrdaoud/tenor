@@ -6,7 +6,7 @@
         <div cdkDropListGroup>
           <mat-grid-tile rowspan="6">
             <div class="width-100 height-100">
-              <app-counter-side-list></app-counter-side-list>
+              <app-counter-side-list [deviceId]="deviceId"></app-counter-side-list>
             </div>
           </mat-grid-tile>
           <mat-grid-tile colspan="3" rowspan="12" style="overflow-y: auto;">
@@ -31,7 +31,8 @@
                           ? 'voidFunction-view'
                           : 'number-view'
                       ">
-                        <div class="chip-name" matTooltip="{{ item.name }}">
+                        <div class="chip-name" matTooltip="{{ item.name }}" matTooltip="Info about the action"
+                          matTooltipClass="example-tooltip-uppercase">
                           {{ item.name }}
                           <div *cdkDragPlaceholder class="item-view">
                             {{ item.name }}
@@ -49,16 +50,18 @@
                 </div>
 
               </mat-form-field>
-              <button mat-button color="primary" class="check-valid " (click)="CheckFormatValidation(stepper)">
-                <button mat-raised-button color="primary">
-                  <div *ngIf="!(loadingList|async)">Next</div>
-                  <div *ngIf="(loadingList|async)">Checking...
-                  </div>
-                </button>
 
-              </button>
               <mat-card class="mat-elevation-z8 width-100 height-100">
                 <app-operators></app-operators>
+                <div class="check-valid ">
+                  <button mat-button color="primary" (click)="CheckFormatValidation(stepper)">
+                    <button mat-raised-button color="primary">
+                      <div *ngIf="!(loadingList|async)">Next</div>
+                      <div *ngIf="(loadingList|async)">Checking...
+                      </div>
+                    </button>
+                  </button>
+                </div>
               </mat-card>
 
 
@@ -66,7 +69,7 @@
           </mat-grid-tile>
           <mat-grid-tile rowspan="6">
             <div class="width-100 height-100">
-              <app-kpi-side-list></app-kpi-side-list>
+              <app-kpi-side-list [deviceId]="deviceId"></app-kpi-side-list>
             </div>
           </mat-grid-tile>
 
@@ -103,8 +106,8 @@
             </ng-container>
           </div>
           <div>
-            <button mat-raised-button [disabled]="loadingList|async" color="primary" (click)="submit()"
-              *ngIf="frm.valid&&Name" class="width-100">
+            <button color="accent" mat-raised-button [disabled]="!(frm.valid&&Name)" (click)="submit()"
+              class="width-100">
               Submit
             </button>
 
