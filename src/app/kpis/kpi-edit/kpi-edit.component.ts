@@ -76,14 +76,26 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './kpi-edit.component.html',
   styleUrl: './kpi-edit.component.scss',
 })
-export class KpiEditComponent extends Unsubscriber {
+export class KpiEditComponent extends Unsubscriber implements OnInit {
   public kpiService = inject(KpiService);
   public loadingList = this.kpiService.loadingDownload$;
   extraFields: ExtraField[] = [];
   Name: any;
   KpiValid: any = false;
-
+  deviceId: any;
   frm = new FormGroup<any>({});
+
+  ngOnInit(): void {
+    this.kpiService.getById(this.targetKpi).subscribe((x) => {
+      this.targetList = x;
+      console.log(this.targetList);
+      this.deviceId = this.targetList.deviceId;
+      this.arr = new Array<any>();
+      this.getItemOfList(this.targetList.operations);
+      this.arr.pop();
+      this.kpiService.kpiResult = this.arr;
+    });
+  }
   constructor(
     private SnakBar: MatSnackBar,
     private activatedRoute: ActivatedRoute
@@ -151,15 +163,6 @@ export class KpiEditComponent extends Unsubscriber {
   targetList!: any;
   arr!: any[];
 
-  ngOnInit(): void {
-    this.kpiService.getById(this.targetKpi).subscribe((x) => {
-      this.targetList = x;
-      this.arr = new Array<any>();
-      this.getItemOfList(this.targetList.operations);
-      this.arr.pop();
-      this.kpiService.kpiResult = this.arr;
-    });
-  }
   getItemOfList(List: any) {
     if (List.childs.length > 0) {
       List.childs.forEach((element: any) => {

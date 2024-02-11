@@ -120,6 +120,7 @@ export class KpiBuilderComponent extends Unsubscriber implements OnInit {
     this.kpiService.kpiResult = [];
   }
 
+  
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   submit() {

@@ -59,10 +59,10 @@ export class DeviceService {
       )
       .pipe(finalize(() => this.loadingList.next(false)));
   }
-  getById(id: number): Observable<DeviceViewModel> {
+  getById(id: number): Observable<any> {
     this.loadingElement.next(true);
     return this.http
-      .get<DeviceViewModel>(this.url + '/getById' + `/${id}`)
+      .get<DeviceViewModel>(this.url + '/getById?id=' + `${id}`)
       .pipe(finalize(() => this.loadingElement.next(false)));
   }
   addElement(model: DeviceBindingModel): Observable<DeviceViewModel> {

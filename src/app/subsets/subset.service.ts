@@ -40,9 +40,7 @@ export class SubsetService {
   }
 
   //Requests
-  getByFilter(
-    filter: GeneralFilterModel
-  ): Observable<DataWithSize<SubsetListViewModel>> {
+  getByFilter(filter: any): Observable<DataWithSize<SubsetListViewModel>> {
     this.loadingList.next(true);
     return this.http
       .post<DataWithSize<SubsetListViewModel>>(
@@ -53,7 +51,7 @@ export class SubsetService {
   }
   getBySearchQuery(searchQuery: string): Observable<SubsetListViewModel[]> {
     let filter = {
-      PageIndex: 0,
+      PageIfilterndex: 0,
       PageSize: 10,
       SortActive: 'name',
       SortDirection: 'asc',

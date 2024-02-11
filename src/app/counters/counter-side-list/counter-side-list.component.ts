@@ -80,7 +80,7 @@ export class CounterSideListComponent extends Unsubscriber {
   listSize = 0;
   extraFields: ExtraField[] = [];
   subsets: SubsetListViewModel[] = [];
-  devices: DeviceListViewModel[] = [];
+  devices: any;
   constructor() {
     super();
     this._otherSubscription = this.counterService
@@ -135,21 +135,13 @@ export class CounterSideListComponent extends Unsubscriber {
         PageSize: 10,
         SortDirection: 'asc',
         SearchQuery: searchQuery,
+        DeviceId:this.deviceId
       })
       .subscribe((x) => (this.subsets = x.data));
   }
   deviceSearchChanged(searchQuery: string | null) {
     this._otherSubscription = this.deviceService
-      .getByFilter({
-        PageIndex: 0,
-        SortActive: 'name',
-        PageSize: 10,
-        SortDirection: 'asc',
-
-        deviceId:
-          this.frm.value.deviceId != '' ? this.frm.value.deviceId : false,
-        SearchQuery: searchQuery,
-      } as GeneralFilterModel)
-      .subscribe((x) => (this.devices = x.data));
+      .getById(this.deviceId)
+      .subscribe((x) => (this.devices = [x]));
   }
 }
