@@ -1,4 +1,4 @@
-<mat-stepper headerPosition="top" #stepper *ngIf="targetList">
+<mat-stepper headerPosition="top" #stepper linear [ngClass]="kpiService.isValid ?'valid':'not-valid'">
     <mat-step class="width-100 height-100" style="overflow-y: auto;">
         <ng-template matStepLabel>Build Your Kpi</ng-template>
         <div>
@@ -40,7 +40,7 @@
                                                     </div>
                                                 </div>
                                                 <button matChipRemove [attr.aria-label]="'remove ' + item.name"
-                                                    (click)="removeItem(item)">
+                                                    (click)="removeItem(item,i)">
                                                     <mat-icon>cancel</mat-icon>
                                                 </button>
                                             </mat-chip-row>
@@ -79,7 +79,7 @@
             </mat-grid-list>
         </div>
     </mat-step>
-    <mat-step *ngIf="KpiValid">
+    <mat-step>
         <mat-progress-bar *ngIf="loadingList|async" mode="buffer"></mat-progress-bar>
         <ng-template matStepLabel>Select Kpi Fieldes</ng-template>
         <mat-grid-list class="page-with-toolbar" cols="1" rowHeight="100px">
@@ -107,8 +107,8 @@
                         </ng-container>
                     </div>
                     <div>
-                        <button mat-raised-button [disabled]="loadingList|async" color="primary" (click)="submit()"
-                            *ngIf="frm.valid&&Name" class="width-100">
+                        <button mat-raised-button color="primary" (click)="submit()" [disabled]="!frm.valid||!Name"
+                            class="width-100">
                             Submit
                         </button>
 

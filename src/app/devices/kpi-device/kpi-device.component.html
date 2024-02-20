@@ -1,0 +1,29 @@
+<mat-form-field appearance="outline" class="form-view">
+    <input matInput [formControl]="searchControl" #input placeholder="Search ...">
+    <span matSuffix (change)="getDevices(input.value)" class="span-form">
+        <mat-icon>search</mat-icon></span>
+</mat-form-field>
+<div *ngIf="!(loadingList$ | async)&&data.length==0" class="not-found-div">
+    <img src="../../../assets/noFound.jpg" width="200px" height="200px">
+    <h4>no data found</h4>
+</div>
+<mat-grid-list cols="5" rowHeight="120px">
+    <mat-grid-tile *ngFor="let device of data ">
+        <div class="device" (dblclick)="gridClicked(device)">
+            {{device.name}}<br>
+            {{device.id}}
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="5">
+        <mat-spinner *ngIf="(loadingList$ | async)" class="spinner">
+        </mat-spinner>
+    </mat-grid-tile>
+</mat-grid-list>
+
+
+<!-- <div class="button-move">
+    <button mat-stroked-button color="accent" (click)="changeDevice(-1)"
+        [disabled]="frm.value.pageIndex==0">Pervious</button>
+    <button mat-stroked-button color="primary" (click)="changeDevice(1)"
+        [disabled]="dataSize_ == frm.value.pageIndex ">Next</button>
+</div> -->

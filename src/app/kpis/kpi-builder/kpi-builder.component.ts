@@ -80,7 +80,6 @@ export class KpiBuilderComponent extends Unsubscriber implements OnInit {
   public loadingList = this.kpiService.loadingDownload$;
   extraFields: ExtraField[] = [];
   Name: any;
-  KpiValid: any = false;
   deviceId: any;
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(
@@ -120,7 +119,6 @@ export class KpiBuilderComponent extends Unsubscriber implements OnInit {
     this.kpiService.kpiResult = [];
   }
 
-  
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   submit() {
@@ -134,12 +132,12 @@ export class KpiBuilderComponent extends Unsubscriber implements OnInit {
       .subscribe(
         (x) => {
           console.log(x);
-          this.KpiValid = x;
-          if (this.KpiValid)
+          this.kpiService.isValid = x;
+          if (this.kpiService.isValid)
             setTimeout(() => {
               stepper.next();
             }, 1000);
-          else this.SnakBar.open(this.KpiValid, 'close');
+          else this.SnakBar.open(this.kpiService.isValid, 'close');
         },
         (error: any) => {
           this.SnakBar.open('KPI format is invalid', 'close');
@@ -147,11 +145,11 @@ export class KpiBuilderComponent extends Unsubscriber implements OnInit {
       );
   }
   drop(event: any) {
-    this.KpiValid = false;
+    this.kpiService.isValid = false;
     this.kpiService.drop(event);
   }
-  removeItem(event: any) {
-    this.KpiValid = false;
-    this.kpiService.removeItem(event);
+  removeItem(event: any, index: number) {
+    this.kpiService.isValid = false;
+    this.kpiService.removeItem(event, index);
   }
 }

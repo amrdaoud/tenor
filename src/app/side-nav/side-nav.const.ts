@@ -30,7 +30,7 @@ export const items: IconNavItem[] = [
       {
         title: 'Create New',
         svgIcon: ADD_ICON,
-        routerLink: 'devices',
+        routerLink: 'kpi-devices',
       },
     ],
   },

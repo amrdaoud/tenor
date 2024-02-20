@@ -139,3 +139,13 @@
 input.mat-input-element {
     height: 105px
 }
+
+.not-valid ::ng-deep.mat-step-header {
+    pointer-events: none
+}
+
+
+.valid ::ng-deep.mat-step-header {
+
+    pointer-events: block
+}

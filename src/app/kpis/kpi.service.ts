@@ -142,18 +142,33 @@ export class KpiService {
     return kpiInit;
   }
 
-  submit(extraField: any, name: any, deviceId: any) {
-    this.submitCurrentKPI(
-      this.initObject(extraField, name, deviceId)
-    ).subscribe(
-      (x) => {
-        this.kpiResult = [];
-        this.snakBar.open('kpi Submitted successfully', 'close');
-      },
-      (error: Error) => {
-        this.snakBar.open(error.message, 'close');
-      }
-    );
+  submit(extraField: any, name: any, deviceId: any, flagAdd = 0) {
+    if (flagAdd == 0) {
+      this.submitCurrentKPI(
+        this.initObject(extraField, name, deviceId)
+      ).subscribe(
+        (x) => {
+          this.kpiResult = [];
+          this.snakBar.open('kpi Submitted successfully', 'close');
+        },
+        (error: Error) => {
+          this.snakBar.open(error.message, 'close');
+        }
+      );
+    } else {
+      this.editCurrentKPI(
+        this.initObject(extraField, name, deviceId),
+        flagAdd
+      ).subscribe(
+        (x) => {
+          this.kpiResult = [];
+          this.snakBar.open('Updated Kpi successfully', 'close');
+        },
+        (error: Error) => {
+          this.snakBar.open(error.message, 'close');
+        }
+      );
+    }
   }
 
   i: number = 0;
@@ -236,10 +251,10 @@ export class KpiService {
       });
     this.i = this.i++;
   }
-  removeItem(item: KpiModel): void {
+  removeItem(item: KpiModel, i: number): void {
     const index = this.kpiResult.indexOf(item);
     if (index >= 0) {
-      this.kpiResult.splice(index, 1);
+      this.kpiResult.splice(i, 1);
     }
   }
 
@@ -321,6 +336,16 @@ export class KpiService {
       .pipe(finalize(() => this.loadingDownload.next(false)));
   }
 
+  editCurrentKPI(filter: KpiModelInit, kpiId: any): Observable<any> {
+    this.loadingDownload.next(true);
+    return this.http
+      .post(this.url + '/edit?id=' + kpiId, filter, {
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        responseType: 'blob',
+      })
+      .pipe(finalize(() => this.loadingDownload.next(false)));
+  }
+
   addNumber(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
     if (value) {
@@ -329,8 +354,10 @@ export class KpiService {
     event.chipInput!.clear();
   }
 
+  isValid!: any;
   dblclickOnItem(item: any) {
     this.kpiResult.push(item);
+    this.isValid = false;
   }
   drop(event: CdkDragDrop<string[]>) {
     console.log(event);

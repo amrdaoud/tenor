@@ -91,11 +91,23 @@
 
 }
 
+.not-valid ::ng-deep.mat-step-header {
+    pointer-events: none
+}
 
 
+.valid ::ng-deep.mat-step-header {
 
+    pointer-events: block
+}
 
+.kpi-not-valid {
+    pointer-events: none !important;
+}
 
+.kpi-valid {
+    pointer-events: block !important;
+}
 
 .item-view {
     width: 30px;

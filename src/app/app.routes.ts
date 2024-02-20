@@ -22,6 +22,14 @@ export const routes: Routes = [
             (c) => c.DeviceListComponent
           ),
       },
+
+      {
+        path: 'kpi-devices',
+        loadComponent: () =>
+          import('./devices/kpi-device/kpi-device.component').then(
+            (c) => c.KpiDeviceComponent
+          ),
+      },
       {
         path: 'counters',
         loadComponent: () =>

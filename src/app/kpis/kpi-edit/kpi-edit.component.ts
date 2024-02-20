@@ -81,69 +81,79 @@ export class KpiEditComponent extends Unsubscriber implements OnInit {
   public loadingList = this.kpiService.loadingDownload$;
   extraFields: ExtraField[] = [];
   Name: any;
-  KpiValid: any = false;
+  //KpiValid: any = false;
   deviceId: any;
   frm = new FormGroup<any>({});
 
-  ngOnInit(): void {
-    this.kpiService.getById(this.targetKpi).subscribe((x) => {
-      this.targetList = x;
-      console.log(this.targetList);
-      this.deviceId = this.targetList.deviceId;
-      this.arr = new Array<any>();
-      this.getItemOfList(this.targetList.operations);
-      this.arr.pop();
-      this.kpiService.kpiResult = this.arr;
-    });
-  }
+  ngOnInit(): void {}
   constructor(
     private SnakBar: MatSnackBar,
     private activatedRoute: ActivatedRoute
   ) {
     super();
-    this.kpiService
-      .getExtraFields()
-      .pipe(
-        tap((extraFields: ExtraField[]) => {
-          extraFields.forEach((field) => {
-            this.frm.addControl(
-              field.id.toString(),
-              new FormControl('', Validators.required)
-            );
-          });
-        }),
-        tap(
-          (extraFields: ExtraField[]) => (
-            (this.extraFields = extraFields), console.log(this.extraFields)
-          )
-        ),
-        switchMap(() => this.frm.valueChanges),
-        startWith(this.frm.value),
-        distinctUntilChanged(),
-        debounceTime(400),
-        tap(() => this.frm.get('pageIndex')?.setValue(0, { emitEvent: false }))
-      )
-      .subscribe((c: any) => {});
     this.targetKpi = this.activatedRoute.snapshot.params['id'];
+
+    this.kpiService.getById(this.targetKpi).subscribe((x) => {
+      this.targetList = x;
+      this.deviceId = this.targetList.deviceId;
+      this.arr = new Array<any>();
+      this.getItemOfList(this.targetList.operations);
+      this.arr.pop();
+      this.kpiService.kpiResult = this.arr;
+      this.Name = this.targetList.name;
+      this.kpiService
+        .getExtraFields()
+        .pipe(
+          tap((extraFields: ExtraField[]) => {
+            extraFields.forEach((field) => {
+              var x = this.targetList.extraFields.find(
+                (x: any) => x.fieldId.toString() == field.id.toString()
+              );
+
+              console.log(this.targetList);
+              this.frm.addControl(
+                field.id.toString(),
+                new FormControl(
+                  x.type == 'List' ? x.value[0] : x.value,
+                  Validators.required
+                )
+              );
+            });
+          }),
+          tap(
+            (extraFields: ExtraField[]) => (
+              (this.extraFields = extraFields), console.log(this.extraFields)
+            )
+          ),
+          switchMap(() => this.frm.valueChanges),
+          startWith(this.frm.value),
+          distinctUntilChanged(),
+          debounceTime(400),
+          tap(() =>
+            this.frm.get('pageIndex')?.setValue(0, { emitEvent: false })
+          )
+        )
+        .subscribe((c: any) => {});
+    });
   }
 
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   submit() {
-    this.kpiService.submit(this.frm.value, this.Name, 400);
+    this.kpiService.submit(this.frm.value, this.Name, this.deviceId, this.targetKpi);
   }
   CheckFormatValidation(stepper: MatStepper) {
     this.kpiService
-      .CheckFormatValidation(this.kpiService.initObject([], '1234', 400))
+      .CheckFormatValidation(this.kpiService.initObject([], '1234', this.deviceId))
       .subscribe(
         (x) => {
           console.log(x);
-          this.KpiValid = x;
-          if (this.KpiValid)
+          this.kpiService.isValid = x;
+          if (this.kpiService.isValid)
             setTimeout(() => {
               stepper.next();
             }, 1000);
-          else this.SnakBar.open(this.KpiValid, 'close');
+          else this.SnakBar.open(this.kpiService.isValid, 'close');
         },
         (error: any) => {
           this.SnakBar.open('KPI format is invalid', 'close');
@@ -151,12 +161,12 @@ export class KpiEditComponent extends Unsubscriber implements OnInit {
       );
   }
   drop(event: any) {
-    this.KpiValid = false;
+    this.kpiService.isValid = false;
     this.kpiService.drop(event);
   }
-  removeItem(event: any) {
-    this.KpiValid = false;
-    this.kpiService.removeItem(event);
+  removeItem(event: any, index: number) {
+    this.kpiService.isValid = false;
+    this.kpiService.removeItem(event, index);
   }
   array: any;
   targetKpi: any;
