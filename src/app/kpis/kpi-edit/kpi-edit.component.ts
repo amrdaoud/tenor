@@ -113,10 +113,7 @@ export class KpiEditComponent extends Unsubscriber implements OnInit {
               console.log(this.targetList);
               this.frm.addControl(
                 field.id.toString(),
-                new FormControl(
-                  x.type == 'List' ? x.value[0] : x.value,
-                  Validators.required
-                )
+                new FormControl(x.value, Validators.required)
               );
             });
           }),
@@ -140,11 +137,18 @@ export class KpiEditComponent extends Unsubscriber implements OnInit {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   submit() {
-    this.kpiService.submit(this.frm.value, this.Name, this.deviceId, this.targetKpi);
+    this.kpiService.submit(
+      this.frm.value,
+      this.Name,
+      this.deviceId,
+      this.targetKpi
+    );
   }
   CheckFormatValidation(stepper: MatStepper) {
     this.kpiService
-      .CheckFormatValidation(this.kpiService.initObject([], '1234', this.deviceId))
+      .CheckFormatValidation(
+        this.kpiService.initObject([], '1234', this.deviceId, this.targetKpi)
+      )
       .subscribe(
         (x) => {
           console.log(x);

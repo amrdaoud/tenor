@@ -135,13 +135,13 @@ export class CounterSideListComponent extends Unsubscriber {
         PageSize: 10,
         SortDirection: 'asc',
         SearchQuery: searchQuery,
-        DeviceId:this.deviceId
+        DeviceId: this.deviceId,
       })
       .subscribe((x) => (this.subsets = x.data));
   }
   deviceSearchChanged(searchQuery: string | null) {
-    this._otherSubscription = this.deviceService
+    /*  this._otherSubscription = this.deviceService
       .getById(this.deviceId)
-      .subscribe((x) => (this.devices = [x]));
+      .subscribe((x) => (this.devices = [x])); */
   }
 }

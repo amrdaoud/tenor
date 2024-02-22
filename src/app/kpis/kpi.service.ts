@@ -116,7 +116,7 @@ export class KpiService {
   //Aya && Alaa
   tt = new Array<KpiModel>();
   j = 0;
-  initObject(extraField: any, name: any, deviceId: any) {
+  initObject(extraField: any, name: any, deviceId: any, kpiId: any = 0) {
     let kpiFields = new Array<any>();
     this.i = 0;
     this.parent = 0;
@@ -129,6 +129,7 @@ export class KpiService {
     }
     kpiInit.kpiFields = kpiFields;
     kpiInit.name = name;
+    kpiInit.id = kpiId;
     var child = new KpiModel();
     // child.id = 0;
     child.name = '(';
@@ -142,10 +143,10 @@ export class KpiService {
     return kpiInit;
   }
 
-  submit(extraField: any, name: any, deviceId: any, flagAdd = 0) {
-    if (flagAdd == 0) {
+  submit(extraField: any, name: any, deviceId: any, kpiId = 0) {
+    if (kpiId == 0) {
       this.submitCurrentKPI(
-        this.initObject(extraField, name, deviceId)
+        this.initObject(extraField, name, deviceId, kpiId)
       ).subscribe(
         (x) => {
           this.kpiResult = [];
@@ -157,8 +158,8 @@ export class KpiService {
       );
     } else {
       this.editCurrentKPI(
-        this.initObject(extraField, name, deviceId),
-        flagAdd
+        this.initObject(extraField, name, deviceId, kpiId),
+        kpiId
       ).subscribe(
         (x) => {
           this.kpiResult = [];
@@ -339,7 +340,7 @@ export class KpiService {
   editCurrentKPI(filter: KpiModelInit, kpiId: any): Observable<any> {
     this.loadingDownload.next(true);
     return this.http
-      .post(this.url + '/edit?id=' + kpiId, filter, {
+      .put(this.url + '/edit?id=' + kpiId, filter, {
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
         responseType: 'blob',
       })
@@ -360,20 +361,11 @@ export class KpiService {
     this.isValid = false;
   }
   drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
-    if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      copyArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
+    copyArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      this.kpiResult.length
+    );
   }
 }
