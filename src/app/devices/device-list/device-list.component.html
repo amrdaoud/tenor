@@ -7,6 +7,7 @@
             [isAsync]="true" [pageSize]="30" [sortActive]="'id'" [sortDirection]="'desc'" [clickable]="true"
             [isLoading]="(loadingList$ | async)" (changed)="changed($event)" [showSubmit]="false"
             [preserveSearchQuery]="true" [isReport]="true" [haveDownload]="true" [btns]="btns"
-            (btnClicked)="btnClicked($event)" (rowClicked)="rowClicked($event)"></amr-data-table>
+            (btnClicked)="btnClicked($event)" [menuBtns]="menuBtns"
+            (menuBtnClicked)="menuClick($event)"></amr-data-table>
     </mat-grid-tile>
 </mat-grid-list>

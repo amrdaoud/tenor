@@ -38,3 +38,15 @@ export const btns: DataTableButtonObject[] = [
     Icon: 'add',
   },
 ];
+export const menuBtns: DataTableButtonObject[] = [
+  {
+    Text: 'Edit KPI',
+    MatColor: 'primary',
+    Icon: 'edit',
+  },
+  {
+    Text: 'Get Value',
+    MatColor: 'accent',
+    Icon: 'calculate',
+  },
+];

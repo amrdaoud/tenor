@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,6 +20,7 @@ import { ExtraField } from '../../common/generic';
 import { KpiListViewModel } from '../kpi';
 import { KpiService } from '../kpi.service';
 import { CdkDragMove, DragDropModule } from '@angular/cdk/drag-drop';
+import { menuBtns } from '../kpi.const';
 @Component({
   selector: 'app-kpi-side-list',
   standalone: true,
@@ -43,6 +44,7 @@ export class KpiSideListComponent extends Unsubscriber {
   @Input() deviceId: any;
   public kpiService = inject(KpiService);
   loadingList$ = this.kpiService.loadingList$;
+  
   frm = new FormGroup<any>({
     searchQuery: new FormControl(''),
     pageIndex: new FormControl(0),
@@ -55,32 +57,32 @@ export class KpiSideListComponent extends Unsubscriber {
   extraFields: ExtraField[] = [];
   constructor() {
     super();
-    this._otherSubscription = this.kpiService
+    this.kpiService
       .getExtraFields()
       .pipe(
         tap((extraFields: ExtraField[]) => {
+          console.log(this.extraFields)
           extraFields.forEach((field) => {
-            this.frm.addControl(field.name, new FormControl());
+            this.frm.addControl(
+              field.id.toString(),
+              new FormControl('', Validators.required)
+            );
           });
         }),
-        tap((extraFields: ExtraField[]) => (this.extraFields = extraFields)),
+        tap(
+          (extraFields: ExtraField[]) => (
+            (this.extraFields = extraFields), console.log("*",this.extraFields)
+          )
+        ),
         switchMap(() => this.frm.valueChanges),
         startWith(this.frm.value),
         distinctUntilChanged(),
         debounceTime(400),
-        tap(() => this.frm.get('pageIndex')?.setValue(0, { emitEvent: false })),
-        switchMap(() =>
-          this.kpiService.getByFilter({
-            ...this.frm.value,
-            deviceId: this.deviceId,
-          })
-        )
+        tap(() => this.frm.get('pageIndex')?.setValue(0, { emitEvent: false }))
       )
-      .subscribe((c) => {
-        this.itemList = c.data.map((x) => ({ ...x, type: 2 }));
-        this.listSize = c.dataSize;
-      });
+      .subscribe((c: any) => {});
   }
+
   loadMore() {
     this.frm
       .get('pageIndex')

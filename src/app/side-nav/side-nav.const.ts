@@ -34,40 +34,40 @@ export const items: IconNavItem[] = [
       },
     ],
   },
-  {
-    title: 'Reports',
-    svgIcon: REPORT_ICON,
-    postition: 'top',
-    children: [
-      {
-        title: 'All Reports',
-        svgIcon: LIST_ICON,
-      },
-      {
-        title: 'Create New',
-        svgIcon: ADD_ICON,
-      },
-    ],
-  },
-  {
-    title: 'Dashboards',
-    svgIcon: DASHBOARD_ICON,
-    postition: 'top',
-    children: [
-      {
-        title: 'My Dashboards',
-        svgIcon: LIST_ICON,
-      },
-      {
-        title: 'Shared Dashboards',
-        svgIcon: SHARE_ICON,
-      },
-      {
-        title: 'Create New',
-        svgIcon: ADD_ICON,
-      },
-    ],
-  },
+  // {
+  //   title: 'Reports',
+  //   svgIcon: REPORT_ICON,
+  //   postition: 'top',
+  //   children: [
+  //     {
+  //       title: 'All Reports',
+  //       svgIcon: LIST_ICON,
+  //     },
+  //     {
+  //       title: 'Create New',
+  //       svgIcon: ADD_ICON,
+  //     },
+  //   ],
+  // },
+  // {
+  //   title: 'Dashboards',
+  //   svgIcon: DASHBOARD_ICON,
+  //   postition: 'top',
+  //   children: [
+  //     {
+  //       title: 'My Dashboards',
+  //       svgIcon: LIST_ICON,
+  //     },
+  //     {
+  //       title: 'Shared Dashboards',
+  //       svgIcon: SHARE_ICON,
+  //     },
+  //     {
+  //       title: 'Create New',
+  //       svgIcon: ADD_ICON,
+  //     },
+  //   ],
+  // },
   {
     title: 'Admin',
     svgIcon: ADMIN_ICON,

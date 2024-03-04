@@ -103,6 +103,7 @@
               <amr-select *ngSwitchCase="'MultiSelectList'" [controlName]="field.id.toString()" [label]="field.name"
                 [placeHolder]="field.name" [options]="field.content" [isMulty]="true" appearance="outline"
                 size="small"></amr-select>
+
             </ng-container>
           </div>
           <div>
@@ -110,10 +111,11 @@
               class="width-100">
               Submit
             </button>
-
-          </div>
+           </div>
         </form>
-
+        <mat-checkbox  (change)="setIsPublic($event.checked)">
+          Public
+        </mat-checkbox>
       </mat-grid-tile>
 
     </mat-grid-list>

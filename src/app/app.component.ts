@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, provideRouter, withHashLocation } from '@angular/router';
 import { SideNavComponent } from './side-nav/side-nav.component';
+import { StartupService } from './startup-service/startup.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,11 @@ import { SideNavComponent } from './side-nav/side-nav.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  public startupService = inject(StartupService);
+
+  ngOnInit(): void {
+    this.startupService.FindToken();
+  }
   title = 'tenor';
 }

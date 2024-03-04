@@ -23,6 +23,7 @@ import { InputComponent, SelectComponent } from 'techteec-lib/controls';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { ExtraField } from '../../common/generic';
 import {
@@ -52,6 +53,7 @@ import { ActivatedRoute } from '@angular/router';
     CounterSideListComponent,
     KpiSideListComponent,
     MatCardModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatInputModule,
     OperatorsComponent,
@@ -120,6 +122,10 @@ export class KpiBuilderComponent extends Unsubscriber implements OnInit {
   }
 
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
+  setIsPublic(isPublic: boolean) {
+    console.log(isPublic);
+  }
 
   submit() {
     this.kpiService.submit(this.frm.value, this.Name, this.deviceId);

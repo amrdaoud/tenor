@@ -1,9 +1,11 @@
 <mat-grid-list class="page-with-toolbar" cols="1" rowHeight="fit">
     <mat-grid-tile>
-        <amr-data-table title="Kpi" [data]="data" [dataSize]="dataSize" [columnDefs]="columns" [filters]="filters!"
-            (rowClicked)="rowClick($event)" [isAsync]="true" [clickable]="true" [pageSize]="30" [sortActive]="'id'"
-            [sortDirection]="'desc'" [clickable]="true" [isLoading]="(loadingList$ | async)" (changed)="changed($event)"
-            [showSubmit]="false" [preserveQueryParams]="true" [isReport]="true" [haveDownload]="true" [btns]="btns"
-            (btnClicked)="btnClicked($event)"></amr-data-table>
+        <amr-data-table title="Kpi List" [data]="data" [dataSize]="dataSize" [columnDefs]="columns" [filters]="filters!"
+        subtitle="Select KPI to edit"
+            [isAsync]="true" [pageSize]="30" [sortActive]="'id'" [sortDirection]="'desc'"
+            [isLoading]="(loadingList$ | async)" (changed)="changed($event)" [showSubmit]="false"
+            [preserveQueryParams]="true" [isReport]="true" [haveDownload]="true" [btns]="btns"
+            (btnClicked)="btnClicked($event)" [menuBtns]="menuBtns"
+            (menuBtnClicked)="menuCLicked($event)"></amr-data-table>
     </mat-grid-tile>
 </mat-grid-list>

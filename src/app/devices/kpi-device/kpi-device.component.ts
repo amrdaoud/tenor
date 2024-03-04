@@ -91,7 +91,9 @@ export class KpiDeviceComponent extends Unsubscriber implements OnInit {
   }
 
   getDevices(value: string) {
-    var result = this.data.filter((x) => x.name.includes(value));
+    var result = this.data.filter((x) =>
+      x.name.toLowerCase().includes(value.toLowerCase())
+    );
     if (value.length > 0) return (this.data = result);
     return (this.data = this.tempData);
   }

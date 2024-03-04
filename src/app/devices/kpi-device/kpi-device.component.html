@@ -8,8 +8,8 @@
     <h4>no data found</h4>
 </div>
 <mat-grid-list cols="5" rowHeight="120px">
-    <mat-grid-tile *ngFor="let device of data ">
-        <div class="device" (dblclick)="gridClicked(device)">
+    <mat-grid-tile *ngFor="let device of data " class="clickable" (click)="gridClicked(device)">
+        <div class="device">
             {{device.name}}<br>
             {{device.id}}
         </div>

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { DeviceService } from '../device.service';
-import { btns, columns, filters } from '../device.const';
+import { btns, columns, filters, menuBtns } from '../device.const';
 import { DeviceListViewModel } from '../device';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { DataTableComponent } from 'techteec-lib/components/data-table';
@@ -36,10 +36,16 @@ export class DeviceListComponent extends Unsubscriber {
   columns = columns;
   filters = filters;
   btns = btns;
+  menuBtns = menuBtns;
   data: DeviceListViewModel[] = [];
   dataSize = 0;
   latestFilter!: GeneralFilterModel;
   private dialog = inject(MatDialog);
+  menuClick(event: {index: number, target: DeviceListViewModel}) {
+    if (event.index === 0) {
+      this.route.navigate(['kpis/builder', { deviceId: event.target.id}]);
+    }
+  }
   ///add other properties
 
   ///////////////////////
