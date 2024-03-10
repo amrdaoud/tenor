@@ -1,6 +1,6 @@
+<mat-progress-bar mode="query" *ngIf="loadingExtraFields$ | async"></mat-progress-bar>
 <mat-grid-list class="page-with-toolbar" cols="1" rowHeight="fit">
     <mat-grid-tile>
-        <mat-progress-bar mode="query"></mat-progress-bar>
         <amr-data-table title="Kpi List" [data]="data" [dataSize]="dataSize" [columnDefs]="columns" *ngIf="(filters$ | async) as filters"
         subtitle="Select KPI to edit"
             [isAsync]="true" [pageSize]="30" [sortActive]="'id'" [sortDirection]="'desc'"

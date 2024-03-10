@@ -39,7 +39,7 @@ export class KpiListComponent extends Unsubscriber {
   data: KpiListViewModel[] = [];
   dataSize = 0;
   latestFilter!: GeneralFilterModel;
-  private dialog = inject(MatDialog);
+  loadingExtraFields$ = this.kpiService.loadingExtraFields$;
   filters$: Observable<DataTableFilter[]> = this.kpiService.getExtraFields().pipe(
     map(fields => {
       const allFilters: DataTableFilter[] = [];
