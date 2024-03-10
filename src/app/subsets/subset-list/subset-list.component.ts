@@ -19,8 +19,8 @@ export class SubsetListComponent extends Unsubscriber {
   private subsetService = inject(SubsetService);
   loadingList$ = this.subsetService.loadingList$;
   columns = columns;
-  filters = filters;
-  btns = btns;
+  filters = [];
+  btns = [];
   data: SubsetListViewModel[] = [];
   dataSize = 0;
   changed(filter: GeneralFilterModel) {

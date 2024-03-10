@@ -1,0 +1,37 @@
+@use '@angular/material' as mat;
+
+.type-icon {
+    color: #757575;
+    stroke: #757575;
+    margin-right: 5px;
+  }
+
+.density {
+    @include mat.tree-density(-6);
+    @include mat.form-field-density(-6);
+    height:100%;
+    .mat-tree {
+        font-size: 12px;
+    }
+    .tree-container {
+        height:calc(100% - 36px);
+        overflow-y: auto;
+    }
+    .mat-mdc-form-field {
+        width:100%
+    }
+}
+.tree-container .cdk-drag-preview {
+    width:5px !important;
+    background-color: #333;
+}
+.tree-container .counter {
+    cursor: pointer;
+}
+.tree-container .counter:hover {
+    background-color: rgba(lightblue, 0.3);
+    // .type-icon {
+    //     color: lightblue;
+    //     stroke: lightblue;
+    // }
+}

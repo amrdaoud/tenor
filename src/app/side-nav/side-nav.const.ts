@@ -21,6 +21,7 @@ export const items: IconNavItem[] = [
     title: 'KPI',
     svgIcon: KPI_ICON,
     postition: 'top',
+    routerLink: 'kpis',
     children: [
       {
         title: 'All KPIS',
@@ -30,7 +31,7 @@ export const items: IconNavItem[] = [
       {
         title: 'Create New',
         svgIcon: ADD_ICON,
-        routerLink: 'kpi-devices',
+        routerLink: 'kpis/devices',
       },
     ],
   },

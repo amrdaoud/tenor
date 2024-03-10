@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { StartupService } from './startup.service';
+import { RefreshTokenService } from './refresh-token.service';
 
-describe('StartupService', () => {
-  let service: StartupService;
+describe('RefreshTokenService', () => {
+  let service: RefreshTokenService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(StartupService);
+    service = TestBed.inject(RefreshTokenService);
   });
 
   it('should be created', () => {

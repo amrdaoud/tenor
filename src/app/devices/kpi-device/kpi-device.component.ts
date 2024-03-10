@@ -80,16 +80,12 @@ export class KpiDeviceComponent extends Unsubscriber implements OnInit {
       .subscribe((x) => {
         this.data = x.data.filter((x: any) => x.parentId == null);
         this.tempData = this.data;
-        console.log(this.data);
         this.dataSize = x.dataSize;
       });
   }
-
   gridClicked(event: any) {
-    console.log(event);
-    this.route.navigate(['kpis/builder', { deviceId: event.id }]);
+    this.route.navigate(['kpis/builder/'+event.id]);
   }
-
   getDevices(value: string) {
     var result = this.data.filter((x) =>
       x.name.toLowerCase().includes(value.toLowerCase())

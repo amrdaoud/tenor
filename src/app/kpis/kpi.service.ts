@@ -1,24 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, finalize, map } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, finalize, map, of } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 import {
-  KpiListViewModel,
-  KpiViewModel,
-  KpiBindingModel,
-  KpiModel,
-  KpiModelInit,
+  KpiFilterModel,
+  KpiListViewModel, KpiViewModel
 } from './kpi';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ExtraField } from '../common/generic';
-import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
-import {
-  CdkDragDrop,
-  copyArrayItem,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
+import { ExtraField, ResultWithMessage } from '../common/generic';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CreateKpi } from './kpi.amr';
+import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 @Injectable({
   providedIn: 'root',
 })
@@ -27,13 +19,6 @@ export class KpiService {
   private url = environment.apiUrl + 'kpis';
   private http = inject(HttpClient);
 
-  kpiResult = new Array<any>();
-  initList = new Array<KpiModel>();
-  currentParent = new Array<number>();
-  orderList = new Array<number>();
-  arrayResult!: any;
-  public editKpi: any;
-  index = 0;
   //Loaders
   private loadingList = new BehaviorSubject<boolean>(false);
   get loadingList$(): Observable<boolean> {
@@ -55,17 +40,18 @@ export class KpiService {
   get loadingExtraFields$(): Observable<boolean> {
     return this.loadingExtraFields.asObservable();
   }
-
-  //Creating Form
-  createForm(model?: KpiViewModel): FormGroup {
-    return new FormGroup({
-      id: new FormControl(model?.id ?? 0, Validators.required),
-      name: new FormControl(model?.name, Validators.required),
-      extraProperty: new FormControl(model?.extraProperty),
-    });
+  private loadingValidate = new BehaviorSubject<boolean>(false);
+  get loadingValidate$(): Observable<boolean> {
+    return this.loadingValidate.asObservable();
   }
-
-  //Requests
+  private loadingCheckName = new BehaviorSubject<boolean>(false);
+  get loadingCheckName$(): Observable<boolean> {
+    return this.loadingCheckName.asObservable();
+  }
+  private loadingAdd = new BehaviorSubject<boolean>(false);
+  get loadingAdd$(): Observable<boolean> {
+    return this.loadingAdd.asObservable();
+  }
   getByFilter(
     filter: GeneralFilterModel
   ): Observable<{ data: KpiListViewModel[]; dataSize: number }> {
@@ -83,12 +69,6 @@ export class KpiService {
       .get<KpiViewModel>(this.url + '/getById' + `?id=${id}`)
       .pipe(finalize(() => this.loadingElement.next(false)));
   }
-  addElement(model: KpiBindingModel): Observable<KpiViewModel> {
-    this.loadingAddElement.next(true);
-    return this.http
-      .post<KpiViewModel>(this.url + '', model)
-      .pipe(finalize(() => this.loadingAddElement.next(false)));
-  }
   downloadByFilter(filter: GeneralFilterModel): Observable<any> {
     this.loadingDownload.next(true);
     return this.http
@@ -104,268 +84,46 @@ export class KpiService {
       .get<ExtraField[]>(this.url + '/GetExtraFields')
       .pipe(finalize(() => this.loadingExtraFields.next(false)));
   }
-  CheckFormatValidation(filter: KpiModelInit): Observable<any> {
-    this.loadingDownload.next(true);
-    return this.http
-      .post(this.url + '/CheckFormatValidation', filter, {
-        headers: new HttpHeaders().set('Content-Type', 'application/json'),
-        responseType: 'blob',
-      })
-      .pipe(finalize(() => this.loadingDownload.next(false)));
+  validateKpi(model: CreateKpi): Observable<ResultWithMessage> {
+    this.loadingValidate.next(true);
+    return this.http.post<ResultWithMessage>(this.url + '/CheckFormatValidation', model).pipe(
+      finalize(() => this.loadingValidate.next(false))
+    )
   }
-  //Aya && Alaa
-  tt = new Array<KpiModel>();
-  j = 0;
-  initObject(extraField: any, name: any, deviceId: any, kpiId: any = 0) {
-    let kpiFields = new Array<any>();
-    this.i = 0;
-    this.parent = 0;
-    this.formatKpi();
-    let kpiInit = new KpiModelInit();
-    kpiInit.deviceId = deviceId;
-    if (extraField != null) {
-      for (const key of Object.keys(extraField))
-        kpiFields.push({ id: 0, fieldId: key, value: extraField[key] });
-    }
-    kpiInit.kpiFields = kpiFields;
-    kpiInit.name = name;
-    kpiInit.id = kpiId;
-    var child = new KpiModel();
-    // child.id = 0;
-    child.name = '(';
-    child.type = 4;
-    child.order = 1;
-    child.parent = 0;
-    child.childs = this.BuildKpi();
-    kpiInit.operation = child;
-    this.i = 0;
-    console.log(kpiInit);
-    return kpiInit;
-  }
-
-  submit(extraField: any, name: any, deviceId: any, kpiId = 0) {
-    if (kpiId == 0) {
-      this.submitCurrentKPI(
-        this.initObject(extraField, name, deviceId, kpiId)
-      ).subscribe(
-        (x) => {
-          this.kpiResult = [];
-          this.snakBar.open('kpi Submitted successfully', 'close');
-        },
-        (error: Error) => {
-          this.snakBar.open(error.message, 'close');
-        }
-      );
-    } else {
-      this.editCurrentKPI(
-        this.initObject(extraField, name, deviceId, kpiId),
-        kpiId
-      ).subscribe(
-        (x) => {
-          this.kpiResult = [];
-          this.snakBar.open('Updated Kpi successfully', 'close');
-        },
-        (error: Error) => {
-          this.snakBar.open(error.message, 'close');
-        }
+  validateName(deviceId: number, current?: string): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      if(current?.toString()?.toLowerCase() === control.value.toString().toLowerCase()) {
+        return of(null);
+      }
+      this.loadingCheckName.next(true);
+      return this.http.get<boolean>(this.url + `/ValidateKpi?kpiName=${control.value}&deviceId=${deviceId}`).pipe(
+        map(res => res ? null : {isTaken: true}),
+        catchError(() => of(null)),
+        finalize(() => this.loadingCheckName.next(false))
       );
     }
   }
-
-  i: number = 0;
-  counter: number = 0;
-  parent = 0;
-  test = new Array<any>();
-  parentId = 0;
-
-  BuildKpi() {
-    let node = new Array<KpiModel>();
-    let order = 0;
-    let parentId = 0;
-    for (; this.i < this.kpiResult.length; this.i++) {
-      if (this.kpiResult[this.i].name == ')') {
-        this.currentParent.pop();
-        return node;
-      }
-      if (
-        this.kpiResult[this.i].name == '(' ||
-        this.kpiResult[this.i].type == 1
-      ) {
-        let kpi = new KpiModel();
-        kpi.value = this.kpiResult[this.i].name;
-        kpi.type = this.kpiResult[this.i].type;
-        if (this.kpiResult[this.i].type == 1) {
-          kpi.functionId = this.kpiResult[this.i].id;
-          this.i++;
-        }
-        kpi.order = ++order;
-        kpi.parent = this.parent;
-        this.parent += 1;
-        node.push(kpi);
-        this.i++;
-        node[node.length - 1].childs = this.BuildKpi();
-      } else {
-        /*if (this.kpiResult[this.i].name == ',') {
-          this.i++;
-        }*/
-        let kpi = new KpiModel();
-        kpi.name = this.kpiResult[this.i].name;
-        kpi.order = ++order;
-        kpi.type = this.kpiResult[this.i].type;
-        kpi.value = this.kpiResult[this.i].name;
-        kpi.parent = this.parent;
-        if (this.kpiResult[this.i].type == 2) {
-          kpi.kpiId = this.kpiResult[this.i].id;
-        } else if (this.kpiResult[this.i].type == 0) {
-          kpi.counterId = this.kpiResult[this.i].id;
-          kpi.aggregation = 1;
-        } else if (this.kpiResult[this.i].type == 3) {
-          kpi.operatorId = this.kpiResult[this.i].id;
-        }
-        if (this.kpiResult[this.i].name != ',') node.push(kpi);
-      }
-    }
-    return node;
+  submitKpi(kpi: CreateKpi): Observable<KpiViewModel> {
+    this.loadingAdd.next(true);
+    return this.http.post<KpiViewModel>(this.url + '/add', kpi).pipe(
+      finalize(() => this.loadingAdd.next(false))
+    )
   }
-
-  formatKpi() {
-    for (; this.counter < this.kpiResult.length; this.counter++) {
-      if (this.kpiResult[this.counter].type == 1) {
-        this.counter++;
-        this.changeCycleOfFunction();
-      }
-    }
+  editKpi(kpi: CreateKpi): Observable<KpiViewModel> {
+    this.loadingAdd.next(true);
+    return this.http.put<KpiViewModel>(this.url + '/edit?id='+kpi.id, kpi).pipe(
+      finalize(() => this.loadingAdd.next(false))
+    )
   }
+  
+  
 
-  createkpi(array: any) {
-    if (this.i == array.length) return;
-    if (array.value == '(' || array.type == 'function') {
-      this.kpiResult.push({
-        id: array[this.i].id,
-        value: array[this.i].value,
-      });
-      this.createkpi(array[this.i].childs);
-    } else
-      this.kpiResult.push({
-        id: array[this.i].id,
-        value: array[this.i].value,
-      });
-    this.i = this.i++;
-  }
-  removeItem(item: KpiModel, i: number): void {
-    const index = this.kpiResult.indexOf(item);
-    if (index >= 0) {
-      this.kpiResult.splice(i, 1);
-    }
-  }
+  
 
-  changeCycleOfFunction() {
-    let k = 0;
-    this.kpiResult.splice(this.counter + 1, 0, {
-      id: 324,
-      name: '(',
-      argumentsCount: null,
-      isBool: false,
-      operations: null,
-      type: 4,
-    });
-    this.counter += 2;
-    k++;
-    for (; this.counter < this.kpiResult.length; this.counter++) {
-      if (this.kpiResult[this.counter].type == 1) {
-        this.counter++;
-        this.changeCycleOfFunction();
-      }
+  
+  
 
-      if (this.counter >= this.kpiResult.length && k == 1) {
-        k--;
-        this.kpiResult.splice(this.counter + 1, 0, {
-          id: 324,
-          name: ')',
-          argumentsCount: null,
-          isBool: false,
-          operations: null,
-          type: 4,
-        });
-        this.counter++;
-      }
-      if (this.counter >= this.kpiResult.length) return;
+  
 
-      if (this.kpiResult[this.counter].name == '(') k++;
-      if (this.kpiResult[this.counter].name == ',') {
-        this.kpiResult.splice(this.counter, 0, {
-          id: 324,
-          name: ')',
-          argumentsCount: null,
-          isBool: false,
-          operations: null,
-          type: 4,
-        });
-        this.counter = this.counter + 1;
-        this.kpiResult.splice(this.counter + 1, 0, {
-          id: 324,
-          name: '(',
-          argumentsCount: null,
-          isBool: false,
-          operations: null,
-          type: 4,
-        });
-
-        this.counter = this.counter + 1;
-      } else if (this.kpiResult[this.counter].name == ')') k--;
-      if (k == 0) {
-        this.kpiResult.splice(this.counter, 0, {
-          id: 324,
-          name: ')',
-          argumentsCount: null,
-          isBool: false,
-          operations: null,
-          type: 4,
-        });
-        this.counter + 1;
-      }
-    }
-  }
-
-  submitCurrentKPI(filter: KpiModelInit): Observable<any> {
-    this.loadingDownload.next(true);
-    return this.http
-      .post(this.url + '/add', filter, {
-        headers: new HttpHeaders().set('Content-Type', 'application/json'),
-        responseType: 'blob',
-      })
-      .pipe(finalize(() => this.loadingDownload.next(false)));
-  }
-
-  editCurrentKPI(filter: KpiModelInit, kpiId: any): Observable<any> {
-    this.loadingDownload.next(true);
-    return this.http
-      .put(this.url + '/edit?id=' + kpiId, filter, {
-        headers: new HttpHeaders().set('Content-Type', 'application/json'),
-        responseType: 'blob',
-      })
-      .pipe(finalize(() => this.loadingDownload.next(false)));
-  }
-
-  addNumber(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value) {
-      this.kpiResult.push({ name: value, type: 5 });
-    }
-    event.chipInput!.clear();
-  }
-
-  isValid!: any;
-  dblclickOnItem(item: any) {
-    this.kpiResult.push(item);
-    this.isValid = false;
-  }
-  drop(event: CdkDragDrop<string[]>) {
-    copyArrayItem(
-      event.previousContainer.data,
-      event.container.data,
-      event.previousIndex,
-      this.kpiResult.length
-    );
-  }
+  
 }

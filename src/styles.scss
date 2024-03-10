@@ -27,11 +27,19 @@ $tenor-theme: mat.define-light-theme((
     warn: $tenor-warn,
   )
 ));
-
+$tenor-theme-density: mat.define-light-theme((
+  color: (
+    primary: $tenor-primary,
+    accent: $tenor-accent,
+    warn: $tenor-warn,
+  ),
+  density: -6
+));
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($tenor-theme);
+
 
 /* You can add global styles to this file, and also import other style files */
 
@@ -55,3 +63,89 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   box-shadow: inset 0 0 6px rgba(#202020,.3);
   background-color: #202020;
 }
+.full-page-card {
+  position: absolute !important;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  border-radius: 5px;
+  padding: 15px;
+  transition-duration: 0.3s;
+  overflow-y: auto;
+  .mat-h1 {
+      font-weight: 600;
+      margin-bottom: 0px;
+      display: flex;
+      flex-direction: row;
+    }
+    .mat-h3 {
+      font-weight: 500;
+      margin-top: 16px;
+      margin-bottom: 0px;
+      
+    }
+    p:not(.mat-line) {
+      margin: 0 0 12px;
+      color: #9d9d9d;
+    }
+}
+.full-width-card {
+  position: absolute !important;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  border-radius: 5px;
+  padding: 15px;
+  transition-duration: 0.3s;
+  overflow-y: auto;
+  max-height: 100%;
+}
+.text-drawer-toggle-button {
+  z-index: 1000;
+}
+.main-page-container {
+  height: calc(100% - 56px) !important;
+  
+}
+.chips-grid {
+  overflow-y: auto;
+  --mdc-chip-label-text-size: 12px;
+}
+.chips-grid .mdc-evolution-chip-set__chips{
+  flex-flow: nowrap !important;
+}
+.section {
+  padding: 15px 15px 0px 15px;
+  .mat-mdc-form-field {
+      width:100%;        
+  }
+  .mat-mdc-text-field-wrapper {
+      background-color: #fff;
+  }
+}
+.overall-spinner-container {
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  width:100%;
+  height:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+}
+.clickable {
+  cursor: pointer;
+}
+// .chips-grid .counter {
+//   --mdc-chip-elevated-container-color: red;
+// }
+// .chips-grid .number {
+//   --mdc-chip-elevated-container-color: green;
+// }
+// .chips-grid .operator {
+//   --mdc-chip-elevated-container-color: red;
+// }

@@ -31,11 +31,12 @@ import { Router } from '@angular/router';
 })
 export class DeviceListComponent extends Unsubscriber {
   private deviceService = inject(DeviceService);
+  private router = inject(Router);
   loadingList$ = this.deviceService.loadingList$;
   loadingElement$ = this.deviceService.loadingElement$;
   columns = columns;
-  filters = filters;
-  btns = btns;
+  filters = [];
+  btns = [];
   menuBtns = menuBtns;
   data: DeviceListViewModel[] = [];
   dataSize = 0;
@@ -43,30 +44,8 @@ export class DeviceListComponent extends Unsubscriber {
   private dialog = inject(MatDialog);
   menuClick(event: {index: number, target: DeviceListViewModel}) {
     if (event.index === 0) {
-      this.route.navigate(['kpis/builder', { deviceId: event.target.id}]);
+      this.router.navigate(['kpis/builder', event.target.id]);
     }
-  }
-  ///add other properties
-
-  ///////////////////////
-  constructor(private route: Router) {
-    super();
-    const dynamicFilters: DataTableFilter[] = [
-      {
-        Type: 'select',
-        ControlName: 'extraField',
-        Label: 'Extra Field',
-        PlaceHolder: 'Extra Field',
-        Data$: of([
-          { name: 'a', value: '1' },
-          { name: 'b', value: '2' },
-          { name: 'c', value: '3' },
-        ]),
-        DisplayProperty: 'name',
-        ValueProperty: 'value',
-      },
-    ];
-    this.filters.push(...dynamicFilters);
   }
   changed(filter: GeneralFilterModel) {
     this._otherSubscription = this.deviceService
@@ -77,38 +56,17 @@ export class DeviceListComponent extends Unsubscriber {
       });
   }
   btnClicked(btnIndex: number) {
-    if (btnIndex == 0) {
-      this._otherSubscription = this.dialog
-        .open(DeviceFormComponent, { panelClass: 'techteec-form-dialog' })
-        .afterClosed()
-        .pipe(
-          filter((bindingObject) => bindingObject),
-          switchMap((bindingObject) =>
-            this.deviceService.addElement(bindingObject)
-          )
-        )
-        .subscribe((viewObject) => this.changed(this.latestFilter));
-    }
-  }
-  rowClicked(event: any) {
-    console.log(event);
-    this.route.navigate(['kpis/builder', { deviceId: event.id }]);
-    /*  this._otherSubscription = this.deviceService
-      .getById(element.id)
-      .pipe(
-        switchMap((viewObject) =>
-          this.dialog
-            .open(DeviceFormComponent, {
-              panelClass: 'techteec-form-dialog',
-              data: viewObject,
-            })
-            .afterClosed()
-        ),
-        filter((bindingObject) => bindingObject),
-        switchMap((bindingObject) =>
-          this.deviceService.editElement(bindingObject)
-        )
-      )
-      .subscribe((viewObject) => this.changed(this.latestFilter)); */
+    // if (btnIndex == 0) {
+    //   this._otherSubscription = this.dialog
+    //     .open(DeviceFormComponent, { panelClass: 'techteec-form-dialog' })
+    //     .afterClosed()
+    //     .pipe(
+    //       filter((bindingObject) => bindingObject),
+    //       switchMap((bindingObject) =>
+    //         this.deviceService.addElement(bindingObject)
+    //       )
+    //     )
+    //     .subscribe((viewObject) => this.changed(this.latestFilter));
+    // }
   }
 }

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KpiEditComponent } from './kpi-edit.component';
+import { CounterSideTreeComponent } from './counter-side-tree.component';
 
-describe('KpiEditComponent', () => {
-  let component: KpiEditComponent;
-  let fixture: ComponentFixture<KpiEditComponent>;
+describe('CouterSideTreeComponent', () => {
+  let component: CounterSideTreeComponent;
+  let fixture: ComponentFixture<CounterSideTreeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [KpiEditComponent]
+      imports: [CounterSideTreeComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(KpiEditComponent);
+    fixture = TestBed.createComponent(CounterSideTreeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,0 +1,140 @@
+<mat-drawer-container class="kpi-builder-container" cdkDropListGroup>
+    
+    <mat-drawer #measuresDrawer [opened]="false" mode="side">
+        <mat-tab-group color="accent" *ngIf="deviceId$ | async as deviceId">
+            <mat-tab label="Counters">
+                <div  class="measures-container">
+                    <app-counter-side-tree [deviceId]="deviceId" (selected)="addMeasure($event)"></app-counter-side-tree>
+                </div>
+            </mat-tab>
+            <mat-tab label="KPIs">
+                <div class="measures-container">
+                    <app-kpi-side-list [deviceId]="deviceId" (selected)="addMeasure($event)"></app-kpi-side-list>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="overall-spinner-container" *ngIf="(loadingKpi$ | async)">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>Loading KPI information</p>
+        </div>
+        <div class="overall-spinner-container" *ngIf="(loadingExtraFields$ | async)">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>Loading Needed Options</p>
+        </div>
+        <div class="overall-spinner-container" *ngIf="(loadingAdd$ | async)">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>{{kpi ? 'Updating your KPI' : 'Adding your KPI'}}</p>
+        </div>
+        <button class="drawer-toggle-button" mat-raised-button color="accent" (click)="measuresDrawer.toggle()">
+            <mat-icon *ngIf="!measuresDrawer.opened; else closeChevron">tag</mat-icon>
+            <ng-template #closeChevron><mat-icon>tag</mat-icon></ng-template>
+        </button>
+        <form *ngIf="frm" [formGroup]="frm" (ngSubmit)="submit()">
+            <mat-stepper orientation="vertical" [linear]="true" #stepper>
+                <mat-step [label]="kpi ? 'Update KPI #'+kpi.id+' Formula'  : 'Create you KPI formula'" [stepControl]="frm.get('operation')!">
+                    <div class="section">
+                        <div class="kpi-form-container">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Drop items here</mat-label>
+                            <mat-chip-grid #chipGrid aria-label="Enter Measures" class="chips-grid"
+                                cdkDropListOrientation="horizontal" #formula="cdkDropList"
+                                cdkDropList [cdkDropListData]="kpiChipItems"
+                                (cdkDropListDropped)="drop($event)">
+                                @for (chipItem of kpiChipItems; track chipItem) {
+                                <mat-chip-row cdkDrag [ngClass]="chipItem.type"
+                                    [editable]="chipItem.type === 'number'"
+                                    (edited)="edit($index, $event)"
+                                    (removed)="remove($index)"
+                                    [aria-description]="'press enter to edit ' + chipItem.name" (contextmenu)="onContextMenu($event, chipItem, $index)">
+                                    {{chipItem.type === 'counter' ? chipItem.aggregation +' '+ chipItem.name : chipItem.name}}
+                                </mat-chip-row>
+                                }
+                                <input placeholder="Enter a number"
+                                [matChipInputFor]="chipGrid"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                [matChipInputAddOnBlur]="addOnBlur"
+                                (matChipInputTokenEnd)="add($event)"
+                                [matChipInputFor]="chipGrid"/>
+                            </mat-chip-grid>
+                            <mat-hint class="control-error" *ngIf="operationValidationMessage || frm.get('operation')?.errors">{{operationValidationMessage}}</mat-hint>
+                        </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="section" *ngIf="(operatorsAndFunctions$ | async) as operatorsFunctions; else loadingOperators">
+                        <mat-grid-list rowHeight="50px" cols="8" gutterSize="5" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="operatorsFunctions">
+                            <mat-grid-tile *ngFor="let operator of operatorsFunctions">
+                                <button type="button" mat-stroked-button style="width:100%" (click)="addOperatorOrFunction(operator)" cdkDrag [cdkDragData]="operator">{{operator.name}}</button>
+                            </mat-grid-tile>
+                        </mat-grid-list>
+                    </div>
+                    <ng-template #loadingOperators>
+                        <mat-progress-bar *ngIf="loadingOperatorsAndFunctions$ | async" mode='query'></mat-progress-bar>
+                    </ng-template>
+                    <div class="section">
+                        <button *ngIf="!(loadingValidate$ | async); else validating" type="button" mat-raised-button color="primary" (click)="buildFormula(stepper)">Next</button>
+                        <ng-template #validating>
+                            <button disabled mat-raised-button type="button">Validating Formula</button>
+                        </ng-template>
+                    </div>
+                </mat-step>
+                <mat-step label="Select KPI options">
+                    <div class="section">
+                        <amr-input controlName="name" label="Kpi Name" appearance="outline" [isAsync]="true"></amr-input>
+                        
+                    </div>
+                    <ng-container formArrayName="kpiFields">
+                        <ng-container *ngFor="let field of extraFieldsArray; let i = index">
+                            <div class="section">
+                                <div [formGroup]="field">
+                                    <ng-container [ngSwitch]="getFieldObject(i).type">
+                                        <div *ngSwitchCase="'List'">
+                                            <amr-select controlName="value" [label]="getFieldObject(i).name" [options]="getFieldObject(i).content" [isMulty]="false" appearance="outline"></amr-select>
+                                        </div>
+                                        <div *ngSwitchCase="'MultiSelectList'">
+                                            <amr-select controlName="value" [label]="getFieldObject(i).name" [options]="getFieldObject(i).content" [isMulty]="true" appearance="outline"></amr-select>
+                                        </div>
+                                        <div *ngSwitchCase="'Text'">
+                                            <amr-input controlName="value" [label]="getFieldObject(i).name" appearance="outline"></amr-input>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <div class="section">
+                        <mat-slide-toggle formControlName="isPublic">Set as public</mat-slide-toggle>
+                    </div>
+                    <div class="section">
+                        <div class="button-handler">
+                            <button mat-stroked-button type="button" color="primary" matStepperPrevious>Back</button>
+                            <button mat-raised-button color="primary"[disabled]="frm.invalid">{{kpi ? 'Update KPI' : 'Submit KPI'}}</button>
+                        </div>
+                        
+                    </div>
+                </mat-step>
+            </mat-stepper>
+        </form>
+        
+    </mat-drawer-content>
+</mat-drawer-container>
+<div style="visibility: hidden; position: fixed"
+    [style.left]="contextMenuPosition.x"
+    [style.top]="contextMenuPosition.y"
+    [matMenuTriggerFor]="contextMenu">
+</div>
+<mat-menu #contextMenu="matMenu">
+	<ng-template matMenuContent let-item="item" let-index="index">
+        <button mat-menu-item [matMenuTriggerFor]="aggregationMenu" *ngIf="item.type === 'counter'">Select Aggregation</button>
+		<button mat-menu-item (click)="remove(index)"><mat-icon color="warn" >cancel</mat-icon>remove</button>
+        <mat-menu #aggregationMenu="matMenu">
+            <button mat-menu-item (click)="item.aggregation = 'Avg'">AVG</button>
+            <button mat-menu-item (click)="item.aggregation = 'Sum'">SUM</button>
+            <button mat-menu-item (click)="item.aggregation = 'Min'">MIN</button>
+            <button mat-menu-item (click)="item.aggregation = 'Max'">MAX</button>
+            <button mat-menu-item (click)="item.aggregation = 'Count'">COUNT</button>
+        </mat-menu>
+	</ng-template>
+</mat-menu>
+

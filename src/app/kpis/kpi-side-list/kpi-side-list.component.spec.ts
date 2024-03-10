@@ -8,9 +8,10 @@ describe('KpiSideListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [KpiSideListComponent],
-    }).compileComponents();
-
+      imports: [KpiSideListComponent]
+    })
+    .compileComponents();
+    
     fixture = TestBed.createComponent(KpiSideListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

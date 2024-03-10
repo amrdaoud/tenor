@@ -25,34 +25,13 @@ export class CounterListComponent extends Unsubscriber {
   private counterService = inject(CounterService);
   loadingList$ = this.counterService.loadingList$;
   columns = columns;
-  filters = filters;
-  btns = btns;
+  filters = [];
+  btns = [];
   data: CounterListViewModel[] = [];
   dataSize = 0;
   latestFilter!: GeneralFilterModel;
   private dialog = inject(MatDialog);
   ///add other properties
-
-  ///////////////////////
-  constructor() {
-    super();
-    const dynamicFilters: DataTableFilter[] = [
-      {
-        Type: 'select',
-        ControlName: 'extraField',
-        Label: 'Extra Field',
-        PlaceHolder: 'Extra Field',
-        Data$: of([
-          { name: 'a', value: '1' },
-          { name: 'b', value: '2' },
-          { name: 'c', value: '3' },
-        ]),
-        DisplayProperty: 'name',
-        ValueProperty: 'value',
-      },
-    ];
-    this.filters.push(...dynamicFilters);
-  }
   changed(filter: GeneralFilterModel) {
     this._otherSubscription = this.counterService
       .getByFilter(filter)

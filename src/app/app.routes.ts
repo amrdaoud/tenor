@@ -1,6 +1,4 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { Routes, provideRouter, withHashLocation } from '@angular/router';
-import { AppComponent } from './app.component';
+import { Routes} from '@angular/router';
 
 export const routes: Routes = [
   {
@@ -24,7 +22,7 @@ export const routes: Routes = [
       },
 
       {
-        path: 'kpi-devices',
+        path: 'kpis/devices',
         loadComponent: () =>
           import('./devices/kpi-device/kpi-device.component').then(
             (c) => c.KpiDeviceComponent
@@ -44,32 +42,34 @@ export const routes: Routes = [
             (c) => c.KpiListComponent
           ),
       },
+      
       {
-        path: 'kpis/builder',
+        path: 'kpis/builder/:deviceId',
         loadComponent: () =>
-          import('./kpis/kpi-builder/kpi-builder.component').then(
-            (c) => c.KpiBuilderComponent
+          import('./kpis/amr-kpi-builder/amr-kpi-builder.component').then(
+            (c) => c.AmrKpiBuilderComponent
           ),
       },
-
       {
-        path: 'kpis/edit/:id',
+        path: 'kpis/edit/:kpiId',
         loadComponent: () =>
-          import('./kpis/kpi-edit/kpi-edit.component').then(
-            (c) => c.KpiEditComponent
+          import('./kpis/amr-kpi-builder/amr-kpi-builder.component').then(
+            (c) => c.AmrKpiBuilderComponent
           ),
-      },
+      }
     ],
   },
   {
-    path: '**',
-    redirectTo: '',
-    loadComponent: () =>
-      import('./kpis/kpi-builder/kpi-builder.component').then(
-        (c) => c.KpiBuilderComponent
-      ),
-  },
+    path: 'kpis',
+    pathMatch: 'full',
+    redirectTo: 'kpis/list'
+  }
+  // {
+  //   path: '**',
+  //   redirectTo: '',
+  //   loadComponent: () =>
+  //     import('./kpis/kpi-builder/kpi-builder.component').then(
+  //       (c) => c.KpiBuilderComponent
+  //     ),
+  // },
 ];
-bootstrapApplication(AppComponent, {
-  providers: [provideRouter(routes, withHashLocation())],
-});

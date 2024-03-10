@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, finalize, of } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 import {
@@ -9,7 +9,7 @@ import {
   CounterBindingModel,
 } from './counter';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ExtraField } from '../common/generic';
+import { ExtraField, TreeNodeViewModel } from '../common/generic';
 
 @Injectable({
   providedIn: 'root',
@@ -39,6 +39,10 @@ export class CounterService {
   private loadingExtraFields = new BehaviorSubject<boolean>(false);
   get loadingExtraFields$(): Observable<boolean> {
     return this.loadingExtraFields.asObservable();
+  }
+  private loadingRootDevices = new BehaviorSubject<boolean>(false);
+  get loadingRootDevices$(): Observable<boolean> {
+    return this.loadingRootDevices.asObservable();
   }
   //Creating Form
   createForm(model?: CounterViewModel): FormGroup {
@@ -86,5 +90,29 @@ export class CounterService {
     return this.http
       .get<ExtraField[]>(this.url + '/getExtraFields')
       .pipe(finalize(() => this.loadingExtraFields.next(false)));
+  }
+  getDevicesByParentId(parentId: number, searchQuery?:string): Observable<TreeNodeViewModel[]> {
+    this.loadingRootDevices.next(true);
+    let params = new HttpParams().set('parentid', parentId)
+    if(searchQuery) {
+      params = params.set('searchQuery', searchQuery)
+    }
+    return this.http.get<TreeNodeViewModel[]>(environment.apiUrl + `devices/GetDeviceByParent`, {params: params}).pipe(
+      finalize(() => this.loadingRootDevices.next(false))
+    )
+  }
+  getSubsetsByParentId(parentId: number, searchQuery?:string): Observable<TreeNodeViewModel[]> {
+    let params = new HttpParams().set('deviceid', parentId)
+    if(searchQuery) {
+      params = params.set('searchQuery', searchQuery)
+    }
+    return this.http.get<TreeNodeViewModel[]>(environment.apiUrl + `subsets/GetSubsetByDevice`, {params: params})
+  }
+  getCountersByParentId(parentId: number, searchQuery?:string): Observable<TreeNodeViewModel[]> {
+    let params = new HttpParams().set('subsetid', parentId)
+    if(searchQuery) {
+      params = params.set('searchQuery', searchQuery)
+    }
+    return this.http.get<TreeNodeViewModel[]>(environment.apiUrl + `counters/GetCounterBySubset`, {params: params})
   }
 }

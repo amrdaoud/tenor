@@ -1,41 +1,50 @@
-.measure-list-container {
-    height: 100%;
-    padding: 10px;
-
-    .header-text {
-        height: 40px;
-        line-height: 40px;
-        font-weight: bold;
-        letter-spacing: 0.7px;
-    }
-
+@use '@angular/material' as mat;
+.type-icon {
+    color: #757575;
+    stroke: #757575;
+    margin-right: 5px;
+  }
+.density {
+    @include mat.tree-density(-6);
+    @include mat.form-field-density(-6);
+    height:100%;
+    // .list-container {
+    //     height:calc(100% - 36px);
+    //     overflow-y: auto;
+    // }
     .form-container {
         height: 50px;
         display: flex;
         flex-direction: row;
-
+        align-items: center;
+        .mat-mdc-form-field {
+            width:100%;
+        }
         .search-container {
             flex: 1 1 auto;
-            max-width: calc(100% - 40px);
+            max-width: calc(100% - 24px);
         }
-
         .menu-button-container {
-            width: 40px;
-
-            button {
-                padding: 0px;
+            width: 24px;
+            .mat-icon {
+                cursor: pointer;
             }
         }
     }
+}
+
+
+
+    
 
     .list-container {
         height: calc(100% - 75px);
         overflow-y: auto;
-        font-size: 12px;
+        font-size: 14px;
+        color: #757575;
         padding-top: 0px;
-
+        min-height:100px;
         .mdc-list-item.mdc-list-item--with-one-line {
-            height: 32px !important;
             border-bottom: 1px solid #ddd;
             cursor: pointer;
             border-radius: 5px;
@@ -45,7 +54,7 @@
         }
 
         .mdc-list-item.mdc-list-item--with-one-line:not(.load-more-item):hover {
-            background-color: #ccd;
+            background-color: rgba(lightgreen, 0.3);
 
         }
 
@@ -64,7 +73,7 @@
             border-radius: 5px;
         }
     }
-}
+
 
 ::ng-deep .measure-list-filter-menu-controls {
     padding: 15px;
