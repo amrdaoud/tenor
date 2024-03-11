@@ -1,2 +1,30 @@
-<amr-icon-side-nav [items]="items" toolbarMode="auto-hide" brand="TENOR/BI" logoSrc="assets/logo.png">
+<amr-icon-side-nav [items]="(authItems$ | async)!" toolbarMode="auto-hide" brand="TENOR/BI" logoSrc="assets/logo.png">
+    <div toolbar-start class="title-container">
+        <div class="title">
+            Technical Performance Platform
+        </div>
+        <div class="version">
+            1.0
+        </div>
+    </div>
+    <div toolbar-end class="user-info">
+            <img class="avatar-img" *ngIf="!(logging$ | async); else loadingAvatar" [src]="(authData$ | async)?.userInfo?.profileUrl ?? 'assets/avatar.png'" onerror="this.onerror=null; this.src='assets/avatar.png';">
+        <div>
+            <button [matMenuTriggerFor]="userMenu" mat-icon-button><mat-icon>expand_more</mat-icon></button>
+            <mat-menu #userMenu="matMenu">
+                <div class="overall-spinner-container" *ngIf="logging$ | async">
+                    <mat-spinner diameter="25" color="accent"></mat-spinner>
+                </div>
+                <span  mat-menu-item><mat-icon>person</mat-icon>{{(authData$ | async)?.userInfo?.userName}}</span>
+                <span mat-menu-item *ngFor="let tenant of (authData$ | async)?.userInfo?.tenantAccesses"><mat-icon>accessibility_new</mat-icon>{{tenant.tenantName ?? 'System'}}: {{tenant.roleList}}</span>
+                <div class="menu-btn-center"><button style="width:100%" mat-stroked-button color="accent" (click)="$event.stopPropagation();login()"><mat-icon>lock_reset</mat-icon>Reset Info</button></div>
+            </mat-menu>
+        </div>
+    </div>
 </amr-icon-side-nav>
+<ng-template #loadingAvatar>
+    <div class="avatar-spinner-container">
+        <img src='assets/avatar.png' alt='background'/>
+        <mat-spinner class="avatar-spinner" diameter="45" color="accent" ></mat-spinner>
+    </div>
+</ng-template>

@@ -7,7 +7,7 @@ export interface TenantDto {
 }
 
 export interface TenantAccess {
-    tenantName: string;
+    tenantName: string | null;
     roleList: string[];
 }
 

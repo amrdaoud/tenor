@@ -1,4 +1,5 @@
 import { Routes} from '@angular/router';
+import { authGuard } from './app-core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -11,14 +12,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./subsets/subset-list/subset-list.component').then(
             (c) => c.SubsetListComponent
-          ),
+          ),canActivate: [authGuard], data: {Roles: ['admin']}
       },
       {
         path: 'devices',
         loadComponent: () =>
           import('./devices/device-list/device-list.component').then(
             (c) => c.DeviceListComponent
-          ),
+          ),canActivate: [authGuard], data: {Roles: ['admin']}
       },
 
       {
@@ -26,14 +27,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./devices/kpi-device/kpi-device.component').then(
             (c) => c.KpiDeviceComponent
-          ),
+          ),canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
       },
       {
         path: 'counters',
         loadComponent: () =>
           import('./counters/counter-list/counter-list.component').then(
             (c) => c.CounterListComponent
-          ),
+          ),canActivate: [authGuard], data: {Roles: ['admin']}
       },
       {
         path: 'kpis/list',
@@ -48,7 +49,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./kpis/amr-kpi-builder/amr-kpi-builder.component').then(
             (c) => c.AmrKpiBuilderComponent
-          ),
+          ),canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
       },
       {
         path: 'kpis/edit/:kpiId',
@@ -56,6 +57,7 @@ export const routes: Routes = [
           import('./kpis/amr-kpi-builder/amr-kpi-builder.component').then(
             (c) => c.AmrKpiBuilderComponent
           ),
+          canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
       }
     ],
   },
@@ -63,6 +65,13 @@ export const routes: Routes = [
     path: 'kpis',
     pathMatch: 'full',
     redirectTo: 'kpis/list'
+  },
+  {
+    path: '403',
+        loadComponent: () =>
+          import('./app-core/redirects/not-eligible/not-eligible.component').then(
+            (c) => c.NotEligibleComponent
+          )
   }
   // {
   //   path: '**',

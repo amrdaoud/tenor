@@ -12,7 +12,8 @@ import {
   SHARE_ICON,
   SUBSET_ICON,
 } from '../common/app-icons.const';
-export const items: IconNavItem[] = [
+import { IconNavItemWithRoles } from './side-nav';
+export const items: IconNavItemWithRoles[] = [
   {
     title: 'Home',
     svgIcon: HOME_ICON,
@@ -26,12 +27,13 @@ export const items: IconNavItem[] = [
       {
         title: 'All KPIS',
         svgIcon: LIST_ICON,
-        routerLink: 'kpis/list',
+        routerLink: 'kpis/list'
       },
       {
         title: 'Create New',
         svgIcon: ADD_ICON,
         routerLink: 'kpis/devices',
+        roles: ['editor', 'admin']
       },
     ],
   },
@@ -73,21 +75,23 @@ export const items: IconNavItem[] = [
     title: 'Admin',
     svgIcon: ADMIN_ICON,
     postition: 'bottom',
+    roles: ['admin'],
     children: [
       {
         title: 'Devices',
         svgIcon: DEVICE_ICON,
         routerLink: 'devices',
+        
       },
       {
         title: 'Subsets',
         svgIcon: SUBSET_ICON,
-        routerLink: 'subsets',
+        routerLink: 'subsets'
       },
       {
         title: 'Counters',
         svgIcon: COUNTER_ICON,
-        routerLink: 'counters',
+        routerLink: 'counters'        
       },
     ],
   },
