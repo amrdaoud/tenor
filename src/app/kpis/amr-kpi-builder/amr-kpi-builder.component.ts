@@ -146,26 +146,34 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
     this.operationValidationMessage = '';
   }
   buildFormula(stepper: MatStepper) {
-    const kpi = {
-      id: 0,
-      name: 'New KPI',
-      deviceId: this.deviceId,
-      operation: {
+    try {
+      const kpi = {
         id: 0,
-        order: 0,
-        type: enOPerationTypes.voidFunction,
-        childs: this.kpiBuilderService.buildKpiOperationChilds(this.kpiChipItems)}
-    }
-    this._otherSubscription = this.kpiService.validateKpi(kpi).subscribe(x => {
-      if(x.data) {
-        this.frm.get('operation')?.setValue(kpi.operation);
-        this.frm.get('deviceId')?.setValue(this.deviceId);
-        this.operationValidationMessage = '';
-        stepper.next();
-      } else {
-        this.operationValidationMessage = x.message
+        name: 'New KPI',
+        deviceId: this.deviceId,
+        operation: {
+          id: 0,
+          order: 0,
+          type: enOPerationTypes.voidFunction,
+          childs: this.kpiBuilderService.buildKpiOperationChilds(this.kpiChipItems)}
       }
-    });
+      this._otherSubscription = this.kpiService.validateKpi(kpi).subscribe(x => {
+        if(x.data) {
+          this.frm.get('operation')?.setValue(kpi.operation);
+          this.frm.get('deviceId')?.setValue(this.deviceId);
+          this.operationValidationMessage = '';
+          stepper.next();
+        } else {
+          this.operationValidationMessage = x.message
+        }
+      });
+    }
+    catch(error) {
+      if (error instanceof Error) {
+        this.operationValidationMessage = error.message;
+      }
+    }
+    
   }
   submit() {
     if(this.frm.invalid) {

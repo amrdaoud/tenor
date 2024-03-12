@@ -990,10 +990,16 @@ button,input,select,textarea,label{
 .button-block{
     display:flex
 }
+.header-logo-image {
+    display: none;
+    width:34px;
+    height:34px;
+}
 .site-header{
     position:relative;
     padding:24px 0;
-    z-index:2
+    z-index:2;
+    
 }
 .site-header::before{
     content:'';
@@ -1399,8 +1405,7 @@ main{
     background:linear-gradient(to right, #FFBC48 0, #FE7E1F 100%)
 }
 .asset-light,.asset-dark{
-    visibility:hidden;
-    opacity:0
+    
 }
 .is-loaded .asset-light,.is-loaded .asset-dark{
     visibility:visible;

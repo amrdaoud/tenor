@@ -4,7 +4,7 @@
             <mat-spinner diameter="40"></mat-spinner>
         </div>
         <amr-data-table
-        title="ExtraFields"
+        title="Extra Fields"
         [data]="data"
         [dataSize]="dataSize"
         [columnDefs]="columns"
@@ -22,7 +22,10 @@
         [haveDownload]="true"
         [btns]="btns"
         (btnClicked)="btnClicked($event)"
+        [menuBtns]="menuBtns"
         (rowClicked)="rowClicked($event)"
+        (menuBtnClicked)="menuClicked($event)"
+        [menuLoadingRows]="loadingElementRows$ | async"
         ></amr-data-table>
     </mat-grid-tile>
 </mat-grid-list>

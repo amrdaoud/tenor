@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
-import { ExtraFieldsListViewModel,  ExtraFieldsViewModel, ExtraFieldsBindingModel} from './extra-fields';
+import { ExtraFieldListViewModel,  ExtraFieldViewModel, ExtraFieldBindingModel} from './extra-fields';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Injectable({
@@ -32,43 +32,58 @@ export class ExtraFieldsService {
   get loadingDownload$(): Observable<boolean> {
     return this.loadingDownload.asObservable();
   }
+  private loadingElementRow = new BehaviorSubject<number[]>([]);
+  get loadingElementRow$(): Observable<number[]> {
+    return this.loadingElementRow.asObservable();
+  }
     //Creating Form
-  createForm(model?: ExtraFieldsViewModel): FormGroup {
+  createForm(model?: ExtraFieldViewModel): FormGroup {
     return new FormGroup({
       id: new FormControl(model?.id ?? 0, Validators.required),
       name: new FormControl(model?.name, Validators.required),
-      extraProperty: new FormControl(model?.extraProperty)
+      type: new FormControl(model?.type, Validators.required),
+      content: new FormControl(model?.content),
+      isMandatory: new FormControl(model?.isMandatory ?? false, Validators.required),
+      isForKpi: new FormControl(model?.isForKpi ?? false, Validators.required),
+      isForReport: new FormControl(model?.isForReport ?? false, Validators.required),
+      isForDashboard: new FormControl(model?.isForDashboard ?? false, Validators.required),
     })
   }
   //Requests
-  getByFilter(filter: GeneralFilterModel): Observable<{data: ExtraFieldsListViewModel[], dataSize: number}> {
+  getByFilter(filter: GeneralFilterModel): Observable<{data: ExtraFieldListViewModel[], dataSize: number}> {
     this.loadingList.next(true);
-    return this.http.post<{data: ExtraFieldsListViewModel[], dataSize: number}>(this.url + '/GetAll', filter).pipe(
+    return this.http.post<{data: ExtraFieldListViewModel[], dataSize: number}>(this.url + '/GetAll', filter).pipe(
       finalize(() => this.loadingList.next(false))
     )
   }
-  getById(id: number): Observable<ExtraFieldsViewModel> {
+  getById(id: number): Observable<ExtraFieldViewModel> {
     this.loadingElement.next(true);
-    return this.http.get<ExtraFieldsViewModel>(this.url + '/GetById' + `?id=${id}`).pipe(
+    return this.http.get<ExtraFieldViewModel>(this.url + '/GetById' + `?id=${id}`).pipe(
       finalize(() => this.loadingElement.next(false))
     )
   }
-  addElement(model: ExtraFieldsBindingModel): Observable<ExtraFieldsViewModel> {
+  addElement(model: ExtraFieldBindingModel): Observable<ExtraFieldViewModel> {
     this.loadingAddElement.next(true);
-    return this.http.post<ExtraFieldsViewModel>(this.url + '/add', model).pipe(
+    return this.http.post<ExtraFieldViewModel>(this.url + '/add', model).pipe(
       finalize(() => this.loadingAddElement.next(false))
     )
   }
-  editElement(model: ExtraFieldsBindingModel): Observable<ExtraFieldsViewModel> {
-    this.loadingAddElement.next(true);
-    return this.http.put<ExtraFieldsViewModel>(this.url + '/edit', model).pipe(
-      finalize(() => this.loadingAddElement.next(false))
+  editElement(model: ExtraFieldBindingModel, index: number): Observable<ExtraFieldViewModel> {
+    this.loadingElementRow.next([...this.loadingElementRow.value, index]);
+    return this.http.put<ExtraFieldViewModel>(this.url + `/edit?id=${model.id}`, model).pipe(
+      finalize(() => {
+        this.loadingElementRow.value.splice(this.loadingElementRow.value.indexOf(index));
+        this.loadingElementRow.next(this.loadingElementRow.value);
+      })
     )
   }
-  deleteElement(id: number): Observable<boolean> {
-    this.loadingAddElement.next(true);
+  deleteElement(id: number, index: number): Observable<boolean> {
+    this.loadingElementRow.next([...this.loadingElementRow.value, index]);
     return this.http.delete<boolean>(this.url + '/delete' + `?id=${id}`).pipe(
-      finalize(() => this.loadingAddElement.next(false))
+      finalize(() => {
+        this.loadingElementRow.value.splice(this.loadingElementRow.value.indexOf(index));
+        this.loadingElementRow.next(this.loadingElementRow.value);
+      })
     )
   }
   downloadByFilter(filter: GeneralFilterModel): Observable<any> {

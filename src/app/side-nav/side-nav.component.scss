@@ -21,7 +21,7 @@
 }
 .title {
     font-size: 24px;    
-    background: -webkit-radial-gradient($primary-darker, $primary-default);
+    background: -webkit-linear-gradient($primary-darker, $primary-default);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     // color: $primary-default;

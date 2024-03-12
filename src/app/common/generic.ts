@@ -7,6 +7,7 @@ export interface ExtraField {
     name: string;
     type: 'MultiSelectList' | 'List' | 'Text'
     content: string[];
+    isMandatory: boolean
 }
 export interface TreeNodeViewModel {
     id: number;

@@ -1,7 +1,7 @@
 import { Component, Inject, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { ExtraFieldsViewModel } from '../extra-fields';
+import { ExtraFieldViewModel } from '../extra-fields';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ExtraFieldsService } from '../extra-fields.service';
 import { CommonModule } from '@angular/common';
@@ -11,11 +11,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { ConfirmService } from 'techteec-lib/dialogs-and-templates';
 import { Unsubscriber } from 'techteec-lib/common';
 import { filter } from 'rxjs';
+import { fieldTypes } from '../../common/generic';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'amr-extra-fields-form',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatGridListModule, ReactiveFormsModule, InputComponent, SelectComponent, MatButtonModule, MatDialogModule],
+  imports: [CommonModule, MatCardModule, MatGridListModule, ReactiveFormsModule, InputComponent, SelectComponent, MatButtonModule, MatDialogModule, MatSlideToggleModule],
   templateUrl: './extra-fields-form.component.html',
   styleUrl: './extra-fields-form.component.scss'
 })
@@ -24,12 +26,8 @@ export class ExtraFieldsFormComponent extends Unsubscriber {
   private dialogRef = inject(MatDialogRef<ExtraFieldsFormComponent>)
   private confirm = inject(ConfirmService);
   frm: FormGroup;
-  extraPropertyList = [
-    {name: 'a', value: '1'},
-    {name: 'b', value: '2'},
-    {name: 'c', value: '3'}
-  ]
-  constructor(@Inject(MAT_DIALOG_DATA) public extraFields?: ExtraFieldsViewModel) {
+  fieldTypes = Object.values(fieldTypes).slice(0,Object.values(fieldTypes).length / 2).map((x,i) => {return {name: x, value: Object.values(fieldTypes)[i + (Object.values(fieldTypes).length / 2)]}})
+  constructor(@Inject(MAT_DIALOG_DATA) public extraFields?: ExtraFieldViewModel) {
     super();
     this.frm = this.extraFieldsService.createForm(extraFields)
   }

@@ -129,11 +129,11 @@
         <button mat-menu-item [matMenuTriggerFor]="aggregationMenu" *ngIf="item.type === 'counter'">Select Aggregation</button>
 		<button mat-menu-item (click)="remove(index)"><mat-icon color="warn" >cancel</mat-icon>remove</button>
         <mat-menu #aggregationMenu="matMenu">
-            <button mat-menu-item (click)="item.aggregation = 'Avg'">AVG</button>
-            <button mat-menu-item (click)="item.aggregation = 'Sum'">SUM</button>
-            <button mat-menu-item (click)="item.aggregation = 'Min'">MIN</button>
-            <button mat-menu-item (click)="item.aggregation = 'Max'">MAX</button>
-            <button mat-menu-item (click)="item.aggregation = 'Count'">COUNT</button>
+            <button mat-menu-item (click)="item.aggregation = 'AVG'">AVG</button>
+            <button mat-menu-item (click)="item.aggregation = 'SUM'">SUM</button>
+            <button mat-menu-item (click)="item.aggregation = 'MIN'">MIN</button>
+            <button mat-menu-item (click)="item.aggregation = 'MAX'">MAX</button>
+            <button mat-menu-item (click)="item.aggregation = 'COUNT'">COUNT</button>
         </mat-menu>
 	</ng-template>
 </mat-menu>

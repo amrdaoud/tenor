@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { OperationBinding } from '../kpi.amr';
+import { OperationBinding } from '../kpi';
 import { ExtraField, TreeNodeViewModel, enAggregation, enOPerationTypes } from '../../common/generic';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { KpiViewModel, OperationDto } from '../kpi';
@@ -30,12 +30,11 @@ export class KpiBuilderService {
         fieldId: new FormControl(ef.id),
         type: new FormControl(ef.type),
         content: new FormControl(ef.content),
-        value: new FormControl(kpi?.extraFields?.find(x => x.fieldId === ef.id)?.value, Validators.required)
+        value: new FormControl(kpi?.extraFields?.find(x => x.fieldId === ef.id)?.value, {validators: ef.isMandatory ? Validators.required : null} )
       }))
     })
     return frm;
   }
-
   buildKpiOperationChilds(items: TreeNodeViewModel[]): OperationBinding[] {
     const operations: OperationBinding[] = [];
     let childOrder = 0;
@@ -50,7 +49,7 @@ export class KpiBuilderService {
           else if(items[i].name === '(') {
             const closing = this.bracketIndexOfClosing(items.slice(i));
             if(!closing) {
-              throw('Cannot find closing index');
+              throw new Error('Cannot find closing brace');
             }
             const voidFunctionOperation: OperationBinding = {
               id: 0,
@@ -71,7 +70,7 @@ export class KpiBuilderService {
         case('function'): {
           const closing = this.functionIndexOfClosing(items.slice(i));
           if(!closing) {
-            throw('Cannot find closing index');
+            throw new Error(`Please check function: "${items[i].name}" braces`);
           }
           const chunks = this.splitByComma(items.slice(i, i + closing + 1));
           const childs: OperationBinding[] = [];

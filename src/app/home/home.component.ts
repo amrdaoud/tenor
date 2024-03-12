@@ -7,7 +7,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
   standalone: true,
   imports: [MatGridListModule, MatCardModule],
   templateUrl: './home.component.html',
-  // styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss'
 })
 export class HomeComponent {
 

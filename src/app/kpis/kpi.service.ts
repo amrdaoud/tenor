@@ -9,7 +9,7 @@ import {
 } from './kpi';
 import { ExtraField, ResultWithMessage } from '../common/generic';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CreateKpi } from './kpi.amr';
+import { CreateKpi } from './kpi';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 @Injectable({
   providedIn: 'root',

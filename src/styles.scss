@@ -14,7 +14,7 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $tenor-primary: mat.define-palette($primarypalette);
-$tenor-accent: mat.define-palette($accentpalette);
+$tenor-accent: mat.define-palette($orangepalette);
 
 // The warn palette is optional (defaults to red).
 $tenor-warn: mat.define-palette(mat.$red-palette);
@@ -142,7 +142,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   align-items: center;
   top: 0;
   bottom: 0;
-  z-index: 2;
+  z-index: 102;
 }
 .clickable {
   cursor: pointer;
