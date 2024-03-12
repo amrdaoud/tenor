@@ -18,6 +18,8 @@ export const items: IconNavItemWithRoles[] = [
   {
     title: 'Home',
     svgIcon: HOME_ICON,
+    postition: 'top',
+    routerLink: 'home'
   },
   {
     title: 'KPI',

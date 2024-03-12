@@ -3,14 +3,13 @@ import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, finalize } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
-import { KpiExtraFieldListViewModel,  KpiExtraFieldViewModel, KpiExtraFieldBindingModel, CreateExtraFieldViewModel} from './kpi-extra-field';
+import { ExtraFieldsListViewModel,  ExtraFieldsViewModel, ExtraFieldsBindingModel} from './extra-fields';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { fieldTypes } from '../common/generic';
 
 @Injectable({
   providedIn: 'root'
 })
-export class KpiExtraFieldService {
+export class ExtraFieldsService {
 
   constructor() { }
   private url = environment.apiUrl + 'extrafields';
@@ -34,30 +33,35 @@ export class KpiExtraFieldService {
     return this.loadingDownload.asObservable();
   }
     //Creating Form
-  createForm(model?: CreateExtraFieldViewModel): FormGroup {
+  createForm(model?: ExtraFieldsViewModel): FormGroup {
     return new FormGroup({
       id: new FormControl(model?.id ?? 0, Validators.required),
       name: new FormControl(model?.name, Validators.required),
-      type: new FormControl<fieldTypes | undefined>(model?.type, Validators.required),
-      content: new FormControl(model?.content)
+      extraProperty: new FormControl(model?.extraProperty)
     })
   }
   //Requests
-  getAll(): Observable<CreateExtraFieldViewModel[]> {
+  getByFilter(filter: GeneralFilterModel): Observable<{data: ExtraFieldsListViewModel[], dataSize: number}> {
     this.loadingList.next(true);
-    return this.http.get<CreateExtraFieldViewModel[]>(this.url + '/getall').pipe(
+    return this.http.post<{data: ExtraFieldsListViewModel[], dataSize: number}>(this.url + '/GetAll', filter).pipe(
       finalize(() => this.loadingList.next(false))
     )
   }
-  addElement(model: CreateExtraFieldViewModel): Observable<CreateExtraFieldViewModel> {
+  getById(id: number): Observable<ExtraFieldsViewModel> {
+    this.loadingElement.next(true);
+    return this.http.get<ExtraFieldsViewModel>(this.url + '/GetById' + `?id=${id}`).pipe(
+      finalize(() => this.loadingElement.next(false))
+    )
+  }
+  addElement(model: ExtraFieldsBindingModel): Observable<ExtraFieldsViewModel> {
     this.loadingAddElement.next(true);
-    return this.http.post<CreateExtraFieldViewModel>(this.url + '/add', model).pipe(
+    return this.http.post<ExtraFieldsViewModel>(this.url + '/add', model).pipe(
       finalize(() => this.loadingAddElement.next(false))
     )
   }
-  editElement(model: CreateExtraFieldViewModel): Observable<CreateExtraFieldViewModel> {
+  editElement(model: ExtraFieldsBindingModel): Observable<ExtraFieldsViewModel> {
     this.loadingAddElement.next(true);
-    return this.http.put<CreateExtraFieldViewModel>(this.url + '/edit', model).pipe(
+    return this.http.put<ExtraFieldsViewModel>(this.url + '/edit', model).pipe(
       finalize(() => this.loadingAddElement.next(false))
     )
   }
@@ -65,6 +69,12 @@ export class KpiExtraFieldService {
     this.loadingAddElement.next(true);
     return this.http.delete<boolean>(this.url + '/delete' + `?id=${id}`).pipe(
       finalize(() => this.loadingAddElement.next(false))
+    )
+  }
+  downloadByFilter(filter: GeneralFilterModel): Observable<any> {
+    this.loadingDownload.next(true);
+    return this.http.post(this.url + '/export', filter, {headers: new HttpHeaders().set('Content-Type', 'application/json'), responseType: 'blob'}).pipe(
+      finalize(() => this.loadingDownload.next(false))
     )
   }
 }

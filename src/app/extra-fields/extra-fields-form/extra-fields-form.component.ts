@@ -1,9 +1,9 @@
 import { Component, Inject, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { CreateExtraFieldViewModel, KpiExtraFieldViewModel } from '../kpi-extra-field';
+import { ExtraFieldsViewModel } from '../extra-fields';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { KpiExtraFieldService } from '../kpi-extra-field.service';
+import { ExtraFieldsService } from '../extra-fields.service';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { InputComponent, SelectComponent } from 'techteec-lib/controls';
@@ -11,25 +11,27 @@ import { MatButtonModule } from '@angular/material/button';
 import { ConfirmService } from 'techteec-lib/dialogs-and-templates';
 import { Unsubscriber } from 'techteec-lib/common';
 import { filter } from 'rxjs';
-import { fieldTypes } from '../../common/generic';
 
 @Component({
-  selector: 'amr-kpi-extra-field-form',
+  selector: 'amr-extra-fields-form',
   standalone: true,
   imports: [CommonModule, MatCardModule, MatGridListModule, ReactiveFormsModule, InputComponent, SelectComponent, MatButtonModule, MatDialogModule],
-  templateUrl: './kpi-extra-field-form.component.html',
-  styleUrl: './kpi-extra-field-form.component.scss'
+  templateUrl: './extra-fields-form.component.html',
+  styleUrl: './extra-fields-form.component.scss'
 })
-export class KpiExtraFieldFormComponent extends Unsubscriber {
-  private kpiExtraFieldService = inject(KpiExtraFieldService);
-  private dialogRef = inject(MatDialogRef<KpiExtraFieldFormComponent>)
+export class ExtraFieldsFormComponent extends Unsubscriber {
+  private extraFieldsService = inject(ExtraFieldsService);
+  private dialogRef = inject(MatDialogRef<ExtraFieldsFormComponent>)
   private confirm = inject(ConfirmService);
   frm: FormGroup;
-  extraPropertyList = Object.values(fieldTypes)
-  .slice(0,Object.values(fieldTypes).length / 2).map((x, i) => {return {name: x, value: Object.values(fieldTypes)[i + Object.values(fieldTypes).length / 2]}})
-  constructor(@Inject(MAT_DIALOG_DATA) public kpiExtraField?: CreateExtraFieldViewModel) {
+  extraPropertyList = [
+    {name: 'a', value: '1'},
+    {name: 'b', value: '2'},
+    {name: 'c', value: '3'}
+  ]
+  constructor(@Inject(MAT_DIALOG_DATA) public extraFields?: ExtraFieldsViewModel) {
     super();
-    this.frm = this.kpiExtraFieldService.createForm(kpiExtraField)
+    this.frm = this.extraFieldsService.createForm(extraFields)
   }
   submit() {
     if(this.frm.invalid) {
@@ -43,7 +45,7 @@ export class KpiExtraFieldFormComponent extends Unsubscriber {
     this._otherSubscription = this.confirm.open({Message: 'Are you sure you want to reset values?'}).pipe(
       filter(confirmed => confirmed)
     ).subscribe(x => {
-      this.frm.setValue(this.kpiExtraFieldService.createForm(this.kpiExtraField).value);
+      this.frm.setValue(this.extraFieldsService.createForm(this.extraFields).value);
       this.frm.markAsUntouched();
     });
     

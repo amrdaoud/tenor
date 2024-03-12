@@ -42,6 +42,9 @@ $tenor-theme-density: mat.define-light-theme((
 $primary-default: mat.get-theme-color($tenor-theme, primary, default);
 $accent-default: mat.get-theme-color($tenor-theme, accent, default);
 $accent-lighter: mat.get-theme-color($tenor-theme, accent, lighter);
+$primary-lighter: mat.get-theme-color($tenor-theme, primary, lighter);
+$accent-darker: mat.get-theme-color($tenor-theme, accent, darker);
+$primary-darker: mat.get-theme-color($tenor-theme, primary, darker);
 @include mat.all-component-themes($tenor-theme);
 
 

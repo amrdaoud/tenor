@@ -8,6 +8,18 @@ export const routes: Routes = [
       import('./side-nav/side-nav.component').then((c) => c.SideNavComponent),
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'home'
+      },
+      {
+        path: 'home',
+        loadComponent: () =>
+          import('./home/home.component').then(
+            (c) => c.HomeComponent
+          )
+      },
+      {
         path: 'admin/subsets',
         loadComponent: () =>
           import('./subsets/subset-list/subset-list.component').then(
@@ -29,10 +41,10 @@ export const routes: Routes = [
           ),canActivate: [authGuard], data: {Roles: ['admin']}
       },
       {
-        path: 'admin/kpi-extra-fields',
+        path: 'admin/extra-fields',
         loadComponent: () =>
-          import('./kpi-extra-fields/kpi-extra-field-list/kpi-extra-field-list.component').then(
-            (c) => c.KpiExtraFieldListComponent
+          import('./extra-fields/extra-fields-list/extra-fields-list.component').then(
+            (c) => c.ExtraFieldsListComponent
           ),canActivate: [authGuard], data: {Roles: ['admin']}
       },
       {

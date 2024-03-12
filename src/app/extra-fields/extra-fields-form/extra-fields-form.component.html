@@ -2,8 +2,8 @@
     <form [formGroup]="frm" (ngSubmit)="submit()">
         <mat-card-header>
             <mat-card-title>
-                <span *ngIf= "kpiExtraField; else add">Edit Kpi-extra-field #{{kpiExtraField.id}}</span>
-                <ng-template #add>Add new Kpi-extra-field</ng-template>
+                <span *ngIf= "extraFields; else add">Edit ExtraFields #{{extraFields.id}}</span>
+                <ng-template #add>Add new ExtraFields</ng-template>
             </mat-card-title>
             <mat-card-subtitle>
                 Please fill all mandatory fields
@@ -19,15 +19,9 @@
                 </mat-grid-tile>
                 <mat-grid-tile>
                     <div class="techteec-control-full-width">
-                        <amr-select controlName="type" label="type" placeHolder="Select Type"
+                        <amr-select controlName="extraProperty" label="Extra Property" placeHolder="Extra Property"
                             [options]="extraPropertyList" valueAccessor="value" displayAccessor="name"
                             appearance="outline" [fullWidth]="true"></amr-select>
-                    </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                    <div class="techteec-control-full-width">
-                        <amr-input [type]="frm.get('type')?.value === 2 ? 'text' : 'text-area'" controlName="content" label="Content" placeHolder="Split elements by ','" appearance="outline"
-                        [fullWidth]="true"></amr-input>
                     </div>
                 </mat-grid-tile>
             </mat-grid-list>

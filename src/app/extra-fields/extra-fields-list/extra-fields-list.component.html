@@ -4,8 +4,8 @@
             <mat-spinner diameter="40"></mat-spinner>
         </div>
         <amr-data-table
-        title="KPI Extra Fields"
-        [data]="(data$ | async)!"
+        title="ExtraFields"
+        [data]="data"
         [dataSize]="dataSize"
         [columnDefs]="columns"
         [filters]="filters!"
@@ -15,7 +15,7 @@
         [sortDirection]="'desc'"
         [clickable]="true"
         [isLoading]="(loadingList$ | async)"
-        [isAsync]="false"
+        (changed)="changed($event)"
         [showSubmit]="false"
         [preserveSearchQuery]="true"
         [isReport]="true"

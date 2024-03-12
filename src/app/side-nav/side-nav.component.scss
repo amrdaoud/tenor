@@ -20,12 +20,12 @@
     flex-direction: row;
 }
 .title {
-    font-size: 20px;    
-    background: -webkit-radial-gradient($accent-default, $primary-default);
+    font-size: 24px;    
+    background: -webkit-radial-gradient($primary-darker, $primary-default);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     // color: $primary-default;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 1px;;
 }
 .version {
