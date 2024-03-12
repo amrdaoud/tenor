@@ -32,9 +32,9 @@ export class KpiService {
   get loadingAddElement$(): Observable<boolean> {
     return this.loadingAddElement.asObservable();
   }
-  private loadingDeleteElement = new BehaviorSubject<boolean>(false);
-  get loadingDeleteElement$(): Observable<boolean> {
-    return this.loadingDeleteElement.asObservable();
+  private loadingMenuElements = new BehaviorSubject<number[]>([]);
+  get loadingMenuElements$(): Observable<number[]> {
+    return this.loadingMenuElements.asObservable();
   }
   public loadingDownload = new BehaviorSubject<boolean>(false);
   get loadingDownload$(): Observable<boolean> {
@@ -119,10 +119,14 @@ export class KpiService {
       finalize(() => this.loadingAdd.next(false))
     )
   }
-  deleteKpi(id: number): Observable<boolean> {
-    this.loadingAdd.next(true);
+  deleteKpi(id: number, index: number): Observable<boolean> {
+    this.loadingMenuElements.next([...this.loadingMenuElements.value, index]);
     return this.http.delete<boolean>(this.url + '/delete?id='+id).pipe(
-      finalize(() => this.loadingAdd.next(false))
+      finalize(() => {
+        const i = this.loadingMenuElements.value.findIndex(x => x === index);
+        this.loadingMenuElements.value.splice(i, 1);
+        this.loadingMenuElements.next(this.loadingMenuElements.value);
+      })
     )
   }
   

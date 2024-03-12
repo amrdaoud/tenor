@@ -36,6 +36,7 @@ export class KpiListComponent extends Unsubscriber {
   private confirm = inject(ConfirmService);
   private snackBar = inject(MatSnackBar);
   loadingList$ = this.kpiService.loadingList$;
+  loadingMenuElements$ = this.kpiService.loadingMenuElements$;
   columns = columns;
   btns = btns;
   menuBtns = menuBtns;
@@ -61,19 +62,21 @@ export class KpiListComponent extends Unsubscriber {
   )
   changed(filter: any) {
     this.latestFilter = filter;
-    const kpiFilter = Object.keys(filter);
-    const extraFieldsKeys = kpiFilter.filter(x => !['PageIndex',
-    'PageSize'	,
-    'SearchQuery'	,
-    'SortActive'	,
-    'SortDirection',
-    'DeviceId'
-    ].includes(x));
-    const extraFields: { [key: string]: any; } = {};
-    extraFieldsKeys.forEach(field => {
-      extraFields[field] = filter[field]
-    })
-    filter.extraFields = extraFields;
+    if(!filter.extraFields) {
+      const kpiFilter = Object.keys(filter);
+      const extraFieldsKeys = kpiFilter.filter(x => !['PageIndex',
+      'PageSize'	,
+      'SearchQuery'	,
+      'SortActive'	,
+      'SortDirection',
+      'DeviceId'
+      ].includes(x));
+      const extraFields: { [key: string]: any; } = {};
+      extraFieldsKeys.forEach(field => {
+        extraFields[field] = filter[field]
+      })
+      filter.extraFields = extraFields;
+    }
     this._otherSubscription = this.kpiService
       .getByFilter(filter)
       .subscribe((x) => {
@@ -84,7 +87,7 @@ export class KpiListComponent extends Unsubscriber {
   btnClicked(btnIndex: number) {
     this.router.navigateByUrl('/kpis/devices');
   }
-  menuCLicked(event: { index: number; target: KpiListViewModel }) {
+  menuCLicked(event: { index: number; target: KpiListViewModel; targetIndex: number }) {
     if (event.index === 0) {
       this.router.navigate(['kpis/edit', event.target.id]);
     } else if(event.index === 1) {
@@ -92,7 +95,7 @@ export class KpiListComponent extends Unsubscriber {
     } else if(event.index === 2) {
       this.confirm.open({Title: 'Deleting KPI', Message: `Are you sure you want to delete "${event.target.name}" KPI?`, MatColor: 'warn' }).pipe(
         filter(result => result),
-        switchMap(() => this.kpiService.deleteKpi(event.target.id))
+        switchMap(() => this.kpiService.deleteKpi(event.target.id, event.targetIndex))
       ).subscribe(x => {
         if(x) {
           this.snackBar.open('KPI deleted successfully', 'Dismiss', {duration: 2000});

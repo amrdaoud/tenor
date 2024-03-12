@@ -5,6 +5,7 @@ import {
   COUNTER_ICON,
   DASHBOARD_ICON,
   DEVICE_ICON,
+  EXTRA_FIELDS_ICON,
   HOME_ICON,
   KPI_ICON,
   LIST_ICON,
@@ -73,6 +74,7 @@ export const items: IconNavItemWithRoles[] = [
   // },
   {
     title: 'Admin',
+    routerLink: 'admin',
     svgIcon: ADMIN_ICON,
     postition: 'bottom',
     roles: ['admin'],
@@ -80,18 +82,23 @@ export const items: IconNavItemWithRoles[] = [
       {
         title: 'Devices',
         svgIcon: DEVICE_ICON,
-        routerLink: 'devices',
+        routerLink: 'admin/devices',
         
       },
       {
         title: 'Subsets',
         svgIcon: SUBSET_ICON,
-        routerLink: 'subsets'
+        routerLink: 'admin/subsets'
       },
       {
         title: 'Counters',
         svgIcon: COUNTER_ICON,
-        routerLink: 'counters'        
+        routerLink: 'admin/counters'        
+      },
+      {
+        title: 'Extra Fields',
+        svgIcon: EXTRA_FIELDS_ICON,
+        routerLink: 'admin/extra-fields'        
       },
     ],
   },

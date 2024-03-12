@@ -8,28 +8,28 @@ export const routes: Routes = [
       import('./side-nav/side-nav.component').then((c) => c.SideNavComponent),
     children: [
       {
-        path: 'subsets',
+        path: 'admin/subsets',
         loadComponent: () =>
           import('./subsets/subset-list/subset-list.component').then(
             (c) => c.SubsetListComponent
           ),canActivate: [authGuard], data: {Roles: ['admin']}
       },
       {
-        path: 'devices',
+        path: 'admin/devices',
         loadComponent: () =>
           import('./devices/device-list/device-list.component').then(
             (c) => c.DeviceListComponent
           ),canActivate: [authGuard], data: {Roles: ['admin']}
       },
       {
-        path: 'counters',
+        path: 'admin/counters',
         loadComponent: () =>
           import('./counters/counter-list/counter-list.component').then(
             (c) => c.CounterListComponent
           ),canActivate: [authGuard], data: {Roles: ['admin']}
       },
       {
-        path: 'kpi-extra-fields',
+        path: 'admin/kpi-extra-fields',
         loadComponent: () =>
           import('./kpi-extra-fields/kpi-extra-field-list/kpi-extra-field-list.component').then(
             (c) => c.KpiExtraFieldListComponent
@@ -66,11 +66,6 @@ export const routes: Routes = [
           canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
       }
     ],
-  },
-  {
-    path: 'kpis',
-    pathMatch: 'full',
-    redirectTo: 'kpis/list'
   },
   {
     path: '403',

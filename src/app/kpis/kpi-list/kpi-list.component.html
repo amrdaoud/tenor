@@ -8,7 +8,7 @@
             [haveSearch]="true"
             [isLoading]="(loadingList$ | async)" (changed)="changed($event)" [showSubmit]="false"
             [preserveQueryParams]="true" [isReport]="true" [haveDownload]="true" [btns]="btns"
-            (btnClicked)="btnClicked($event)" [menuBtns]="menuBtns"
+            (btnClicked)="btnClicked($event)" [menuBtns]="menuBtns" [menuLoadingRows]="loadingMenuElements$ | async"
             (menuBtnClicked)="menuCLicked($event)"></amr-data-table>
     </mat-grid-tile>
 </mat-grid-list>
