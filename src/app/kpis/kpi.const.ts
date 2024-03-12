@@ -46,7 +46,12 @@ export const menuBtns: DataTableButtonObject[] = [
   },
   {
     Text: 'Get Value',
-    MatColor: 'accent',
+    MatColor: 'primary',
     Icon: 'calculate',
+  },
+  {
+    Text: 'Delete',
+    MatColor: 'warn',
+    Icon: 'delete',
   },
 ];

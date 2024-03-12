@@ -1,0 +1,41 @@
+<mat-card class="techteec-form-card">
+    <form [formGroup]="frm" (ngSubmit)="submit()">
+        <mat-card-header>
+            <mat-card-title>
+                <span *ngIf= "kpiExtraField; else add">Edit Kpi-extra-field #{{kpiExtraField.id}}</span>
+                <ng-template #add>Add new Kpi-extra-field</ng-template>
+            </mat-card-title>
+            <mat-card-subtitle>
+                Please fill all mandatory fields
+            </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-grid-list rowHeight="70" cols="1">
+                <mat-grid-tile>
+                    <div class="techteec-control-full-width">
+                        <amr-input controlName="name" label="Name" placeHolder="Name" appearance="outline"
+                            [fullWidth]="true"></amr-input>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <div class="techteec-control-full-width">
+                        <amr-select controlName="type" label="type" placeHolder="Select Type"
+                            [options]="extraPropertyList" valueAccessor="value" displayAccessor="name"
+                            appearance="outline" [fullWidth]="true"></amr-select>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <div class="techteec-control-full-width">
+                        <amr-input [type]="frm.get('type')?.value === 2 ? 'text' : 'text-area'" controlName="content" label="Content" placeHolder="Split elements by ','" appearance="outline"
+                        [fullWidth]="true"></amr-input>
+                    </div>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <button mat-raised-button color="primary" [disabled]="frm.invalid">Save</button>
+            <button mat-raised-button type="button" (click)="reset()">Reset</button>
+            <button mat-button type="button" mat-dialog-close>Cancel</button>
+        </mat-card-actions>
+    </form>
+</mat-card>

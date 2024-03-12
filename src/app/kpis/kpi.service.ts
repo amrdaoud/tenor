@@ -32,6 +32,10 @@ export class KpiService {
   get loadingAddElement$(): Observable<boolean> {
     return this.loadingAddElement.asObservable();
   }
+  private loadingDeleteElement = new BehaviorSubject<boolean>(false);
+  get loadingDeleteElement$(): Observable<boolean> {
+    return this.loadingDeleteElement.asObservable();
+  }
   public loadingDownload = new BehaviorSubject<boolean>(false);
   get loadingDownload$(): Observable<boolean> {
     return this.loadingDownload.asObservable();
@@ -112,6 +116,12 @@ export class KpiService {
   editKpi(kpi: CreateKpi): Observable<KpiViewModel> {
     this.loadingAdd.next(true);
     return this.http.put<KpiViewModel>(this.url + '/edit?id='+kpi.id, kpi).pipe(
+      finalize(() => this.loadingAdd.next(false))
+    )
+  }
+  deleteKpi(id: number): Observable<boolean> {
+    this.loadingAdd.next(true);
+    return this.http.delete<boolean>(this.url + '/delete?id='+id).pipe(
       finalize(() => this.loadingAdd.next(false))
     )
   }

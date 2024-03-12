@@ -33,6 +33,21 @@
           <mat-list-item *ngFor="let item of itemList" cdkDrag [cdkDragData]="item" (dblclick)="selectElement(item)">
             <mat-icon matListItemIcon svgIcon="kpi-icon" class="type-icon"></mat-icon> {{item.name}}
           </mat-list-item>
+          <!-- <mat-list-item *ngFor="let item of itemList" cdkDrag [cdkDragData]="item" (dblclick)="selectElement(item)">
+            <mat-icon matListItemIcon svgIcon="kpi-icon" class="type-icon"></mat-icon> {{item.name}}
+          </mat-list-item>
+          <mat-list-item *ngFor="let item of itemList" cdkDrag [cdkDragData]="item" (dblclick)="selectElement(item)">
+            <mat-icon matListItemIcon svgIcon="kpi-icon" class="type-icon"></mat-icon> {{item.name}}
+          </mat-list-item>
+          <mat-list-item *ngFor="let item of itemList" cdkDrag [cdkDragData]="item" (dblclick)="selectElement(item)">
+            <mat-icon matListItemIcon svgIcon="kpi-icon" class="type-icon"></mat-icon> {{item.name}}
+          </mat-list-item>
+          <mat-list-item *ngFor="let item of itemList" cdkDrag [cdkDragData]="item" (dblclick)="selectElement(item)">
+            <mat-icon matListItemIcon svgIcon="kpi-icon" class="type-icon"></mat-icon> {{item.name}}
+          </mat-list-item>
+          <mat-list-item *ngFor="let item of itemList" cdkDrag [cdkDragData]="item" (dblclick)="selectElement(item)">
+            <mat-icon matListItemIcon svgIcon="kpi-icon" class="type-icon"></mat-icon> {{item.name}}
+          </mat-list-item> -->
         </div>
         <mat-list-item *ngIf="
             listSize > itemList.length && !(loadingList$ | async);

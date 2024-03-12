@@ -14,8 +14,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ConfirmService } from 'techteec-lib/dialogs-and-templates';
 import { ExtraField } from '../../common/generic';
-import { Observable, map, of } from 'rxjs';
+import { Observable, filter, map, of, switchMap } from 'rxjs';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'amr-kpi-list',
   standalone: true,
@@ -32,6 +33,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 export class KpiListComponent extends Unsubscriber {
   private kpiService = inject(KpiService);
   private router = inject(Router);
+  private confirm = inject(ConfirmService);
+  private snackBar = inject(MatSnackBar);
   loadingList$ = this.kpiService.loadingList$;
   columns = columns;
   btns = btns;
@@ -57,6 +60,7 @@ export class KpiListComponent extends Unsubscriber {
     })
   )
   changed(filter: any) {
+    this.latestFilter = filter;
     const kpiFilter = Object.keys(filter);
     const extraFieldsKeys = kpiFilter.filter(x => !['PageIndex',
     'PageSize'	,
@@ -70,7 +74,6 @@ export class KpiListComponent extends Unsubscriber {
       extraFields[field] = filter[field]
     })
     filter.extraFields = extraFields;
-    this.latestFilter = filter;
     this._otherSubscription = this.kpiService
       .getByFilter(filter)
       .subscribe((x) => {
@@ -84,6 +87,18 @@ export class KpiListComponent extends Unsubscriber {
   menuCLicked(event: { index: number; target: KpiListViewModel }) {
     if (event.index === 0) {
       this.router.navigate(['kpis/edit', event.target.id]);
+    } else if(event.index === 1) {
+
+    } else if(event.index === 2) {
+      this.confirm.open({Title: 'Deleting KPI', Message: `Are you sure you want to delete "${event.target.name}" KPI?`, MatColor: 'warn' }).pipe(
+        filter(result => result),
+        switchMap(() => this.kpiService.deleteKpi(event.target.id))
+      ).subscribe(x => {
+        if(x) {
+          this.snackBar.open('KPI deleted successfully', 'Dismiss', {duration: 2000});
+          this.changed(this.latestFilter);
+        }
+      })
     }
   }
 }

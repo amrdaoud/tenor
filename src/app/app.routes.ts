@@ -21,20 +21,26 @@ export const routes: Routes = [
             (c) => c.DeviceListComponent
           ),canActivate: [authGuard], data: {Roles: ['admin']}
       },
-
-      {
-        path: 'kpis/devices',
-        loadComponent: () =>
-          import('./devices/kpi-device/kpi-device.component').then(
-            (c) => c.KpiDeviceComponent
-          ),canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
-      },
       {
         path: 'counters',
         loadComponent: () =>
           import('./counters/counter-list/counter-list.component').then(
             (c) => c.CounterListComponent
           ),canActivate: [authGuard], data: {Roles: ['admin']}
+      },
+      {
+        path: 'kpi-extra-fields',
+        loadComponent: () =>
+          import('./kpi-extra-fields/kpi-extra-field-list/kpi-extra-field-list.component').then(
+            (c) => c.KpiExtraFieldListComponent
+          ),canActivate: [authGuard], data: {Roles: ['admin']}
+      },
+      {
+        path: 'kpis/devices',
+        loadComponent: () =>
+          import('./devices/kpi-device/kpi-device.component').then(
+            (c) => c.KpiDeviceComponent
+          ),canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
       },
       {
         path: 'kpis/list',
