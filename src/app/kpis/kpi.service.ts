@@ -15,7 +15,7 @@ import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
   providedIn: 'root',
 })
 export class KpiService {
-  constructor(private snakBar: MatSnackBar) {}
+  
   private url = environment.apiUrl + 'kpis';
   private http = inject(HttpClient);
 
