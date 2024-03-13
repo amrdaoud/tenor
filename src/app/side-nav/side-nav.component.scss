@@ -21,10 +21,11 @@
 }
 .title {
     font-size: 24px;    
-    background: -webkit-linear-gradient($primary-darker, $primary-default);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    // background: -webkit-linear-gradient($primary-darker, $primary-default);
+    // -webkit-background-clip: text;
+    // -webkit-text-fill-color: transparent;
     // color: $primary-default;
+    color: #333;
     font-weight: 600;
     letter-spacing: 1px;;
 }

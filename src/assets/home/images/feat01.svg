@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<svg width="48" height="48" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <g class="layer">
+  <title>Layer 1</title>
+  <g fill="none" fill-rule="evenodd" id="svg_1">
+   <path d="m0,0l24,0l0,48l-24,0l0,-48z" fill="#93F4FE" fill-opacity="0.64" id="svg_2"/>
+   <path d="m28,0l20,0l0,20l-20,0l0,-20z" fill="#FFCF7B" fill-opacity="0.64" id="svg_3"/>
+  </g>
+  <use fill="#000000" fill-opacity="0" id="svg_11" stroke="#5250b7" transform="matrix(0.687096 0 0 0.687096 -0.362772 -0.308238)" x="13.06" xlink:href="#svg_10" y="10.99"/>
+ </g>
+ <defs>
+  <symbol id="svg_10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+   <g id="svg_9" stroke-width="0"/>
+   <g id="svg_8" stroke-linecap="round" stroke-linejoin="round"/>
+   <g id="svg_7">
+    <path d="m20,12c0,4.42 -3.58,8 -8,8m8,-8c0,-4.42 -3.58,-8 -8,-8m8,8l2,0m-10,8c-4.42,0 -8,-3.58 -8,-8m8,8l0,2m-8,-10c0,-4.42 3.58,-8 8,-8m-8,8l-2,0m10,-8l0,-2m3,10c0,1.66 -1.34,3 -3,3c-1.66,0 -3,-1.34 -3,-3c0,-1.66 1.34,-3 3,-3c1.66,0 3,1.34 3,3z" id="svg_4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+   </g>
+  </symbol>
+ </defs>
+</svg>

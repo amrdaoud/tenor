@@ -3,7 +3,7 @@
         <amr-data-table title="Counter" [data]="data" [dataSize]="dataSize" [columnDefs]="columns" [filters]="filters!"
             [haveSearch]="true" [isAsync]="true" [pageSize]="30" [sortActive]="'id'" [sortDirection]="'desc'"
             [clickable]="true" [isLoading]="(loadingList$ | async)" (changed)="changed($event)" [showSubmit]="false"
-            [preserveSearchQuery]="true" [isReport]="true" [haveDownload]="true" [btns]="btns"
-            (btnClicked)="btnClicked($event)"></amr-data-table>
+            [preserveSearchQuery]="true" [isReport]="true"  [btns]="btns"
+            (btnClicked)="btnClicked($event)" (downloadClicked)="download($event)"></amr-data-table>
     </mat-grid-tile>
 </mat-grid-list>

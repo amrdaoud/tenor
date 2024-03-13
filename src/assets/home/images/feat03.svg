@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<svg width="48" height="48" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <g class="layer">
+  <title>Layer 1</title>
+  <g fill="none" fill-rule="evenodd" id="svg_1">
+   <path d="m0,0l24,0l0,48l-24,0l0,-48z" fill="#93F4FE" fill-opacity="0.64" id="svg_2"/>
+   <path d="m28,0l20,0l0,20l-20,0l0,-20z" fill="#FFCF7B" fill-opacity="0.64" id="svg_3"/>
+  </g>
+  <use fill="#000000" fill-opacity="0" id="svg_11" stroke="#5250b7" transform="matrix(0.79333 0 0 0.808454 -2.03442 -2.33557)" x="8.44" xlink:href="#svg_10" y="10.66"/>
+ </g>
+ <defs>
+  <symbol id="svg_10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+   <g id="svg_9" stroke-width="0"/>
+   <g id="svg_8" stroke-linecap="round" stroke-linejoin="round"/>
+   <g id="svg_7">
+    <path d="m3,8.98c0,-4.93 1.05,-5.98 5.98,-5.98l6.04,0c4.93,0 5.98,1.05 5.98,5.98l0,6.04c0,4.93 -1.05,5.98 -5.98,5.98l-6.04,0c-4.93,0 -5.98,-1.05 -5.98,-5.98l0,-6.04z" stroke-width="2"/>
+    <path d="m21,9l-18,0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    <path d="m9,21l0,-12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+   </g>
+  </symbol>
+ </defs>
+</svg>

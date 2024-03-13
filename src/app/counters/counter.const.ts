@@ -9,8 +9,6 @@ export const columns: ColumnDef[] = [
   { Name: 'Code', Property: 'code', IsSort: true },
   { Name: 'Supplier#', Property: 'supplierId', IsSort: true },
   { Name: 'Name', Property: 'name', IsSort: true },
-  { Name: 'Column', Property: 'columnName', IsSort: true },
-  { Name: 'Ref Column', Property: 'refColumnName', IsSort: true },
 ];
 export const filters: DataTableFilter[] = [
   {

@@ -79,7 +79,7 @@ export class CounterService {
   downloadByFilter(filter: GeneralFilterModel): Observable<any> {
     this.loadingDownload.next(true);
     return this.http
-      .post(this.url + '/exportByFilter', filter, {
+      .post(this.url + '/exportCounterByFilter', filter, {
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
         responseType: 'blob',
       })

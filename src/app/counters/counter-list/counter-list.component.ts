@@ -54,4 +54,17 @@ export class CounterListComponent extends Unsubscriber {
         .subscribe((viewObject) => this.changed(this.latestFilter));
     }
   }
+  download(filter: GeneralFilterModel) {
+    const dd = Date.now();
+    this._otherSubscription = this.counterService.downloadByFilter(filter as GeneralFilterModel).subscribe(x => {
+      let dataType = x.type;
+      let binaryData = [];
+      binaryData.push(x);
+      let downloadLink = document.createElement('a');
+      downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
+      downloadLink.setAttribute('download', `Counters-${dd}.xlsx`);
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+    })
+  }
 }

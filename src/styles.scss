@@ -9,7 +9,12 @@
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat.core();
-
+@font-face {
+  font-family: 'Inter';
+  src: url('assets/fonts/inter/Inter-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
@@ -19,6 +24,9 @@ $tenor-accent: mat.define-palette($orangepalette);
 // The warn palette is optional (defaults to red).
 $tenor-warn: mat.define-palette(mat.$red-palette);
 
+$inter-typography: mat.define-typography-config(
+  $font-family: 'Inter',
+);
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
 $tenor-theme: mat.define-light-theme((
@@ -26,7 +34,8 @@ $tenor-theme: mat.define-light-theme((
     primary: $tenor-primary,
     accent: $tenor-accent,
     warn: $tenor-warn,
-  )
+  ),
+  typography: $inter-typography
 ));
 $tenor-theme-density: mat.define-light-theme((
   color: (
