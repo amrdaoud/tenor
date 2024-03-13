@@ -1,16 +1,9 @@
-@import '../../styles.scss'; 
-
 .user-info {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
-.avatar-img {
-    width:40px;
-    height:40px;
-    border-radius: 50%;
-    border: $accent-lighter 2px solid;
-}
+
 .menu-btn-center {
     text-align: center;
     padding: 10px 10px 0px 10px;
@@ -33,18 +26,4 @@
     font-size: 10px;
     font-weight: bold;
     color: #333;
-}
-.avatar-spinner-container {
-    position: relative;
-    top:2px;
-    .avatar-spinner {
-        position: absolute;
-        top:0;
-    }
-    img {
-        width:40px;
-        height:40px;
-        border-radius: 50%;
-        border: $accent-lighter 2px solid;
-    }
 }
