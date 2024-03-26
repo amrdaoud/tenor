@@ -39,6 +39,9 @@ export class SideNavComponent extends Unsubscriber {
       return [];
     }
     const roles = tenantAccesses?.map(x => x.roleList).flat(1).map(x => x.toLowerCase());
+    if(roles?.map(x => x.toLocaleLowerCase()).includes('superadmin')) {
+      return items;
+    }
     return items?.filter(x => !x.roles || x.roles.length === 0 || x.roles.find(r => roles?.includes(r.toLowerCase()))).map(x => {
       if(x.children && x.children.length > 0) {
         x.children = this.getItemsByRoles(x.children, tenantAccesses);

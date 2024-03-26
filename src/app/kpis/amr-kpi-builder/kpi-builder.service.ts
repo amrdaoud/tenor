@@ -58,7 +58,7 @@ export class KpiBuilderService {
               childs: this.buildKpiOperationChilds(items.slice(i+1,i + closing))
             }
             operations.push(voidFunctionOperation);
-            i = closing;
+            i = i + closing;
             break;
           }
           else {

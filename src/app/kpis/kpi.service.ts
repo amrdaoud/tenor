@@ -7,8 +7,7 @@ import {
   KpiFilterModel,
   KpiListViewModel, KpiViewModel
 } from './kpi';
-import { ExtraField, ResultWithMessage } from '../common/generic';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ExtraField, ResultWithMessage } from '../common/generic'
 import { CreateKpi } from './kpi';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 @Injectable({
@@ -55,6 +54,10 @@ export class KpiService {
   private loadingAdd = new BehaviorSubject<boolean>(false);
   get loadingAdd$(): Observable<boolean> {
     return this.loadingAdd.asObservable();
+  }
+  private loadingValue = new BehaviorSubject<boolean>(false);
+  get loadingValue$(): Observable<boolean> {
+    return this.loadingValue.asObservable();
   }
   getByFilter(
     filter: GeneralFilterModel
@@ -122,6 +125,26 @@ export class KpiService {
   deleteKpi(id: number, index: number): Observable<boolean> {
     this.loadingMenuElements.next([...this.loadingMenuElements.value, index]);
     return this.http.delete<boolean>(this.url + '/delete?id='+id).pipe(
+      finalize(() => {
+        const i = this.loadingMenuElements.value.findIndex(x => x === index);
+        this.loadingMenuElements.value.splice(i, 1);
+        this.loadingMenuElements.next(this.loadingMenuElements.value);
+      })
+    )
+  }
+  getData(kpiId:number, index: number): Observable<{data: string}> {
+    this.loadingMenuElements.next([...this.loadingMenuElements.value, index]);
+    return this.http.get<{data: string}>(environment.apiUrl + `oracle/GetKpiValue?kpiid=${kpiId}`).pipe(
+      finalize(() => {
+        const i = this.loadingMenuElements.value.findIndex(x => x === index);
+        this.loadingMenuElements.value.splice(i, 1);
+        this.loadingMenuElements.next(this.loadingMenuElements.value);
+      })
+    )
+  }
+  getQuery(kpiId:number, index: number): Observable<{query: string}> {
+    this.loadingMenuElements.next([...this.loadingMenuElements.value, index]);
+    return this.http.get<{query: string}>(environment.apiUrl + `kpis/GetKpiQueryByAmro?kpiid=${kpiId}`).pipe(
       finalize(() => {
         const i = this.loadingMenuElements.value.findIndex(x => x === index);
         this.loadingMenuElements.value.splice(i, 1);

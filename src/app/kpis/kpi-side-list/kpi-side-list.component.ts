@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { KpiListViewModel } from '../kpi';
 import { KpiService } from '../kpi.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -28,8 +28,9 @@ import { KPI_ICON } from '../../common/app-icons.const';
   templateUrl: './kpi-side-list.component.html',
   styleUrl: './kpi-side-list.component.scss'
 })
-export class KpiSideListComponent extends Unsubscriber {
+export class KpiSideListComponent extends Unsubscriber implements OnChanges {
   @Input({required: true}) deviceId!: number;
+  @Input() disableId!: number;
   @Output() selected = new EventEmitter<TreeNodeViewModel>();
   public kpiService = inject(KpiService);
   loadingList$ = this.kpiService.loadingList$;
@@ -39,11 +40,13 @@ export class KpiSideListComponent extends Unsubscriber {
     pageSize: new FormControl(20),
     sortActive: new FormControl('name'),
     sortDirection: new FormControl('asc'),
-    extraFields: new FormGroup({})
+    extraFields: new FormGroup({}),
+    deviceId: new FormControl(null)
   });
   itemList: any = [];
   listSize = 0;
   extraFields: ExtraField[] = [];
+  
   constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
     super();
     iconRegistry.addSvgIconLiteral('kpi-icon', sanitizer.bypassSecurityTrustHtml(KPI_ICON));
@@ -58,6 +61,7 @@ export class KpiSideListComponent extends Unsubscriber {
             );
           });
         }),
+
         tap(
           (extraFields: ExtraField[]) => (
             (this.extraFields = extraFields)
@@ -67,7 +71,9 @@ export class KpiSideListComponent extends Unsubscriber {
         startWith(this.frm.value),
         distinctUntilChanged(),
         debounceTime(400),
+        
         tap(() => this.frm.get('pageIndex')?.setValue(0, { emitEvent: false })),
+        
         switchMap(() => this.kpiService.getByFilter(this.frm.value)),
         map(x => {
           const d: DataWithSize<TreeNodeViewModel> = {
@@ -90,6 +96,11 @@ export class KpiSideListComponent extends Unsubscriber {
         this.itemList = c.data;
         this.listSize = c.dataSize;
       });
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.deviceId) {
+      this.frm.get('deviceId')?.setValue(this.deviceId)
+    }
   }
   loadMore() {
     this.frm

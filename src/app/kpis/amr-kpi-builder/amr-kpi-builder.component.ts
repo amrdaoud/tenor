@@ -80,7 +80,7 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
           tap(() => this.kpiChipItems = this.kpiBuilderService.destroyKpiOperationChilds(this.kpi?.operations?.childs!)),
           switchMap(() => this.kpiService.getExtraFields()),
           tap(extraFields => this.frm = this.kpiBuilderService.createKpiForm(this.kpi.deviceId!, extraFields,this.kpi)),
-          
+          tap(() => this.buildFormula()),
           map(() => this.kpi.deviceId!)
         )
       }
@@ -145,7 +145,7 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
     this.frm.get('operation')?.setValue('');
     this.operationValidationMessage = '';
   }
-  buildFormula(stepper: MatStepper) {
+  buildFormula(stepper?: MatStepper) {
     try {
       const kpi = {
         id: 0,
@@ -162,7 +162,7 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
           this.frm.get('operation')?.setValue(kpi.operation);
           this.frm.get('deviceId')?.setValue(this.deviceId);
           this.operationValidationMessage = '';
-          stepper.next();
+          stepper?.next();
         } else {
           this.operationValidationMessage = x.message
         }

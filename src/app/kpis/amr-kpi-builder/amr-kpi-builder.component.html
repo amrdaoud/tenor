@@ -9,7 +9,7 @@
             </mat-tab>
             <mat-tab label="KPIs">
                 <div class="measures-container">
-                    <app-kpi-side-list [deviceId]="deviceId" (selected)="addMeasure($event)"></app-kpi-side-list>
+                    <app-kpi-side-list [deviceId]="deviceId" [disableId]="kpi && kpi.id!" (selected)="addMeasure($event)"></app-kpi-side-list>
                 </div>
             </mat-tab>
         </mat-tab-group>
@@ -129,11 +129,11 @@
         <button mat-menu-item [matMenuTriggerFor]="aggregationMenu" *ngIf="item.type === 'counter'">Select Aggregation</button>
 		<button mat-menu-item (click)="remove(index)"><mat-icon color="warn" >cancel</mat-icon>remove</button>
         <mat-menu #aggregationMenu="matMenu">
-            <button mat-menu-item (click)="item.aggregation = 'AVG'">AVG</button>
-            <button mat-menu-item (click)="item.aggregation = 'SUM'">SUM</button>
-            <button mat-menu-item (click)="item.aggregation = 'MIN'">MIN</button>
-            <button mat-menu-item (click)="item.aggregation = 'MAX'">MAX</button>
-            <button mat-menu-item (click)="item.aggregation = 'COUNT'">COUNT</button>
+            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'AVG'">AVG</button>
+            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'SUM'">SUM</button>
+            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'MIN'">MIN</button>
+            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'MAX'">MAX</button>
+            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'COUNT'">COUNT</button>
         </mat-menu>
 	</ng-template>
 </mat-menu>

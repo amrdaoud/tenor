@@ -52,8 +52,10 @@
             -ms-user-select: none;
             user-select: none;
         }
-
-        .mdc-list-item.mdc-list-item--with-one-line:not(.load-more-item):hover {
+        .disabled {
+            background-color: #ddd;
+        }
+        .mdc-list-item.mdc-list-item--with-one-line:not(.load-more-item):not(.disabled):hover {
             background-color: rgba(lightgreen, 0.3);
 
         }

@@ -11,5 +11,5 @@ import { SideNavComponent } from './side-nav/side-nav.component';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  title = 'Tenor';
+  title = 'Technical Performance Platform';
 }

@@ -35,6 +35,7 @@ export class KpiListComponent extends Unsubscriber {
   private router = inject(Router);
   private confirm = inject(ConfirmService);
   private snackBar = inject(MatSnackBar);
+  loadingValue$ = this.kpiService.loadingValue$;
   loadingList$ = this.kpiService.loadingList$;
   loadingMenuElements$ = this.kpiService.loadingMenuElements$;
   columns = columns;
@@ -91,7 +92,11 @@ export class KpiListComponent extends Unsubscriber {
     if (event.index === 0) {
       this.router.navigate(['kpis/edit', event.target.id]);
     } else if(event.index === 1) {
-
+      this.kpiService.getData(event.target.id, event.targetIndex).subscribe(x => {
+        if(x) {
+          this.snackBar.open(`Kpi value for yesterday between 00 and 01 is: ${x.data}`, 'Dismiss');
+        }
+      })
     } else if(event.index === 2) {
       this.confirm.open({Title: 'Deleting KPI', Message: `Are you sure you want to delete "${event.target.name}" KPI?`, MatColor: 'warn' }).pipe(
         filter(result => result),

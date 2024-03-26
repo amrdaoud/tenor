@@ -10,8 +10,7 @@
 <mat-grid-list cols="5" rowHeight="120px">
     <mat-grid-tile *ngFor="let device of data " class="clickable" (click)="gridClicked(device)">
         <div class="device">
-            {{device.name}}<br>
-            {{device.id}}
+            {{device.name}}
         </div>
     </mat-grid-tile>
     <mat-grid-tile colspan="5">
