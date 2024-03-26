@@ -91,19 +91,21 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
   )
 
   addMeasure(element: TreeNodeViewModel) {
-    this.kpiChipItems.push(element)
+    this.kpiChipItems.push({...element})
     this.frm.get('operation')?.setValue('')
   }
   drop(event: CdkDragDrop<TreeNodeViewModel[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      copyArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
-      );
+      const clone = {...event.previousContainer.data[event.previousIndex]};
+      event.container.data.splice(event.currentIndex, 0, clone);
+      // copyArrayItem(
+      //   event.previousContainer.data,
+      //   event.container.data,
+      //   event.previousIndex,
+      //   event.currentIndex,
+      // );
 
     }
     this.frm.get('operation')?.setValue('');
