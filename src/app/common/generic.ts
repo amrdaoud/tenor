@@ -17,6 +17,7 @@ export interface TreeNodeViewModel {
     children: TreeNodeViewModel[];
     aggregation?: string;
     order?: number;
+    supplierId?: string;
 }
 export interface FlatTreeNode {
     id: number;
@@ -26,6 +27,7 @@ export interface FlatTreeNode {
     expandable: boolean;
     isLoading: boolean;
     aggregation?: string;
+    supplierId?: string;
   }
 
   export enum enOPerationTypes {

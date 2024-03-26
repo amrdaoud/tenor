@@ -65,7 +65,8 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges 
       level,
       expandable: node.hasChild,
       isLoading: false,
-      aggregation: node.aggregation
+      aggregation: node.aggregation,
+      supplierId: node.supplierId
     };
   }
 
