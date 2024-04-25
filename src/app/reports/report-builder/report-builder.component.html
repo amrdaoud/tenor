@@ -1,0 +1,38 @@
+<div class="report-builder-container" *ngIf="frm">
+    <mat-stepper class="full-height-stepper no-padding-stepper header-bottom-border-stepper" [formGroup]="frm"
+        [linear]="true">
+        <mat-step label="Select Measures" [stepControl]="measures">
+            <mat-drawer-container class="measure-drawer-container">
+                <mat-drawer #measuresDrawer [opened]="true" mode="side">
+                    <mat-tab-group color="accent" *ngIf="deviceId$ | async as deviceId">
+                        <mat-tab label="Counters">
+                            <div class="measures-container">
+                                <app-counter-side-tree [deviceId]="deviceId"
+                                    [connectedDragDropLists]="(reportMeasures.dropContainersChanged | async)!"></app-counter-side-tree>
+                            </div>
+                        </mat-tab>
+                        <mat-tab label="KPIs">
+                            <div class="measures-container">
+                                <app-kpi-side-list [deviceId]="deviceId"
+                                    [connectedDragDropLists]="(reportMeasures.dropContainersChanged | async)!"></app-kpi-side-list>
+                            </div>
+                        </mat-tab>
+                    </mat-tab-group>
+                </mat-drawer>
+                <mat-drawer-content>
+                    <div class="stepper-content">
+                        <app-report-measures [formArray]="measures" #reportMeasures></app-report-measures>
+                    </div>
+                    <div class="stepper-buttons"><button mat-raised-button color="primary" matStepperNext
+                            (click)="testForm()">Next</button></div>
+                </mat-drawer-content>
+            </mat-drawer-container>
+        </mat-step>
+        <mat-step label="Select Levels">
+
+        </mat-step>
+        <mat-step label="Select Filters">
+
+        </mat-step>
+    </mat-stepper>
+</div>

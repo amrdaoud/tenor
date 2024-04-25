@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AmrKpiBuilderComponent } from './amr-kpi-builder.component';
+import { ReportMeasuresComponent } from './report-measures.component';
 
-describe('AmrKpiBuilderComponent', () => {
-  let component: AmrKpiBuilderComponent;
-  let fixture: ComponentFixture<AmrKpiBuilderComponent>;
+describe('ReportMeasuresComponent', () => {
+  let component: ReportMeasuresComponent;
+  let fixture: ComponentFixture<ReportMeasuresComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AmrKpiBuilderComponent]
+      imports: [ReportMeasuresComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AmrKpiBuilderComponent);
+    fixture = TestBed.createComponent(ReportMeasuresComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

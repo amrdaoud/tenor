@@ -1,60 +1,62 @@
 <div class="density">
-    <form [formGroup]="frm" style="height: 100%">
+  <form [formGroup]="frm" style="height: 100%">
     <div class="form-container">
-        <div class="search-container">
+      <div class="search-container">
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
-            <input matInput formControlName="searchQuery" placeholder="Search for KPIs">
-            <div matSuffix style="padding-right: 5px;"><mat-icon *ngIf="!(loadingList$ | async); else loadingSpinnerSuffix">search</mat-icon></div>
+          <input matInput formControlName="searchQuery" placeholder="Search for KPIs">
+          <div matSuffix style="padding-right: 5px;"><mat-icon
+              *ngIf="!(loadingList$ | async); else loadingSpinnerSuffix">search</mat-icon></div>
         </mat-form-field>
-        </div>
-        <div class="menu-button-container">
-            
-                <mat-icon class="clickable" color="primary" [mat-menu-trigger-for]="otherFiltersMenu">tune</mat-icon>
-            
-            <mat-menu #otherFiltersMenu="matMenu" class="measure-list-filter-menu">
-                <div class="measure-list-filter-menu-controls" formGroupName="extraFields">
-                  <div *ngFor="let field of extraFields" (click)="$event.stopPropagation()">
-                    <ng-container [ngSwitch]="field.type">
-                      <amr-input size="small" *ngSwitchCase="'Text'" [controlName]="field.name.toString()" [label]="field.name"
-                        [placeHolder]="field.name" appearance="outline"></amr-input>
-                      <amr-select size="small" *ngSwitchCase="'List'" [controlName]="field.name.toString()" [label]="field.name"
-                        [placeHolder]="field.name" [options]="field.content" appearance="outline"
-                        [haveNull]="true"></amr-select>
-                      <amr-select size="small" *ngSwitchCase="'MultiSelectList'" [controlName]="field.name.toString()" [label]="field.name"
-                        [placeHolder]="field.name" [options]="field.content" [isMulty]="true" appearance="outline"></amr-select>
-                    </ng-container>
-                  </div>
-                </div>
-              </mat-menu>
-        </div>
+      </div>
+      <div class="menu-button-container">
+        <mat-icon class="clickable" color="primary" [mat-menu-trigger-for]="otherFiltersMenu">tune</mat-icon>
+        <mat-menu #otherFiltersMenu="matMenu" class="measure-list-filter-menu">
+          <div class="measure-list-filter-menu-controls" formGroupName="extraFields">
+            <div *ngFor="let field of extraFields" (click)="$event.stopPropagation()">
+              <ng-container [ngSwitch]="field.type">
+                <amr-input size="small" *ngSwitchCase="'Text'" [controlName]="field.name.toString()"
+                  [label]="field.name" [placeHolder]="field.name" appearance="outline"></amr-input>
+                <amr-select size="small" *ngSwitchCase="'List'" [controlName]="field.name.toString()"
+                  [label]="field.name" [placeHolder]="field.name" [options]="field.content" appearance="outline"
+                  [haveNull]="true"></amr-select>
+                <amr-select size="small" *ngSwitchCase="'MultiSelectList'" [controlName]="field.name.toString()"
+                  [label]="field.name" [placeHolder]="field.name" [options]="field.content" [isMulty]="true"
+                  appearance="outline"></amr-select>
+              </ng-container>
+            </div>
+          </div>
+        </mat-menu>
+      </div>
     </div>
-    <mat-list class="list-container" (scroll)="onScroll($event)" cdkDropList [cdkDropListData]="itemList" cdkDropListSortingDisabled>
-        <div  style="width: 100%">
-          <mat-list-item *ngFor="let item of itemList" [ngClass]="item.id === disableId ? 'disabled' : ''" cdkDrag [cdkDragData]="item" (dblclick)="selectElement(item)" [cdkDragDisabled]="item.id === disableId">
-            <mat-icon matListItemIcon svgIcon="kpi-icon" class="type-icon"></mat-icon> {{item.name}}
-          </mat-list-item>
-        </div>
-        <mat-list-item *ngIf="
+    <mat-list class="list-container" (scroll)="onScroll($event)" cdkDropList [cdkDropListData]="itemList"
+      cdkDropListSortingDisabled [cdkDropListConnectedTo]="connectedDragDropLists">
+      <div style="width: 100%">
+        <mat-list-item *ngFor="let item of itemList" [ngClass]="item.id === disableId ? 'disabled' : ''" cdkDrag
+          [cdkDragData]="item" (dblclick)="selectElement(item)" [cdkDragDisabled]="item.id === disableId">
+          <mat-icon matListItemIcon svgIcon="kpi-icon" class="type-icon"></mat-icon> {{item.name}}
+        </mat-list-item>
+      </div>
+      <mat-list-item *ngIf="
             listSize > itemList.length && !(loadingList$ | async);
             else loading
           " class="load-more-item">
-          <button mat-button (click)="loadMore()" color="primary">
-            Load More
-          </button>
-        </mat-list-item>
-      </mat-list>
-    </form>
+        <button mat-button (click)="loadMore()" color="primary">
+          Load More
+        </button>
+      </mat-list-item>
+    </mat-list>
+  </form>
 </div>
 <ng-template #loading>
-    <mat-list-item *ngIf="loadingList$ | async; else noData" class="load-more-item">
-      <div>Getting More..</div>
-    </mat-list-item>
-  </ng-template>
-  <ng-template #noData>
-    <div class="no-data" *ngIf="listSize === 0">
-      <mat-icon>fmd_bad</mat-icon>No data found
-    </div>
-  </ng-template>
+  <mat-list-item *ngIf="loadingList$ | async; else noData" class="load-more-item">
+    <div>Getting More..</div>
+  </mat-list-item>
+</ng-template>
+<ng-template #noData>
+  <div class="no-data" *ngIf="listSize === 0">
+    <mat-icon>fmd_bad</mat-icon>No data found
+  </div>
+</ng-template>
 <ng-template #loadingSpinnerSuffix>
-    <mat-spinner matSuffix [diameter]="20"></mat-spinner>
-  </ng-template>
+  <mat-spinner matSuffix [diameter]="20"></mat-spinner>
+</ng-template>

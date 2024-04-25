@@ -58,6 +58,11 @@ export enum enSortDirection {
     asc,
     desc
 }
+export enum enLogicalOperator {
+    AND,
+    OR,
+    NOT
+}
 export interface ResultWithMessage {
     data: any;
     message?: string;

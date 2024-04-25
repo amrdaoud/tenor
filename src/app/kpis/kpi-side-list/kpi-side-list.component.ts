@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { KpiListViewModel } from '../kpi';
 import { KpiService } from '../kpi.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -31,6 +31,7 @@ import { KPI_ICON } from '../../common/app-icons.const';
 export class KpiSideListComponent extends Unsubscriber implements OnChanges {
   @Input({required: true}) deviceId!: number;
   @Input() disableId!: number;
+  @Input() connectedDragDropLists!: CdkDropList<any>[];
   @Output() selected = new EventEmitter<TreeNodeViewModel>();
   public kpiService = inject(KpiService);
   loadingList$ = this.kpiService.loadingList$;
@@ -98,6 +99,9 @@ export class KpiSideListComponent extends Unsubscriber implements OnChanges {
       });
   }
   ngOnChanges(changes: SimpleChanges): void {
+    if(!changes['deviceId']) {
+      return;
+    }
     if(this.deviceId) {
       this.frm.get('deviceId')?.setValue(this.deviceId)
     }

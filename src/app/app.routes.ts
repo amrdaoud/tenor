@@ -76,6 +76,14 @@ export const routes: Routes = [
             (c) => c.AmrKpiBuilderComponent
           ),
           canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
+      },
+      {
+        path: 'reports/builder/:deviceId',
+        loadComponent: () =>
+          import('./reports/report-builder/report-builder.component').then(
+            (c) => c.ReportBuilderComponent
+          ),
+          canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
       }
     ],
   },

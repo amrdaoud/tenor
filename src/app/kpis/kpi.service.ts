@@ -9,7 +9,7 @@ import {
 } from './kpi';
 import { ExtraField, ResultWithMessage } from '../common/generic'
 import { CreateKpi } from './kpi';
-import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 @Injectable({
   providedIn: 'root',
 })
@@ -18,6 +18,31 @@ export class KpiService {
   private url = environment.apiUrl + 'kpis';
   private http = inject(HttpClient);
 
+  createKpiForm(deviceId:number, extraFields: ExtraField[],kpi?: KpiViewModel): FormGroup {
+    let frm = new FormGroup({
+      id: new FormControl(kpi?.id ?? 0, Validators.required),
+      name: new FormControl(kpi?.name, {
+        validators: Validators.required,
+        asyncValidators: this.validateName(deviceId, kpi?.name),
+        updateOn: 'blur'
+        }),
+      deviceId: new FormControl(kpi?.deviceId, Validators.required),
+      isPublic: new FormControl(kpi?.isPublic ?? false, Validators.required),
+      kpiFields: new FormArray([]),
+      operation: new FormControl(kpi?.operations, Validators.required)
+    });
+    extraFields.forEach(ef => {
+      (frm.get('kpiFields') as FormArray).push(new FormGroup({
+        id: new FormControl(0),
+        name: new FormControl(ef.name),
+        fieldId: new FormControl(ef.id),
+        type: new FormControl(ef.type),
+        content: new FormControl(ef.content),
+        value: new FormControl(kpi?.extraFields?.find(x => x.fieldId === ef.id)?.value, {validators: ef.isMandatory ? Validators.required : null} )
+      }))
+    })
+    return frm;
+  }
   //Loaders
   private loadingList = new BehaviorSubject<boolean>(false);
   get loadingList$(): Observable<boolean> {

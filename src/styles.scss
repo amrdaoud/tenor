@@ -1604,3 +1604,20 @@ body,a,h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6{
 }
 
 }
+.full-height-stepper {
+    height:100%;
+}
+.full-height-stepper .mat-horizontal-stepper-wrapper {
+    height:100%
+}
+.full-height-stepper .mat-horizontal-content-container,.mat-horizontal-stepper-content {
+    height:100%;
+}
+.no-padding-stepper .mat-horizontal-content-container {
+    padding: 0px;
+}
+.header-bottom-border-stepper .mat-horizontal-stepper-header-container {
+    border-bottom-color: var(--mat-sidenav-container-divider-color);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}

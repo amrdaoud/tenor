@@ -25,6 +25,7 @@ import { COUNTER_ICON, DEVICE_ICON, SUBSET_ICON } from '../../common/app-icons.c
 })
 export class CounterSideTreeComponent extends Unsubscriber implements OnChanges {
   @Input() deviceId: number | undefined;
+  @Input() connectedDragDropLists!: CdkDropList<any>[];
   @Output() selected = new EventEmitter<TreeNodeViewModel>();
   private counterService = inject(CounterService);
   loadingRootDevices$ = this.counterService.loadingRootDevices$;
@@ -45,6 +46,9 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges 
     iconRegistry.addSvgIconLiteral('subset-icon', sanitizer.bypassSecurityTrustHtml(SUBSET_ICON));
   }
   ngOnChanges(changes: SimpleChanges): void {
+    if(!changes['deviceId']) {
+      return;
+    }
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
       this.getLevel,

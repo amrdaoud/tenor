@@ -28,17 +28,19 @@ import { KpiSideListComponent } from "../kpi-side-list/kpi-side-list.component";
 import { KpiViewModel } from '../kpi';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Unsubscriber } from 'techteec-lib/common';
+import { OperationService } from '../../operations/operation.service';
+import { OperationContainerComponent } from "../../operations/operation-container/operation-container.component";
 @Component({
-    selector: 'app-amr-kpi-builder',
-    standalone: true,
-    templateUrl: './amr-kpi-builder.component.html',
-    styleUrl: './amr-kpi-builder.component.scss',
-    providers: [KpiBuilderService],
-    imports: [CommonModule, MatCardModule, MatGridListModule,
-        CounterSideTreeComponent, MatSidenavModule, MatTabsModule,
-        MatFormFieldModule, MatInputModule, MatChipsModule, MatIconModule, MatMenuModule,
-        CdkDrag, CdkDropList, CdkDropListGroup, MatStepperModule, MatProgressBarModule,
-        MatButtonModule, ReactiveFormsModule, SelectComponent, InputComponent, MatSlideToggleModule, KpiSideListComponent, MatProgressSpinnerModule]
+  selector: 'app-amr-kpi-builder',
+  standalone: true,
+  templateUrl: './amr-kpi-builder.component.html',
+  styleUrl: './amr-kpi-builder.component.scss',
+  providers: [KpiBuilderService],
+  imports: [CommonModule,
+    CounterSideTreeComponent, MatSidenavModule, MatTabsModule,
+    MatFormFieldModule, MatInputModule, MatIconModule,
+    CdkDropListGroup, MatStepperModule,
+    MatButtonModule, ReactiveFormsModule, SelectComponent, InputComponent, MatSlideToggleModule, KpiSideListComponent, MatProgressSpinnerModule, OperationContainerComponent]
 })
 export class AmrKpiBuilderComponent extends Unsubscriber {
   @ViewChild(MatMenuTrigger) contextMenu!: MatMenuTrigger;
@@ -56,8 +58,9 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private operatorsService = inject(OperatorsService);
-  private kpiBuilderService = inject(KpiBuilderService);
+  private operationService = inject(OperationService);
   private kpiService = inject(KpiService);
+  @ViewChild(OperationContainerComponent) operationContainer!: OperationContainerComponent;
   operatorsAndFunctions$ = this.operatorsService.getOperatorsAndFunctions();
   loadingOperatorsAndFunctions$ = this.operatorsService.loadingOperatorsAndFunctions$;
   loadingKpi$ = this.kpiService.loadingElement$;
@@ -69,17 +72,17 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
   kpi!: KpiViewModel;
   deviceId$: Observable<number> = this.route.paramMap.pipe(
     switchMap((param: ParamMap) => {
-      if(+param.get('deviceId')!) {
+      if (+param.get('deviceId')!) {
         return this.kpiService.getExtraFields().pipe(
-          tap(extraFields => this.frm = this.kpiBuilderService.createKpiForm(+param.get('deviceId')!, extraFields)),
+          tap(extraFields => this.frm = this.kpiService.createKpiForm(+param.get('deviceId')!, extraFields)),
           map(() => +param.get('deviceId')!)
         )
       } else {
         return this.kpiService.getById(+param.get('kpiId')!).pipe(
           tap((kpi: KpiViewModel) => this.kpi = kpi),
-          tap(() => this.kpiChipItems = this.kpiBuilderService.destroyKpiOperationChilds(this.kpi?.operations?.childs!)),
+          tap(() => this.kpiChipItems = this.operationService.destroyKpiOperationChilds(this.kpi?.operations?.childs!)),
           switchMap(() => this.kpiService.getExtraFields()),
-          tap(extraFields => this.frm = this.kpiBuilderService.createKpiForm(this.kpi.deviceId!, extraFields,this.kpi)),
+          tap(extraFields => this.frm = this.kpiService.createKpiForm(this.kpi.deviceId!, extraFields, this.kpi)),
           tap(() => this.buildFormula()),
           map(() => this.kpi.deviceId!)
         )
@@ -89,63 +92,9 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
       this.deviceId = d;
     })
   )
-
   addMeasure(element: TreeNodeViewModel) {
-    this.kpiChipItems.push({...element})
+    this.kpiChipItems.push({ ...element })
     this.frm.get('operation')?.setValue('')
-  }
-  drop(event: CdkDragDrop<TreeNodeViewModel[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      const clone = {...event.previousContainer.data[event.previousIndex]};
-      event.container.data.splice(event.currentIndex, 0, clone);
-      // copyArrayItem(
-      //   event.previousContainer.data,
-      //   event.container.data,
-      //   event.previousIndex,
-      //   event.currentIndex,
-      // );
-
-    }
-    this.frm.get('operation')?.setValue('');
-    this.operationValidationMessage = '';
-  }
-  add(event: MatChipInputEvent): void {
-    if(isNaN(+event.value)) {
-      return;
-    }
-    const value = (event.value || '').trim();
-    if (value) {
-      this.kpiChipItems.push({id: 0, name: event.value, type: 'number', hasChild:false, children: []});
-    }
-    event.chipInput!.clear();
-    this.frm.get('operation')?.setValue('');
-    this.operationValidationMessage = '';
-  }
-  remove(index: number): void {
-    if (index >= 0) {
-      this.kpiChipItems.splice(index, 1);
-    }
-    this.frm.get('operation')?.setValue('');
-    this.operationValidationMessage = '';
-  }
-  edit(index: number, event: MatChipEditedEvent) {
-    const value = event.value.trim();
-    if (!value) {
-      this.remove(index);
-      return;
-    }
-    if (index >= 0) {
-      this.kpiChipItems[index].name = value;
-    }
-    this.frm.get('operation')?.setValue('');
-    this.operationValidationMessage = '';
-  }
-  addOperatorOrFunction(node: TreeNodeViewModel) {
-    this.kpiChipItems.push(node);
-    this.frm.get('operation')?.setValue('');
-    this.operationValidationMessage = '';
   }
   buildFormula(stepper?: MatStepper) {
     try {
@@ -157,10 +106,11 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
           id: 0,
           order: 0,
           type: enOPerationTypes.voidFunction,
-          childs: this.kpiBuilderService.buildKpiOperationChilds(this.kpiChipItems)}
+          childs: this.operationService.buildKpiOperationChilds(this.kpiChipItems)
+        }
       }
       this._otherSubscription = this.kpiService.validateKpi(kpi).subscribe(x => {
-        if(x.data) {
+        if (x.data) {
           this.frm.get('operation')?.setValue(kpi.operation);
           this.frm.get('deviceId')?.setValue(this.deviceId);
           this.operationValidationMessage = '';
@@ -170,41 +120,33 @@ export class AmrKpiBuilderComponent extends Unsubscriber {
         }
       });
     }
-    catch(error) {
+    catch (error) {
       if (error instanceof Error) {
         this.operationValidationMessage = error.message;
       }
     }
-    
+
   }
   submit() {
-    if(this.frm.invalid) {
+    if (this.frm.invalid) {
       return;
     }
-    if(this.kpi) {
+    if (this.kpi) {
       this._otherSubscription = this.kpiService.editKpi(this.frm.value).subscribe(x => {
-        if(x) {
+        if (x) {
           this.router.navigateByUrl('/kpis/list')
         }
       })
     }
     else {
       this._otherSubscription = this.kpiService.submitKpi(this.frm.value).subscribe(x => {
-        if(x) {
+        if (x) {
           this.router.navigateByUrl('/kpis/list')
         }
       });
     }
-    
+
   }
-  onContextMenu(event: MouseEvent, item: TreeNodeViewModel, index: number) {
-    event.preventDefault();
-    this.contextMenuPosition.x = event.clientX + 'px';
-    this.contextMenuPosition.y = event.clientY + 'px';
-    this.contextMenu.menuData = { 'item': item, 'index': index };
-    this.contextMenu.menu?.focusFirstItem('mouse');
-    this.contextMenu.openMenu();
-  }
-  
+
 }
 

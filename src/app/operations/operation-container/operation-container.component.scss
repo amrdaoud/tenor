@@ -1,0 +1,42 @@
+.operation-form-container {
+    height:90px;
+}
+.section {
+    padding: 15px 15px 0px 15px;
+    .mat-mdc-form-field {
+        width:100%;        
+    }
+    button {
+        width:100%;
+    }
+}
+.control-error {
+    color: red;
+    font-size: 14px;
+    
+}
+.chips-grid {
+    min-width:100px;
+    min-height: 40px;
+}
+.chips-grid .cdk-drag-placeholder {
+    width:5px !important;
+    
+}
+.chips-grid .counter {
+    background-color:  rgba(lightblue, 0.3);
+    border: lightblue solid 1px;
+}
+.chips-grid .kpi {
+    padding: 0px !important;
+    background-color: rgba(lightgreen, 0.3);
+    border: lightgreen solid 1px;
+}
+.chips-grid .function {
+    background-color: rgba(yellow, 0.3);
+    border: yellow solid 1px;
+}
+.chips-grid .number {
+    background-color: rgba(orange, 0.3);
+    border: orange solid 1px;
+}

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { KpiBuilderService } from './kpi-builder.service';
+import { OperationService } from './operation.service';
 
-describe('KpiBuilderService', () => {
-  let service: KpiBuilderService;
+describe('OperationService', () => {
+  let service: OperationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(KpiBuilderService);
+    service = TestBed.inject(OperationService);
   });
 
   it('should be created', () => {

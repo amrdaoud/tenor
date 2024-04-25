@@ -4,7 +4,7 @@
       <div matSuffix style="padding-right: 5px;"><mat-icon *ngIf="!(loadingRootDevices$ | async); else loadingSpinnerSuffix">search</mat-icon></div>
     </mat-form-field>
     <div class="tree-container">
-    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList [cdkDropListData]="treeControl.dataNodes" cdkDropListSortingDisabled>
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList [cdkDropListData]="treeControl.dataNodes" cdkDropListSortingDisabled [cdkDropListConnectedTo]="connectedDragDropLists">
       <mat-tree-node *matTreeNodeDef="let node" [ngClass]="node.type" matTreeNodeToggle matTreeNodePadding matTreeNodePaddingIndent="15" (dblclick)="node.type === 'counter' ? selectElement(node) : ''" [cdkDragData]="node" cdkDrag [cdkDragDisabled]="node.type !== 'counter'">
         <button mat-icon-button disabled ></button>
         <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'" [svgIcon]="node.type === 'device' ? 'device-icon' : node.type === 'subset' ? 'subset-icon' : 'counter-icon'">

@@ -1,15 +1,15 @@
-<mat-drawer-container class="kpi-builder-container" cdkDropListGroup>
+<mat-drawer-container class="kpi-builder-container">
     
     <mat-drawer #measuresDrawer [opened]="false" mode="side">
         <mat-tab-group color="accent" *ngIf="deviceId$ | async as deviceId">
             <mat-tab label="Counters">
                 <div  class="measures-container">
-                    <app-counter-side-tree [deviceId]="deviceId" (selected)="addMeasure($event)"></app-counter-side-tree>
+                    <app-counter-side-tree [deviceId]="deviceId" (selected)="addMeasure($event)" [connectedDragDropLists]="[operationContainer?.formulaContainer!]"></app-counter-side-tree>
                 </div>
             </mat-tab>
             <mat-tab label="KPIs">
                 <div class="measures-container">
-                    <app-kpi-side-list [deviceId]="deviceId" [disableId]="kpi && kpi.id!" (selected)="addMeasure($event)"></app-kpi-side-list>
+                    <app-kpi-side-list [deviceId]="deviceId" [disableId]="kpi && kpi.id!" (selected)="addMeasure($event)" [connectedDragDropLists]="[operationContainer?.formulaContainer!]"></app-kpi-side-list>
                 </div>
             </mat-tab>
         </mat-tab-group>
@@ -34,44 +34,7 @@
         <form *ngIf="frm" [formGroup]="frm" (ngSubmit)="submit()">
             <mat-stepper orientation="vertical" [linear]="true" #stepper>
                 <mat-step [label]="kpi ? 'Update KPI #'+kpi.id+' Formula'  : 'Create you KPI formula'" [stepControl]="frm.get('operation')!">
-                    <div class="section">
-                        <div class="kpi-form-container">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Drop items here</mat-label>
-                            <mat-chip-grid #chipGrid aria-label="Enter Measures" class="chips-grid"
-                                cdkDropListOrientation="horizontal" #formula="cdkDropList"
-                                cdkDropList [cdkDropListData]="kpiChipItems"
-                                (cdkDropListDropped)="drop($event)">
-                                @for (chipItem of kpiChipItems; track chipItem) {
-                                <mat-chip-row cdkDrag [ngClass]="chipItem.type"
-                                    [editable]="chipItem.type === 'number'"
-                                    (edited)="edit($index, $event)"
-                                    (removed)="remove($index)"
-                                    [aria-description]="'press enter to edit ' + chipItem.name" (contextmenu)="onContextMenu($event, chipItem, $index)">
-                                    {{chipItem.type === 'counter' ? chipItem.aggregation +' '+ chipItem.name : chipItem.name}}
-                                </mat-chip-row>
-                                }
-                                <input placeholder="Enter a number"
-                                [matChipInputFor]="chipGrid"
-                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                                [matChipInputAddOnBlur]="addOnBlur"
-                                (matChipInputTokenEnd)="add($event)"
-                                [matChipInputFor]="chipGrid"/>
-                            </mat-chip-grid>
-                            <mat-hint class="control-error" *ngIf="operationValidationMessage || frm.get('operation')?.errors">{{operationValidationMessage}}</mat-hint>
-                        </mat-form-field>
-                        </div>
-                    </div>
-                    <div class="section" *ngIf="(operatorsAndFunctions$ | async) as operatorsFunctions; else loadingOperators">
-                        <mat-grid-list rowHeight="50px" cols="8" gutterSize="5" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="operatorsFunctions">
-                            <mat-grid-tile *ngFor="let operator of operatorsFunctions">
-                                <button type="button" mat-stroked-button style="width:100%" (click)="addOperatorOrFunction(operator)" cdkDrag [cdkDragData]="operator">{{operator.name}}</button>
-                            </mat-grid-tile>
-                        </mat-grid-list>
-                    </div>
-                    <ng-template #loadingOperators>
-                        <mat-progress-bar *ngIf="loadingOperatorsAndFunctions$ | async" mode='query'></mat-progress-bar>
-                    </ng-template>
+                    <app-operation-container  [chipItems]="kpiChipItems" [operationFormControl]="this.frm.get('operation')!" [operationValidationMessage]="operationValidationMessage!"></app-operation-container>
                     <div class="section">
                         <button *ngIf="!(loadingValidate$ | async); else validating" type="button" mat-raised-button color="primary" (click)="buildFormula(stepper)">Next</button>
                         <ng-template #validating>
@@ -82,7 +45,6 @@
                 <mat-step label="Select KPI options">
                     <div class="section">
                         <amr-input controlName="name" label="Kpi Name" appearance="outline" [isAsync]="true"></amr-input>
-                        
                     </div>
                     <ng-container formArrayName="kpiFields">
                         <ng-container *ngFor="let field of extraFieldsArray; let i = index">
@@ -119,22 +81,5 @@
         
     </mat-drawer-content>
 </mat-drawer-container>
-<div style="visibility: hidden; position: fixed"
-    [style.left]="contextMenuPosition.x"
-    [style.top]="contextMenuPosition.y"
-    [matMenuTriggerFor]="contextMenu">
-</div>
-<mat-menu #contextMenu="matMenu">
-	<ng-template matMenuContent let-item="item" let-index="index">
-        <button mat-menu-item [matMenuTriggerFor]="aggregationMenu" *ngIf="item.type === 'counter'">Select Aggregation</button>
-		<button mat-menu-item (click)="remove(index)"><mat-icon color="warn" >cancel</mat-icon>remove</button>
-        <mat-menu #aggregationMenu="matMenu">
-            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'AVG'">AVG</button>
-            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'SUM'">SUM</button>
-            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'MIN'">MIN</button>
-            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'MAX'">MAX</button>
-            <button mat-menu-item (click)="kpiChipItems[index].aggregation = 'COUNT'">COUNT</button>
-        </mat-menu>
-	</ng-template>
-</mat-menu>
+
 
