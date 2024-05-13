@@ -173,7 +173,6 @@ export class OperationService {
     results.push(items.slice(start, items.length - 1))
     return results;
   }
-
   destroyKpiOperationChilds(operations: OperationDto[]): TreeNodeViewModel[] {
     const nodes: TreeNodeViewModel[] = [];
     let i = 0;

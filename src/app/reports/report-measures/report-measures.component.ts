@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output, QueryList, ViewChild, ViewChildren, inject } from '@angular/core';
 import { ReportMeasureDto } from '../report';
 import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -13,18 +13,31 @@ import { MatButtonModule } from '@angular/material/button';
 import { HighlighterDirective } from 'techteec-lib/directives';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTabsModule } from '@angular/material/tabs';
+import { CounterSideTreeComponent } from '../../counters/counter-side-tree/counter-side-tree.component';
+import { KpiSideListComponent } from '../../kpis/kpi-side-list/kpi-side-list.component';
+import { OperatorsService } from '../../operators/operators.service';
+import { MatStepperNext } from '@angular/material/stepper';
 
 @Component({
   selector: 'app-report-measures',
   standalone: true,
   templateUrl: './report-measures.component.html',
   styleUrl: './report-measures.component.scss',
-  imports: [CommonModule, FormsModule, MatExpansionModule, MatFormFieldModule, MatInputModule, OperationContainerComponent, MatIconModule, CdkDrag, CdkDragHandle, CdkDropList, MatButtonModule, ReactiveFormsModule, MatSelectModule]
+  imports: [CommonModule, FormsModule, MatTabsModule, MatExpansionModule,
+            MatFormFieldModule, MatInputModule, OperationContainerComponent,
+            MatIconModule, CdkDrag, CdkDragHandle, CdkDropList, MatButtonModule,
+            ReactiveFormsModule, MatSelectModule, MatSidenavModule, CounterSideTreeComponent,
+            KpiSideListComponent, MatStepperNext]
 })
 export class ReportMeasuresComponent implements AfterViewInit {
   @Input() formArray = new FormArray<any>([]);
-  @Output() dropContainersChanged = new EventEmitter<CdkDropList<any>[]>();
-  @Output() formArrayChanged = new EventEmitter<FormArray<any>>();
+  dropContainers:  CdkDropList<any>[] = []
+  // @Output() dropContainersChanged = new EventEmitter<CdkDropList<any>[]>();
+  // @Output() formArrayChanged = new EventEmitter<FormArray<any>>();
+  private operatorService = inject(OperatorsService);
+  logicalOperators$ = this.operatorService.logicalOperators$;
   @ViewChildren('operationContainer') operationContainers!: QueryList<OperationContainerComponent>;
   @ViewChild('measureDropper') measureDropper!: CdkDropList<any>;
   isDragging = false;
@@ -66,16 +79,16 @@ export class ReportMeasuresComponent implements AfterViewInit {
   updateContainers() {
     setTimeout(() => {
       const containers = this.operationContainers.map(x => x.formulaContainer);
-      this.dropContainersChanged.emit([this.measureDropper,...containers]);
+      this.dropContainers = [this.measureDropper,...containers];
     }, 500);
-    this.changed();
+    // this.changed();
   }
   ngAfterViewInit(): void {
     this.updateContainers();
   }
-  changed() {
-    this.formArrayChanged.emit(new FormArray<any>([]))
-  }
+  // changed() {
+  //   this.formArrayChanged.emit(new FormArray<any>([]))
+  // }
   get formArrayControls(): FormGroup[] {
     return this.formArray.controls.map(x => x as FormGroup);
   }
@@ -96,5 +109,6 @@ export class ReportMeasuresComponent implements AfterViewInit {
   removeHaving(measureIndex: number, havingIndex: number) {
     this.getHavingFormArray(measureIndex).removeAt(havingIndex);
   }
+  
 
 }

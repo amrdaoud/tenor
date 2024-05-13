@@ -35,7 +35,7 @@ export const items: IconNavItemWithRoles[] = [
       {
         title: 'Create New',
         svgIcon: ADD_ICON,
-        routerLink: 'kpis/devices',
+        routerLink: 'kpis/builder',
         roles: ['editor', 'admin']
       },
     ],

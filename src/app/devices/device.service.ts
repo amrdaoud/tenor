@@ -9,6 +9,7 @@ import {
   DeviceBindingModel,
 } from './device';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { TreeNodeViewModel } from '../common/generic';
 
 @Injectable({
   providedIn: 'root',
@@ -91,5 +92,11 @@ export class DeviceService {
         responseType: 'blob',
       })
       .pipe(finalize(() => this.loadingDownload.next(false)));
+  }
+  getRootDevices(): Observable<TreeNodeViewModel[]> {
+    this.loadingList.next(true);
+    return this.http.get<TreeNodeViewModel[]>(environment.apiUrl + `devices/GetDevicesTree`, {params: undefined}).pipe(
+      finalize(() => this.loadingList.next(false))
+    )
   }
 }

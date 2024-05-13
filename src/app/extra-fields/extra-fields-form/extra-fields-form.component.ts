@@ -13,6 +13,7 @@ import { Unsubscriber } from 'techteec-lib/common';
 import { filter } from 'rxjs';
 import { fieldTypes } from '../../common/generic';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { DeviceService } from '../../devices/device.service';
 
 @Component({
   selector: 'amr-extra-fields-form',
@@ -25,6 +26,8 @@ export class ExtraFieldsFormComponent extends Unsubscriber {
   private extraFieldsService = inject(ExtraFieldsService);
   private dialogRef = inject(MatDialogRef<ExtraFieldsFormComponent>)
   private confirm = inject(ConfirmService);
+  private deviceService = inject(DeviceService);
+  rootDevices$ = this.deviceService.getRootDevices();
   frm: FormGroup;
   fieldTypes = Object.values(fieldTypes).slice(0,Object.values(fieldTypes).length / 2).map((x,i) => {return {name: x, value: Object.values(fieldTypes)[i + (Object.values(fieldTypes).length / 2)]}})
   constructor(@Inject(MAT_DIALOG_DATA) public extraFields?: ExtraFieldViewModel) {

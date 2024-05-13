@@ -1,0 +1,28 @@
+<div class="section" style="text-align: right;">
+    <mat-slide-toggle formControlName="isPublic">Set as public</mat-slide-toggle>
+</div>
+<div class="section">
+    <amr-input controlName="name" label="Name" appearance="outline" [isAsync]="true"></amr-input>
+</div>
+<div class="section">
+    <amr-select controlName="deviceId" label="Device" appearance="outline" [options]="(rootDevices$ | async)!" displayAccessor="name" valueAccessor="id"></amr-select>
+</div>
+<ng-container [formArrayName]="formArrayName">
+    <ng-container *ngFor="let field of extraFieldsArray; let i = index">
+        <div class="section">
+            <div [formGroup]="field">
+                <ng-container [ngSwitch]="getFieldObject(i).type">
+                    <div *ngSwitchCase="'List'">
+                        <amr-select controlName="value" [label]="getFieldObject(i).name" [options]="getFieldObject(i).content" [isMulty]="false" appearance="outline"></amr-select>
+                    </div>
+                    <div *ngSwitchCase="'MultiSelectList'">
+                        <amr-select controlName="value" [label]="getFieldObject(i).name" [options]="getFieldObject(i).content" [isMulty]="true" appearance="outline"></amr-select>
+                    </div>
+                    <div *ngSwitchCase="'Text'">
+                        <amr-input controlName="value" [label]="getFieldObject(i).name" appearance="outline"></amr-input>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>

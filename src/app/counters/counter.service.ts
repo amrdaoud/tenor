@@ -91,13 +91,16 @@ export class CounterService {
       .get<ExtraField[]>(this.url + '/getExtraFields')
       .pipe(finalize(() => this.loadingExtraFields.next(false)));
   }
-  getDevicesByParentId(parentId: number, searchQuery?:string): Observable<TreeNodeViewModel[]> {
+  getDeviceChildsByParentId(parentId?: number, searchQuery?:string): Observable<TreeNodeViewModel[]> {
     this.loadingRootDevices.next(true);
-    let params = new HttpParams().set('parentid', parentId)
+    let params = new HttpParams();
+    if(parentId) {
+      params = params.set('parentid', parentId)
+    }
     if(searchQuery) {
       params = params.set('searchQuery', searchQuery)
     }
-    return this.http.get<TreeNodeViewModel[]>(environment.apiUrl + `devices/GetDeviceByParent`, {params: params}).pipe(
+    return this.http.get<TreeNodeViewModel[]>(environment.apiUrl + `devices/GetDevicesTree`, {params: params}).pipe(
       finalize(() => this.loadingRootDevices.next(false))
     )
   }

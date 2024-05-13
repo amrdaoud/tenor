@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, finalize, map, of } from 'rxjs';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
 import {
@@ -18,31 +18,7 @@ export class KpiService {
   private url = environment.apiUrl + 'kpis';
   private http = inject(HttpClient);
 
-  createKpiForm(deviceId:number, extraFields: ExtraField[],kpi?: KpiViewModel): FormGroup {
-    let frm = new FormGroup({
-      id: new FormControl(kpi?.id ?? 0, Validators.required),
-      name: new FormControl(kpi?.name, {
-        validators: Validators.required,
-        asyncValidators: this.validateName(deviceId, kpi?.name),
-        updateOn: 'blur'
-        }),
-      deviceId: new FormControl(kpi?.deviceId, Validators.required),
-      isPublic: new FormControl(kpi?.isPublic ?? false, Validators.required),
-      kpiFields: new FormArray([]),
-      operation: new FormControl(kpi?.operations, Validators.required)
-    });
-    extraFields.forEach(ef => {
-      (frm.get('kpiFields') as FormArray).push(new FormGroup({
-        id: new FormControl(0),
-        name: new FormControl(ef.name),
-        fieldId: new FormControl(ef.id),
-        type: new FormControl(ef.type),
-        content: new FormControl(ef.content),
-        value: new FormControl(kpi?.extraFields?.find(x => x.fieldId === ef.id)?.value, {validators: ef.isMandatory ? Validators.required : null} )
-      }))
-    })
-    return frm;
-  }
+  
   //Loaders
   private loadingList = new BehaviorSubject<boolean>(false);
   get loadingList$(): Observable<boolean> {
@@ -110,10 +86,14 @@ export class KpiService {
       })
       .pipe(finalize(() => this.loadingDownload.next(false)));
   }
-  getExtraFields(): Observable<ExtraField[]> {
+  getExtraFields(deviceId?:number): Observable<ExtraField[]> {
     this.loadingExtraFields.next(true);
+    let params = new HttpParams();
+    if(deviceId) {
+      params = params.set('deviceId', deviceId);
+    }
     return this.http
-      .get<ExtraField[]>(this.url + '/GetExtraFields')
+      .get<ExtraField[]>(this.url + '/GetExtraFields', {params: params})
       .pipe(finalize(() => this.loadingExtraFields.next(false)));
   }
   validateKpi(model: CreateKpi): Observable<ResultWithMessage> {
@@ -122,13 +102,34 @@ export class KpiService {
       finalize(() => this.loadingValidate.next(false))
     )
   }
-  validateName(deviceId: number, current?: string): AsyncValidatorFn {
+  validateName(deviceControlName: string, current?: string): AsyncValidatorFn {
     return (control: AbstractControl) => {
+      const matchWithControl = control.parent?.get(deviceControlName);
+      if(!control || !matchWithControl || !control.value || !matchWithControl.value) {
+        return of(null);
+      }
       if(current?.toString()?.toLowerCase() === control.value.toString().toLowerCase()) {
         return of(null);
       }
       this.loadingCheckName.next(true);
-      return this.http.get<boolean>(this.url + `/ValidateKpi?kpiName=${control.value}&deviceId=${deviceId}`).pipe(
+      return this.http.get<boolean>(this.url + `/ValidateKpi?kpiName=${control.value}&deviceId=${matchWithControl.value}`).pipe(
+        map(res => res ? null : {isTaken: true}),
+        catchError(() => of(null)),
+        finalize(() => this.loadingCheckName.next(false))
+      );
+    }
+  }
+  validateDevice(nameControlName: string, current?: number | null): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      const matchWithControl = control.parent?.get(nameControlName);
+      if(!control || !matchWithControl || !control.value || !matchWithControl.value) {
+        return of(null);
+      }
+      if(current?.toString()?.toLowerCase() === control.value.toString().toLowerCase()) {
+        return of(null);
+      }
+      this.loadingCheckName.next(true);
+      return this.http.get<boolean>(this.url + `/ValidateKpi?kpiName=${matchWithControl.value}&deviceId=${control.value}`).pipe(
         map(res => res ? null : {isTaken: true}),
         catchError(() => of(null)),
         finalize(() => this.loadingCheckName.next(false))

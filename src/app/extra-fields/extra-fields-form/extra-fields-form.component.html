@@ -17,6 +17,14 @@
                             [fullWidth]="true"></amr-input>
                     </div>
                 </mat-grid-tile>
+
+                <mat-grid-tile rowspan="2">
+                    <div class="techteec-control-full-width">
+                        <amr-select controlName="deviceId" label="Device" placeHolder="Select Device"
+                            [options]="(rootDevices$ | async)!" valueAccessor="id" displayAccessor="name"
+                            appearance="outline" [fullWidth]="true"></amr-select>
+                    </div>
+                </mat-grid-tile>
                 
                 <mat-grid-tile rowspan="2">
                     <div class="techteec-control-full-width">

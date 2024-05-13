@@ -11,6 +11,11 @@
       <div class="menu-button-container">
         <mat-icon class="clickable" color="primary" [mat-menu-trigger-for]="otherFiltersMenu">tune</mat-icon>
         <mat-menu #otherFiltersMenu="matMenu" class="measure-list-filter-menu">
+          <div class="measure-list-filter-menu-controls" (click)="$event.stopPropagation()">
+            <amr-select size="small" controlName="deviceId"
+            label="Device" placeHolder="Select Device" [options]="(rootDevices$ | async)!" appearance="outline" valueAccessor="id" displayAccessor="name"
+            [haveNull]="true"></amr-select>
+          </div>
           <div class="measure-list-filter-menu-controls" formGroupName="extraFields">
             <div *ngFor="let field of extraFields" (click)="$event.stopPropagation()">
               <ng-container [ngSwitch]="field.type">
@@ -32,7 +37,7 @@
       cdkDropListSortingDisabled [cdkDropListConnectedTo]="connectedDragDropLists">
       <div style="width: 100%">
         <mat-list-item *ngFor="let item of itemList" [ngClass]="item.id === disableId ? 'disabled' : ''" cdkDrag
-          [cdkDragData]="item" (dblclick)="selectElement(item)" [cdkDragDisabled]="item.id === disableId">
+          [cdkDragData]="item" (dblclick)="item.id !== disableId ? selectElement(item) : ''" [cdkDragDisabled]="item.id === disableId">
           <mat-icon matListItemIcon svgIcon="kpi-icon" class="type-icon"></mat-icon> {{item.name}}
         </mat-list-item>
       </div>

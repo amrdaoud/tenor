@@ -21,6 +21,8 @@ export interface ExtraFieldViewModel {
     isForReport: boolean;
     isForDashboard: boolean;
     isMandatory: boolean;
+    deviceId: number;
+    deviceName: string;
 }
 
 export interface ExtraFieldBindingModel {

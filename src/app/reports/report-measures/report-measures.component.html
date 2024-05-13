@@ -1,93 +1,101 @@
-<div class="report-measures-container">
-    <mat-accordion cdkDropList [cdkDropListData]="formArrayControls" (cdkDropListDropped)="rearrangeMeasures($event)" class="example-list" >
-        <ng-container *ngFor="let measureForm of formArrayControls; let i = index">
-            <mat-expansion-panel #panel hideToggle  class="example-box" cdkDrag (cdkDragStarted)="isDragging = true" (cdkDragEnded)="isDragging = false" [formGroup]="measureForm" >
-                    <mat-expansion-panel-header cdkDragHandle>
-                        <mat-panel-title>
-                            <span *ngIf="measureForm.get('displayName')?.value; else noName">{{measureForm.get('displayName')?.value}}</span>
-                            <ng-template #noName><span style="font-style: italic;color: #bbb">NO NAME</span></ng-template>
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            <span class="highlight red" *ngIf="measureForm.invalid">Invalid</span>
-                            <span class="highlight green" *ngIf="measureForm.valid">Valid</span>
-                            <mat-icon (click)="$event.stopPropagation(); removeMeasure(i)">cancel</mat-icon>
-                        </mat-panel-description>
-                    </mat-expansion-panel-header>
-                    <div class="name-container">
-                        <mat-form-field appearance="outline" subscriptSizing="dynamic" style="min-width:50%">
-                            <mat-label>Display Name</mat-label>
-                            <input matInput formControlName="displayName">
-                        </mat-form-field>
-                    </div>
-                    <div>
-                        <app-operation-container #operationContainer [autoValidate]="true" [chipItems]="measureForm.get('chipItems')?.value" (changed)="changed()" [operationFormControl]="measureForm.get('operation')!"></app-operation-container>
-                    </div>
-                    <div class="having-add">
-                        <button mat-stroked-button color="accent" (click)="addHaving(i)">Add Measure Filter</button>
-                    </div>
-                    <div class="having-container" formArrayName="havings">
-                            <ng-container *ngFor="let havingForm of getHavingControls(i); let hI = index">
-                                <div [formGroup]="havingForm" class="having-row">
-                                    <div class="having-col">
-                                        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                                            <mat-label>Logical Operator</mat-label>
-                                            <mat-select formControlName="logicOpt">
-                                                <mat-option [value]=0>
-                                                    AND
-                                                </mat-option>
-                                                <mat-option [value]=1>
-                                                    OR
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="having-col">
-                                        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                                            <mat-label>Operator</mat-label>
-                                            <mat-select formControlName="operatorId">
-                                                <mat-option value='>'>
-                                                    >
-                                                </mat-option>
-                                                <mat-option value='>='>
-                                                    >=
-                                                </mat-option>
-                                                <mat-option value='<'>
-                                                    <
-                                                </mat-option>
-                                                <mat-option value='<='>
-                                                    <=
-                                                </mat-option>
-                                                <mat-option value='='>
-                                                    =
-                                                </mat-option>
-                                                <mat-option value='<>'>
-                                                    <>
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="having-col">
-                                        <mat-form-field appearance="outline" subscriptSizing="dynamic">
-                                            <mat-label>Value</mat-label>
-                                            <input matInput formControlName="value" type="number">
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="having-button">
-                                        <mat-icon (click)="$event.stopPropagation(); removeHaving(i,hI)">cancel</mat-icon>
-                                    </div>
+<mat-drawer-container class="measure-drawer-container">
+    <mat-drawer #measuresDrawer [opened]="true" mode="side">
+        <mat-tab-group color="accent">
+            <mat-tab label="Counters">
+                <div class="measures-container">
+                    <app-counter-side-tree
+                        [connectedDragDropLists]="dropContainers"></app-counter-side-tree>
+                </div>
+            </mat-tab>
+            <mat-tab label="KPIs">
+                <div class="measures-container">
+                    <app-kpi-side-list
+                        [connectedDragDropLists]="dropContainers"></app-kpi-side-list>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="stepper-content">
+            <div class="report-measures-container">
+                <mat-accordion cdkDropList [cdkDropListData]="formArrayControls" (cdkDropListDropped)="rearrangeMeasures($event)" class="example-list" >
+                    <ng-container *ngFor="let measureForm of formArrayControls; let i = index">
+                        <mat-expansion-panel #panel hideToggle  class="example-box" cdkDrag (cdkDragStarted)="isDragging = true" (cdkDragEnded)="isDragging = false" [formGroup]="measureForm" >
+                                <mat-expansion-panel-header cdkDragHandle>
+                                    <mat-panel-title>
+                                        <span *ngIf="measureForm.get('displayName')?.value; else noName">{{measureForm.get('displayName')?.value}}</span>
+                                        <ng-template #noName><span style="font-style: italic;color: #bbb">NO NAME</span></ng-template>
+                                    </mat-panel-title>
+                                    <mat-panel-description>
+                                        <span class="highlight red" *ngIf="measureForm.invalid">Invalid</span>
+                                        <span class="highlight green" *ngIf="measureForm.valid">Valid</span>
+                                        <mat-icon (click)="$event.stopPropagation(); removeMeasure(i)">cancel</mat-icon>
+                                    </mat-panel-description>
+                                </mat-expansion-panel-header>
+                                <div class="name-container">
+                                    <mat-form-field appearance="outline" subscriptSizing="dynamic" style="min-width:50%">
+                                        <mat-label>Display Name</mat-label>
+                                        <input matInput formControlName="displayName">
+                                    </mat-form-field>
                                 </div>
-                            </ng-container>
+                                <div>
+                                    <app-operation-container #operationContainer [autoValidate]="true" [chipItems]="measureForm.get('chipItems')?.value"  [operationFormControl]="measureForm.get('operation')!"></app-operation-container>
+                                </div>
+                                <div class="having-add">
+                                    <button mat-stroked-button color="accent" (click)="addHaving(i)">Add Measure Filter</button>
+                                </div>
+                                <div class="having-container" formArrayName="havings">
+                                        <ng-container *ngFor="let havingForm of getHavingControls(i); let hI = index">
+                                            <div [formGroup]="havingForm" class="having-row">
+                                                <div class="having-col">
+                                                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                                                        <mat-label>Logical Operator</mat-label>
+                                                        <mat-select formControlName="logicOpt">
+                                                            <mat-option [value]=0>
+                                                                AND
+                                                            </mat-option>
+                                                            <mat-option [value]=1>
+                                                                OR
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="having-col">
+                                                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                                                        <mat-label>Operator</mat-label>
+                                                        <mat-select formControlName="operatorId">
+                                                            <mat-option *ngFor="let operator of logicalOperators$ | async" [value]="operator.id">
+                                                                {{operator.name}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="having-col">
+                                                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                                                        <mat-label>Value</mat-label>
+                                                        <input matInput formControlName="value" type="number">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="having-button">
+                                                    <mat-icon (click)="$event.stopPropagation(); removeHaving(i,hI)">cancel</mat-icon>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                </div>
+                        </mat-expansion-panel>
+                    </ng-container>
+                    
+                </mat-accordion>
+                <div class="measure-drop-container" >
+                    <div cdkDropList #measureDropper="cdkDropList" (cdkDropListDropped)="dropMeasure($event)">
+                    <div class="measure-drop clickable" (click)="addNewMeasure()" >
+                        <mat-icon>flip_to_front</mat-icon><div>Drop Measure Or Click To Add</div>
                     </div>
-            </mat-expansion-panel>
-        </ng-container>
-        
-    </mat-accordion>
-    <div class="measure-drop-container" >
-        <div cdkDropList #measureDropper="cdkDropList" (cdkDropListDropped)="dropMeasure($event)">
-        <div class="measure-drop clickable" (click)="addNewMeasure()" >
-            <mat-icon>flip_to_front</mat-icon><div>Drop Measure Or Click To Add</div>
+                </div>
+                </div>
+                
+            </div>
         </div>
-    </div>
-    </div>
-    
-</div>
+        <div class="stepper-buttons"><button mat-raised-button color="primary" matStepperNext>Next</button></div>
+    </mat-drawer-content>
+</mat-drawer-container>

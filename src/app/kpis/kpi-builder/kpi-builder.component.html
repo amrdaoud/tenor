@@ -1,15 +1,14 @@
 <mat-drawer-container class="kpi-builder-container">
-    
     <mat-drawer #measuresDrawer [opened]="false" mode="side">
-        <mat-tab-group color="accent" *ngIf="deviceId$ | async as deviceId">
+        <mat-tab-group color="accent">
             <mat-tab label="Counters">
                 <div  class="measures-container">
-                    <app-counter-side-tree [deviceId]="deviceId" (selected)="addMeasure($event)" [connectedDragDropLists]="[operationContainer?.formulaContainer!]"></app-counter-side-tree>
+                    <app-counter-side-tree  (selected)="addMeasure($event)" [connectedDragDropLists]="[operationContainer?.formulaContainer!]"></app-counter-side-tree>
                 </div>
             </mat-tab>
             <mat-tab label="KPIs">
                 <div class="measures-container">
-                    <app-kpi-side-list [deviceId]="deviceId" [disableId]="kpi && kpi.id!" (selected)="addMeasure($event)" [connectedDragDropLists]="[operationContainer?.formulaContainer!]"></app-kpi-side-list>
+                    <app-kpi-side-list [disableId]="kpi && kpi.id!" (selected)="addMeasure($event)" [connectedDragDropLists]="[operationContainer?.formulaContainer!]"></app-kpi-side-list>
                 </div>
             </mat-tab>
         </mat-tab-group>
@@ -43,37 +42,12 @@
                     </div>
                 </mat-step>
                 <mat-step label="Select KPI options">
-                    <div class="section">
-                        <amr-input controlName="name" label="Kpi Name" appearance="outline" [isAsync]="true"></amr-input>
-                    </div>
-                    <ng-container formArrayName="kpiFields">
-                        <ng-container *ngFor="let field of extraFieldsArray; let i = index">
-                            <div class="section">
-                                <div [formGroup]="field">
-                                    <ng-container [ngSwitch]="getFieldObject(i).type">
-                                        <div *ngSwitchCase="'List'">
-                                            <amr-select controlName="value" [label]="getFieldObject(i).name" [options]="getFieldObject(i).content" [isMulty]="false" appearance="outline"></amr-select>
-                                        </div>
-                                        <div *ngSwitchCase="'MultiSelectList'">
-                                            <amr-select controlName="value" [label]="getFieldObject(i).name" [options]="getFieldObject(i).content" [isMulty]="true" appearance="outline"></amr-select>
-                                        </div>
-                                        <div *ngSwitchCase="'Text'">
-                                            <amr-input controlName="value" [label]="getFieldObject(i).name" appearance="outline"></amr-input>
-                                        </div>
-                                    </ng-container>
-                                </div>
-                            </div>
-                        </ng-container>
-                    </ng-container>
-                    <div class="section">
-                        <mat-slide-toggle formControlName="isPublic">Set as public</mat-slide-toggle>
-                    </div>
+                    <app-shared-form-controls [formGroup]="frm" formArrayName="kpiFields"></app-shared-form-controls>
                     <div class="section">
                         <div class="button-handler">
                             <button mat-stroked-button type="button" color="primary" matStepperPrevious>Back</button>
                             <button mat-raised-button color="primary"[disabled]="frm.invalid">{{kpi ? 'Update KPI' : 'Submit KPI'}}</button>
                         </div>
-                        
                     </div>
                 </mat-step>
             </mat-stepper>

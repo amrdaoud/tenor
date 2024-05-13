@@ -1,31 +1,7 @@
-.stepper-content {
-    min-height:calc(100% - 72px);
-}
+
 .report-builder-container {
-    .mat-mdc-tab-group {
-        gap: 10px;
-        height:100%;
-    }
-    .mat-drawer {
-        width:25%;
-        padding:10px !important;
-        
-    }
     height:100%;
 }
-.measure-drawer-container {
-    height:100%;
-}
-.stepper-buttons {
-    // background-color: rgba($color: #000000, $alpha: 0.1);
-    position: sticky;
-    bottom: 0px;
-    padding: 18px;
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    button {
-        width:100%;
-    }
-}
+
+
 

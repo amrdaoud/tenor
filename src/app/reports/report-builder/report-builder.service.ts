@@ -17,18 +17,11 @@ export class ReportBuilderService {
       reportFields: new FormArray([]),
       measures: new FormArray([], Validators.required),
       levels: new FormArray([],Validators.required),
-      filters: new FormArray([], Validators.required)
+      containerOfFilters: new FormArray([], Validators.required)
     });
-    extraFields.forEach(ef => {
-      (frm.get('reportFields') as FormArray).push(new FormGroup({
-        id: new FormControl(0),
-        name: new FormControl(ef.name),
-        fieldId: new FormControl(ef.id),
-        type: new FormControl(ef.type),
-        content: new FormControl(ef.content),
-        value: new FormControl(report?.reportFields?.find(x => x.fieldId === ef.id)?.value, {validators: ef.isMandatory ? Validators.required : null} )
-      }))
-    });
+    if(report?.extraFields && report.extraFields.length > 0) {
+      this.resetExtraFields(frm,extraFields!,report)
+    }
     report?.measures.forEach(m => {
       (frm.get('measures') as FormArray).push(new FormGroup({
         id: new FormControl(m.id, Validators.required),
@@ -53,15 +46,38 @@ export class ReportBuilderService {
         dimensionLevelId: new FormControl(l.dimensionLevelId, Validators.required)
       }))
     });
-    report?.filters.forEach(f => {
-      (frm.get('filters') as FormArray).push(new FormGroup({
-        id: new FormControl(f.id, Validators.required),
-        logicalOperator: new FormControl(f.logicalOperator, Validators.required),
-        value: new FormControl(f.value),
-        dimensionLevelId: new FormControl(f.dimensionLevelId, Validators.required)
+    report?.containerOfFilters.forEach(cf => {
+        (frm.get('containerOfFilters') as FormArray).push(new FormGroup ({
+          id: new FormControl(cf.id, Validators.required),
+          logicalOperator: new FormControl(cf.logicalOperator, Validators.required),
+          reportFilters: new FormArray(cf.ReportFilters?.map(f => {
+            const reportFilterGroup = new FormGroup({
+              id: new FormControl(f.id, Validators.required),
+              name: new FormControl('') , //Must get the name of this filter
+              logicalOperator: new FormControl(f.logicalOperator, Validators.required),
+              value: new FormControl(f.value),
+              levelId: new FormControl(f.levelId, Validators.required),
+              isMandatory: new FormControl(f.isMandatory, Validators.required),
+              isVariable: new FormControl(f.isVariable, Validators.required)
+            });
+            return reportFilterGroup;
+          }))
+        }))
+    });
+    return frm;
+  }
+  resetExtraFields(frm: FormGroup, extraFields: ExtraField[], report?: CreateReport) {
+    (frm.get('reportFields') as FormArray).clear();
+    extraFields.forEach(ef => {
+      (frm.get('reportFields') as FormArray).push(new FormGroup({
+        id: new FormControl(0),
+        name: new FormControl(ef.name),
+        fieldId: new FormControl(ef.id),
+        type: new FormControl(ef.type),
+        content: new FormControl(ef.content),
+        value: new FormControl(report?.extraFields?.find(x => x.fieldId === ef.id)?.value, {validators: ef.isMandatory ? Validators.required : null} )
       }))
     })
-    return frm;
   }
   
 }

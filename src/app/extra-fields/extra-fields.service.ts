@@ -47,6 +47,7 @@ export class ExtraFieldsService {
       isForKpi: new FormControl(model?.isForKpi ?? false, Validators.required),
       isForReport: new FormControl(model?.isForReport ?? false, Validators.required),
       isForDashboard: new FormControl(model?.isForDashboard ?? false, Validators.required),
+      deviceId: new FormControl(model?.deviceId, Validators.required)
     })
   }
   //Requests

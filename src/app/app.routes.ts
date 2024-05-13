@@ -1,5 +1,6 @@
 import { Routes} from '@angular/router';
 import { authGuard } from './app-core/guards/auth.guard';
+import { unsavedGuard } from './app-core/guards/unsaved.guard';
 
 export const routes: Routes = [
   {
@@ -63,22 +64,22 @@ export const routes: Routes = [
       },
       
       {
-        path: 'kpis/builder/:deviceId',
+        path: 'kpis/builder',
         loadComponent: () =>
-          import('./kpis/amr-kpi-builder/amr-kpi-builder.component').then(
-            (c) => c.AmrKpiBuilderComponent
-          ),canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
+          import('./kpis/kpi-builder/kpi-builder.component').then(
+            (c) => c.KpiBuilderComponent
+          ),canDeactivate: [unsavedGuard],canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
       },
       {
         path: 'kpis/edit/:kpiId',
         loadComponent: () =>
-          import('./kpis/amr-kpi-builder/amr-kpi-builder.component').then(
-            (c) => c.AmrKpiBuilderComponent
+          import('./kpis/kpi-builder/kpi-builder.component').then(
+            (c) => c.KpiBuilderComponent
           ),
-          canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
+          canDeactivate: [unsavedGuard],canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
       },
       {
-        path: 'reports/builder/:deviceId',
+        path: 'reports/builder',
         loadComponent: () =>
           import('./reports/report-builder/report-builder.component').then(
             (c) => c.ReportBuilderComponent

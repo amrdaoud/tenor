@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { OperationModel, FunctionModel } from './operator';
-import { BehaviorSubject, Observable, concatMap, finalize, map, mergeMap } from 'rxjs';
+import { BehaviorSubject, Observable, concatMap, finalize, map, mergeMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TreeNodeViewModel } from '../common/generic';
@@ -23,10 +23,13 @@ export class OperatorsService {
   get loadingOperatorsAndFunctions$(): Observable<boolean> {
     return this.loadingOperatorsAndFunctions.asObservable();
   }
+  private logicalOperators = new BehaviorSubject<OperationModel[]>([]);
+  get logicalOperators$() {return this.logicalOperators.asObservable()};
   constructor() {}
   getOperators(): Observable<TreeNodeViewModel[]> {
     this.loadingOperators.next(true);
     return this.http.get<OperationModel[]>(this.url + '/GetOperators').pipe(
+      tap(x => this.logicalOperators.next(x.filter(y => y.isLogic))),
       map(operators => operators.map(operator => {
         const node: TreeNodeViewModel = {
           id: operator.id,

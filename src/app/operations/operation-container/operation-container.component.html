@@ -15,7 +15,7 @@
                 {{chipItem.type === 'counter' ? chipItem.aggregation +' '+ chipItem.name : chipItem.name}}
             </mat-chip-row>
             }
-            <input placeholder="Enter a number"
+            <input placeholder="Enter a number, function or operator"
             [matChipInputFor]="chipGrid"
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
             [matChipInputAddOnBlur]="addOnBlur"

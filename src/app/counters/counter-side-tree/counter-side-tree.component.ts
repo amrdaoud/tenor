@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { CounterService } from '../counter.service';
 import { FlatTreeNode, TreeNodeViewModel } from '../../common/generic';
 import { MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule } from '@angular/material/tree';
@@ -23,7 +23,7 @@ import { COUNTER_ICON, DEVICE_ICON, SUBSET_ICON } from '../../common/app-icons.c
   templateUrl: './counter-side-tree.component.html',
   styleUrl: './counter-side-tree.component.scss'
 })
-export class CounterSideTreeComponent extends Unsubscriber implements OnChanges {
+export class CounterSideTreeComponent extends Unsubscriber implements OnChanges, OnInit {
   @Input() deviceId: number | undefined;
   @Input() connectedDragDropLists!: CdkDropList<any>[];
   @Output() selected = new EventEmitter<TreeNodeViewModel>();
@@ -36,19 +36,15 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges 
   constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer){
     super();
     this.searchControl.valueChanges.pipe(
-      filter((val) => this.deviceId !== undefined && val !== undefined && this.dataSource !== undefined),
       distinctUntilChanged(),
       debounceTime(400),
-      switchMap(val => this.counterService.getDevicesByParentId(this.deviceId!, val!))
+      switchMap(val => this.counterService.getDeviceChildsByParentId(this.deviceId!, val!))
     ).subscribe(x => this.dataSource.data = x);
     iconRegistry.addSvgIconLiteral('counter-icon', sanitizer.bypassSecurityTrustHtml(COUNTER_ICON));
     iconRegistry.addSvgIconLiteral('device-icon', sanitizer.bypassSecurityTrustHtml(DEVICE_ICON));
     iconRegistry.addSvgIconLiteral('subset-icon', sanitizer.bypassSecurityTrustHtml(SUBSET_ICON));
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    if(!changes['deviceId']) {
-      return;
-    }
+  ngOnInit(): void {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer,
       this.getLevel,
@@ -56,9 +52,23 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges 
       this.getChildren);
     this.treeControl = new FlatTreeControl(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-    if(this.deviceId) {
-      this._otherSubscription = this.counterService.getDevicesByParentId(this.deviceId, this.searchControl.value!).subscribe(x => this.dataSource.data = x);
-    }
+    this._otherSubscription = this.counterService.getDeviceChildsByParentId(this.deviceId, this.searchControl.value!).subscribe(x => this.dataSource.data = x);
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    // if(!changes['deviceId']) {
+    //   return;
+    // }
+    // this.treeFlattener = new MatTreeFlattener(
+    //   this.transformer,
+    //   this.getLevel,
+    //   this.isExpandable,
+    //   this.getChildren);
+    // this.treeControl = new FlatTreeControl(this.getLevel, this.isExpandable);
+    // this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+    // this._otherSubscription = this.counterService.getDeviceChildsByParentId(this.deviceId, this.searchControl.value!).subscribe(x => this.dataSource.data = x);
+    // if(this.deviceId) {
+    //   this._otherSubscription = this.counterService.getDevicesByParentId(this.deviceId, this.searchControl.value!).subscribe(x => this.dataSource.data = x);
+    // }
   }
 
   transformer(node: TreeNodeViewModel, level: number): FlatTreeNode {
@@ -92,16 +102,29 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges 
     return node.children;
   }
   loadNodeChildren(node: FlatTreeNode) {
+    console.log(node);
     let currentNode = this.dataSource.data.find(x => x.id === node.id);
-    if (node.type === 'subset') {
+    
+    if (node.level === 1) {
       const parentNode = this.dataSource.data.find(x => x.children?.find(y => y.id === node.id));
+      currentNode = parentNode?.children.find(x => x.id === node.id);
+    }
+    else if (node.level === 2) {
+      const grandParentNode = this.dataSource.data.find(x => x.children?.find(y => y.children?.find(z => z.id === node.id)));
+      const parentNode = grandParentNode?.children.find(x => x.children?.find(y => y.id === node.id));
+      currentNode = parentNode?.children.find(x => x.id === node.id);
+    }
+    else if (node.level === 3) {
+      const grandGrandParentNode = this.dataSource.data.find(x => x.children?.find(y => y.children?.find(z => z.children?.find(q => q.id === node.id))));
+      const grandParentNode = grandGrandParentNode?.children.find(x => x.children?.find(y => y.children?.find(z => z.id === node.id)));
+      const parentNode = grandParentNode?.children.find(x => x.children?.find(y => y.id === node.id));
       currentNode = parentNode?.children.find(x => x.id === node.id);
     }
     
     if (currentNode && currentNode.hasChild && (!(currentNode?.children) || currentNode?.children?.length === 0)) {
       node.isLoading = true;
       if (node.type === 'device') {
-        this._otherSubscription = this.counterService.getSubsetsByParentId(node.id, this.searchControl.value!)
+        this._otherSubscription = this.counterService.getDeviceChildsByParentId(node.id, this.searchControl.value!)
         .pipe(
           finalize(() => node.isLoading = false)
         )
@@ -109,7 +132,7 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges 
           currentNode!.children = x;
           const expanded = this.treeControl.dataNodes.filter(x => this.treeControl.isExpanded(x));
           this.dataSource.data = [...this.dataSource.data];
-          this.toggleNode(currentNode!,0, expanded);
+          this.toggleNode(currentNode!,node.level, expanded);
         });
       }
       else if (node.type === 'subset') {
@@ -121,9 +144,8 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges 
           currentNode!.children = x;
           const expanded = this.treeControl.dataNodes.filter(x => this.treeControl.isExpanded(x));
           this.dataSource.data = [...this.dataSource.data];
-          this.toggleNode(currentNode!,1, expanded);
+          this.toggleNode(currentNode!,node.level, expanded);
         });
-        
       }
     } else {
       this.toggleNode(currentNode!, node.level, []);

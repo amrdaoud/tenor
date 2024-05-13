@@ -1,6 +1,7 @@
 export interface OperationModel {
   id: number;
   name?: string;
+  isLogic: boolean;
   argumentsCount: number;
   operations: any;
 }

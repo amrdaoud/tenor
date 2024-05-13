@@ -16,15 +16,16 @@ import { CdkDragDrop, CdkDropList, CdkDropListGroup, moveItemInArray } from '@an
 import { TreeNodeViewModel } from '../../common/generic';
 import { MatButtonModule } from '@angular/material/button';
 import { FormArray, ReactiveFormsModule } from '@angular/forms';
+import { ReportFiltersComponent } from "../report-filters/report-filters.component";
 
 @Component({
     selector: 'app-report-builder',
     standalone: true,
     templateUrl: './report-builder.component.html',
     styleUrl: './report-builder.component.scss',
-    imports: [CommonModule, MatStepperModule, MatSidenavModule,
-      MatTabsModule, CounterSideTreeComponent, KpiSideListComponent, MatListModule, MatIconModule, ReportMeasuresComponent, CdkDropListGroup, CdkDropList, MatButtonModule,
-      ReactiveFormsModule]
+    imports: [CommonModule, MatStepperModule,
+        CounterSideTreeComponent, KpiSideListComponent, MatListModule, MatIconModule, ReportMeasuresComponent, CdkDropListGroup, CdkDropList, MatButtonModule,
+        ReactiveFormsModule, ReportFiltersComponent]
 })
 export class ReportBuilderComponent {
   measuresdropContainers: CdkDropList<any>[] = [];
@@ -36,29 +37,7 @@ export class ReportBuilderComponent {
   get measures(): FormArray {
     return this.frm.get('measures') as FormArray;
   }
-  testForm() {
-    console.log(this.frm.value)
+  get filterContainers(): FormArray {
+    return this.frm.get('containerOfFilters') as FormArray;
   }
-  // deviceId$: Observable<number> = this.route.paramMap.pipe(
-  //   switchMap((param: ParamMap) => {
-  //     if(+param.get('deviceId')!) {
-  //       return this.kpiService.getExtraFields().pipe(
-  //         tap(extraFields => this.frm = this.kpiBuilderService.createKpiForm(+param.get('deviceId')!, extraFields)),
-  //         map(() => +param.get('deviceId')!)
-  //       )
-  //     } else {
-  //       return this.kpiService.getById(+param.get('kpiId')!).pipe(
-  //         tap((kpi: KpiViewModel) => this.kpi = kpi),
-  //         tap(() => this.kpiChipItems = this.kpiBuilderService.destroyKpiOperationChilds(this.kpi?.operations?.childs!)),
-  //         switchMap(() => this.kpiService.getExtraFields()),
-  //         tap(extraFields => this.frm = this.kpiBuilderService.createKpiForm(this.kpi.deviceId!, extraFields,this.kpi)),
-  //         tap(() => this.buildFormula()),
-  //         map(() => this.kpi.deviceId!)
-  //       )
-  //     }
-  //   }),
-  //   tap(d => {
-  //     this.deviceId = d;
-  //   })
-  // )
 }

@@ -1,0 +1,49 @@
+<mat-drawer-container class="drawer-container">
+    <mat-drawer #measuresDrawer [opened]="true" mode="side">
+
+    </mat-drawer>
+    <mat-drawer-content class="drawer-container-content">
+        <ng-container *ngFor="let containerForm of formArrayControls; let i = index">
+            <mat-card class="filter-container" [ngClass]="containerForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'and' : 'or'">
+                <div class="operator">
+                    <div>{{containerForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'AND' : 'OR'}}</div>
+                    <span class="full-spacer"></span>
+                    <mat-icon class="clickable" (click)="changeLogicalOpertor(containerForm)">refresh</mat-icon>
+                </div>
+                <div class="filter-list">
+                    <ng-container *ngFor="let filterForm of getFilterControls(i); let hI = index">
+                        <div [formGroup]="filterForm" class="filter" lines=1>
+                            <div class="op">
+                                <div class="highlight clickable" [ngClass]="filterForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'and' : 'or'" (click)="changeLogicalOpertor(filterForm)">
+                                    {{filterForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'AND' : 'OR'}}
+                                </div>
+                            </div>
+                            <div class="filter-name">
+                                {{filterForm.get('name')?.value}}
+                            </div>
+                            <div class="filter-value">
+                                {{filterForm.get('value')?.value}}
+                            </div>
+                            <mat-checkbox formControlName="isVariable" color="primary">Ask each time</mat-checkbox>
+                            <mat-checkbox formControlName="isMandatory" color="warn">Mandatory</mat-checkbox>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="level-drop-container" >
+                    <div cdkDropList #measureDropper="cdkDropList">
+                    <div class="level-drop clickable" (click)="addFilter(i)">
+                        <mat-icon>flip_to_front</mat-icon><div>Drop To Add Filter to Container</div>
+                    </div>
+                </div>
+                </div>
+            </mat-card>
+        </ng-container>
+        <div class="level-drop-container" style="padding-top: 40px;">
+            <div cdkDropList #measureDropper="cdkDropList">
+            <div class="level-drop clickable" (click)="addContainer()">
+                <mat-icon>flip_to_front</mat-icon><div>Drop To Add New Container</div>
+            </div>
+        </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

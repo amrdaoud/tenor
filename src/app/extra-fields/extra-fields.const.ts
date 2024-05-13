@@ -6,6 +6,7 @@ export const columns: ColumnDef[] = [
     {Name: 'Name', Property: 'name', IsSort: true},
     {Name: 'Type', Property: 'typeName', IsSort: true},
     {Name: 'Content', Property: 'content'},
+    {Name: 'Device', Property: 'deviceName'},
     {Name: 'KPI?', Property: 'isForKpi', IsSort: true, Highlights: [
         {Operation: '=', Value: true, AltText: 'YES', Color: 'rgb(26, 213, 152)', BackgroundColor: 'rgba(26, 213, 152,0.3)'},
         {Operation: '=', Value: false, AltText: 'NO', Color: 'rgb(234, 58, 61)', BackgroundColor: 'rgba(234, 58, 61, 0.2)'},

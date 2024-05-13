@@ -10,7 +10,7 @@ import { ENTER } from '@angular/cdk/keycodes';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { OperatorsService } from '../../operators/operators.service';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, tap } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { KpiService } from '../../kpis/kpi.service';
@@ -32,7 +32,8 @@ export class OperationContainerComponent implements OnChanges {
   private kpiService = inject(KpiService);
   private operationService = inject(OperationService);
   private validationSub = new Subscription();
-  operatorsAndFunctions$ = this.operatorsService.getOperatorsAndFunctions();
+  private operatorsAndFunctions: TreeNodeViewModel[] = [];
+  operatorsAndFunctions$ = this.operatorsService.getOperatorsAndFunctions(). pipe(tap(x => this.operatorsAndFunctions = x));
   loadingOperatorsAndFunctions$ = this.operatorsService.loadingOperatorsAndFunctions$;
   
   @Input({required: true}) chipItems: TreeNodeViewModel[] = [];
@@ -63,6 +64,11 @@ export class OperationContainerComponent implements OnChanges {
   }
   add(event: MatChipInputEvent): void {
     if(isNaN(+event.value)) {
+      const operatorOrFunction = this.operatorsAndFunctions.find(x => x.name.toLowerCase() === event.value.toLowerCase());
+      if(operatorOrFunction) {
+        this.chipItems.push(operatorOrFunction);
+        event.chipInput!.clear();
+      }
       return;
     }
     const value = (event.value || '').trim();

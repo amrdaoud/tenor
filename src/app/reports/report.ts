@@ -1,5 +1,5 @@
 import { TreeNodeViewModel, enLogicalOperator, enSortDirection } from "../common/generic";
-import { ExtraFieldValue, OperationBinding } from "../kpis/kpi";
+import { ExtraFieldValue, KpiFieldValueViewModel, OperationBinding } from "../kpis/kpi";
 
 export interface CreateReport {
     id: number;
@@ -12,7 +12,8 @@ export interface CreateReport {
     reportFields?: ExtraFieldValue[] | null;
     measures: ReportMeasureDto[];
     levels: ReportLevelDto[];
-    filters: ReportFilterDto[];
+    containerOfFilters: ReportFilterContainer[];
+    extraFields: KpiFieldValueViewModel[];
 }
 export interface ReportMeasureDto {
     id: number;
@@ -27,11 +28,18 @@ export interface ReportLevelDto {
     sortDirection: enSortDirection;
     dimensionLevelId: number;
 }
+export interface ReportFilterContainer {
+    id: number,
+    logicalOperator: enLogicalOperator;
+    ReportFilters: ReportFilterDto[];
+}
 export interface ReportFilterDto {
     id: number;
     logicalOperator: enLogicalOperator;
     value: string[] | null;
-    dimensionLevelId: number;
+    levelId: number;
+    isMandatory: boolean;
+    isVariable: boolean;
 }
 export interface Having {
     id: number;
