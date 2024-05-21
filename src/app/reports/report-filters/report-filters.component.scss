@@ -13,7 +13,7 @@
 }
 
 .drawer-container-content {
-    padding: 0px 40px 40px 40px;
+    padding: 0px 18px 40px 18px;
 }
 
 .filter-container {
@@ -24,7 +24,7 @@
     box-shadow: 2px 2px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-
+    z-index: 2;
     .operator {
         width: 88px;
         height: 27px;
@@ -129,3 +129,16 @@
     text-align: center;
     font-size: 12px;
 }
+.stepper-buttons {
+    // background-color: rgba($color: #000000, $alpha: 0.1);
+    z-index: 2;
+    position: sticky;
+    bottom: 0px;
+    padding: 18px 0px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    button {
+        width:100%;
+    }
+  }

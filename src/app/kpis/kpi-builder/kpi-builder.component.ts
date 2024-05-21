@@ -62,6 +62,7 @@ export class KpiBuilderComponent extends Unsubscriber implements OnInit, Compone
   loadingAdd$ = this.kpiService.loadingAdd$;
   loadingExtraFields$ = this.kpiService.loadingExtraFields$;
   loadingValidate$ = this.kpiService.loadingValidate$;
+  draggedCounter!: TreeNodeViewModel | null;
   kpiChipItems: TreeNodeViewModel[] = [];
   kpi!: KpiViewModel;
   ngOnInit(): void {
@@ -145,6 +146,5 @@ export class KpiBuilderComponent extends Unsubscriber implements OnInit, Compone
     }
 
   }
-
 }
 

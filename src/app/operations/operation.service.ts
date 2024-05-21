@@ -215,7 +215,7 @@ export class OperationService {
       operation.type === enOPerationTypes.opt ? operation.operatorId! : 
       operation.type === enOPerationTypes.kpi ? operation.kpiId! : 0,
       order: operation.order,
-      children: [],
+      childs: [],
       hasChild: false,
       name: operation.type === enOPerationTypes.counter ? operation.counterName! : 
       operation.type === enOPerationTypes.function ? operation.functionName! :
@@ -260,7 +260,7 @@ export class OperationService {
   createOperatorByName(name: string): TreeNodeViewModel {
     return {
       name: name,
-      children: [],
+      childs: [],
       hasChild: false,
       id: 0,
       type: 'operator'

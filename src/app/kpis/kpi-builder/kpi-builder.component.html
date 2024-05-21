@@ -33,7 +33,7 @@
         <form *ngIf="frm" [formGroup]="frm" (ngSubmit)="submit()">
             <mat-stepper orientation="vertical" [linear]="true" #stepper>
                 <mat-step [label]="kpi ? 'Update KPI #'+kpi.id+' Formula'  : 'Create you KPI formula'" [stepControl]="frm.get('operation')!">
-                    <app-operation-container  [chipItems]="kpiChipItems" [operationFormControl]="this.frm.get('operation')!" [operationValidationMessage]="operationValidationMessage!"></app-operation-container>
+                    <app-operation-container [draggedCounter]="draggedCounter"  [chipItems]="kpiChipItems" [operationFormControl]="this.frm.get('operation')!" [operationValidationMessage]="operationValidationMessage!"></app-operation-container>
                     <div class="section">
                         <button *ngIf="!(loadingValidate$ | async); else validating" type="button" mat-raised-button color="primary" (click)="buildFormula(stepper)">Next</button>
                         <ng-template #validating>

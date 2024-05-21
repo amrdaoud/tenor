@@ -10,8 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { TreeNodeViewModel, enLogicalOperator } from '../../common/generic';
 import { MatButtonModule } from '@angular/material/button';
-import { HighlighterDirective } from 'techteec-lib/directives';
-import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -19,6 +17,7 @@ import { CounterSideTreeComponent } from '../../counters/counter-side-tree/count
 import { KpiSideListComponent } from '../../kpis/kpi-side-list/kpi-side-list.component';
 import { OperatorsService } from '../../operators/operators.service';
 import { MatStepperNext } from '@angular/material/stepper';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-report-measures',

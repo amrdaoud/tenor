@@ -1,17 +1,22 @@
 <div class="report-builder-container" *ngIf="frm">
     <mat-stepper class="full-height-stepper no-padding-stepper header-bottom-border-stepper" [formGroup]="frm"
-        [linear]="true">
+        [linear]="false">
         <mat-step label="Select Filters">
-            <app-report-filters [formArray]="filterContainers" #reportFilters></app-report-filters>
+            <app-report-filters [formArray]="filterContainers" [measuresArray]="measures" #reportFilters></app-report-filters>
         </mat-step>
         <mat-step label="Select Measures" [stepControl]="measures">
             <app-report-measures [formArray]="measures" #reportMeasures></app-report-measures>
         </mat-step>
         <mat-step label="Select Levels">
-
         </mat-step>
-        <mat-step label="Select Filters">
-            <app-report-filters [formArray]="filterContainers" #reportFilters></app-report-filters>
+        <mat-step label="Select Report Options">
+            <app-shared-form-controls [formGroup]="frm" formArrayName="reportFields"></app-shared-form-controls>
+            <div class="section">
+                <div class="button-handler">
+                    <button mat-stroked-button type="button" color="primary" matStepperPrevious>Back</button>
+                    <button mat-raised-button color="primary"[disabled]="frm.invalid">{{report ? 'Update Report' : 'Submit Report'}}</button>
+                </div>
+            </div>
         </mat-step>
     </mat-stepper>
 </div>

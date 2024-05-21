@@ -1,24 +1,38 @@
-import { CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { enLogicalOperator } from '../../common/generic';
+import { TreeNodeViewModel, enLogicalOperator } from '../../common/generic';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { LevelsSideTreeComponent } from "../levels-filters/levels-side-tree/levels-side-tree.component";
+import { ReportMeasureDto } from '../report';
+import { filter, map, startWith, tap } from 'rxjs';
 @Component({
-  selector: 'app-report-filters',
-  standalone: true,
-  imports: [CommonModule ,MatSidenavModule, MatCardModule, MatIconModule, MatListModule, CdkDropList, MatCheckboxModule, ReactiveFormsModule],
-  templateUrl: './report-filters.component.html',
-  styleUrl: './report-filters.component.scss'
+    selector: 'app-report-filters',
+    standalone: true,
+    templateUrl: './report-filters.component.html',
+    styleUrl: './report-filters.component.scss',
+    imports: [CommonModule, MatSidenavModule, MatCardModule, MatIconModule, MatListModule, CdkDropList, MatCheckboxModule, ReactiveFormsModule, LevelsSideTreeComponent, MatButtonModule]
 })
-export class ReportFiltersComponent {
+export class ReportFiltersComponent implements AfterViewInit {
   @Input() formArray = new FormArray<any>([]);
-  index = 0;
+  @Input() measuresArray = new FormArray<any>([]);
+  dropContainers:  CdkDropList<any>[] = [];
+  @ViewChildren('levelDropper') levelDroppers!: QueryList<CdkDropList<any>>;
+  reportMeasures: ReportMeasureDto[] = [];
+  ngAfterViewInit(): void {
+    this.updateContainers();
+    this.measuresArray.valueChanges.pipe(
+      tap(x => console.log(x)),
+      filter(() => this.measuresArray.valid),
+      map(x => x as ReportMeasureDto[])
+    ).subscribe(x => this.reportMeasures = x);
+  }
   get formArrayControls(): FormGroup[] {
     return this.formArray.controls.map(x => x as FormGroup);
   }
@@ -34,49 +48,41 @@ export class ReportFiltersComponent {
   changeLogicalOpertor(containerForm: FormGroup) {
     containerForm.get('logicalOperator')?.setValue(containerForm.get('logicalOperator')?.value === 1 ? 0 : 1);
   }
-  addContainer() {
+  addContainer(event: CdkDragDrop<never[]>) {    
+    const f = { ...event.previousContainer.data[event.previousIndex] as any } as TreeNodeViewModel;
     this.formArray.push(new FormGroup({
       id: new FormControl(0, Validators.required),
       logicalOperator: new FormControl(enLogicalOperator.AND, Validators.required),
-      reportFilters: new FormArray([])
-      // reportFilters: new FormArray(cf.ReportFilters?.map(f => {
-      //   const reportFilterGroup = new FormGroup({
-      //     id: new FormControl(f.id, Validators.required),
-      //     name: new FormControl('') , //Must get the name of this filter
-      //     logicalOperator: new FormControl(f.logicalOperator, Validators.required),
-      //     value: new FormControl(f.value),
-      //     dimensionLevelId: new FormControl(f.dimensionLevelId, Validators.required),
-      //     isMandatory: new FormControl(f.isMandatory, Validators.required),
-      //     isVariable: new FormControl(f.isVariable, Validators.required)
-      //   });
-      //   return reportFilterGroup;
-      // }))
-    
-    }))
-  }
-  addFilter(containerFormIndex: number) {
-    if(this.index == 0) {
-      this.getFilterFormArray(containerFormIndex).push(new FormGroup({
+      reportFilters: new FormArray([new FormGroup({
         id: new FormControl(0, Validators.required),
-        name: new FormControl('Geo: Region') , //Must get the name of this filter
+        name: new FormControl(f.name), //Must get the name of this filter
         logicalOperator: new FormControl(enLogicalOperator.AND, Validators.required),
-        value: new FormControl(['Southern']),
-        levelId: new FormControl(0, Validators.required),
+        value: new FormControl(),
+        levelId: new FormControl(f.id, Validators.required),
         isMandatory: new FormControl(true, Validators.required),
         isVariable: new FormControl(false, Validators.required)
+      })]),
     }));
-    } else {
-      this.getFilterFormArray(containerFormIndex).push(new FormGroup({
-        id: new FormControl(0, Validators.required),
-        name: new FormControl('Geo: ABCDEFGHIJKLMN') , //Must get the name of this filter
-        logicalOperator: new FormControl(enLogicalOperator.OR, Validators.required),
-        value: new FormControl(['Southern, Western']),
-        levelId: new FormControl(0, Validators.required),
-        isMandatory: new FormControl(true, Validators.required),
-        isVariable: new FormControl(false, Validators.required)
-    }));
-    }
+    this.updateContainers();
     
-    this.index++;
+  }
+  addFilter(event: CdkDragDrop<never[]>, containerFormIndex: number) {
+    const f = { ...event.previousContainer.data[event.previousIndex] as any } as TreeNodeViewModel;
+    this.getFilterFormArray(containerFormIndex).push(new FormGroup({
+      id: new FormControl(0, Validators.required),
+      name: new FormControl(f.name) , //Must get the name of this filter
+      logicalOperator: new FormControl(enLogicalOperator.AND, Validators.required),
+      value: new FormControl(),
+      levelId: new FormControl(f.id, Validators.required),
+      isMandatory: new FormControl(true, Validators.required),
+      isVariable: new FormControl(false, Validators.required)
+  }));
+  }
+  updateContainers() {
+    setTimeout(() => {
+      const containers = this.levelDroppers.map(x => x);
+      this.dropContainers = containers;
+    }, 500);
+    // this.changed();
   }
 }

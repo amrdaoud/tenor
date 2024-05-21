@@ -14,10 +14,12 @@ export interface TreeNodeViewModel {
     name: string;
     type: 'counter' | 'subset' | 'device' | 'number' | 'kpi' | 'operator' | 'function';
     hasChild: boolean;
-    children: TreeNodeViewModel[];
+    childs: TreeNodeViewModel[];
     aggregation?: string;
     order?: number;
     supplierId?: string;
+    isFilter?: boolean;
+    isLevel?: boolean;
 }
 export interface FlatTreeNode {
     id: number;
@@ -28,6 +30,8 @@ export interface FlatTreeNode {
     isLoading: boolean;
     aggregation?: string;
     supplierId?: string;
+    isFilter?: boolean;
+    isLevel?: boolean;
   }
 
   export enum enOPerationTypes {

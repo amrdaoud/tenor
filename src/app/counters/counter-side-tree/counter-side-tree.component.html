@@ -4,14 +4,15 @@
       <div matSuffix style="padding-right: 5px;"><mat-icon *ngIf="!(loadingRootDevices$ | async); else loadingSpinnerSuffix">search</mat-icon></div>
     </mat-form-field>
     <div class="tree-container">
-    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList [cdkDropListData]="treeControl.dataNodes" cdkDropListSortingDisabled [cdkDropListConnectedTo]="connectedDragDropLists">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList [cdkDropListData]="expandedNodeList" cdkDropListSortingDisabled [cdkDropListConnectedTo]="connectedDragDropLists">
       <mat-tree-node *matTreeNodeDef="let node" [ngClass]="node.type" matTreeNodeToggle matTreeNodePadding matTreeNodePaddingIndent="15" (dblclick)="node.type === 'counter' ? selectElement(node) : ''" [cdkDragData]="node" cdkDrag [cdkDragDisabled]="node.type !== 'counter'">
         <button mat-icon-button disabled ></button>
         <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'" [svgIcon]="node.type === 'device' ? 'device-icon' : node.type === 'subset' ? 'subset-icon' : 'counter-icon'">
         </mat-icon>
         <span *ngIf="node.type === 'counter'">{{node.supplierId}}|</span>{{node.name}}
       </mat-tree-node>
-      <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding matTreeNodePaddingIndent="15" (dblclick)="node.type === 'counter' ? selectElement(node) : ''" [cdkDragData]="node" cdkDrag [cdkDragDisabled]="node.type !== 'counter'">
+      <mat-tree-node *matTreeNodeDef="let node; when: hasChild"
+      matTreeNodePadding matTreeNodePaddingIndent="15" (dblclick)="node.type === 'counter' ? selectElement(node) : ''" [cdkDragData]="node" cdkDrag [cdkDragDisabled]="node.type !== 'counter'">
         <button mat-icon-button [attr.aria-label]="'Toggle ' + node.name" [disabled]="node.isLoading" (click)="loadNodeChildren(node)">
           <mat-icon class="mat-icon-rtl-mirror" *ngIf="!node.isLoading;else loadingSpinner">
             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}

@@ -34,7 +34,7 @@ export class OperatorsService {
         const node: TreeNodeViewModel = {
           id: operator.id,
           name: operator.name!,
-          children: [],
+          childs: [],
           hasChild: false,
           type: 'operator'
         }
@@ -50,7 +50,7 @@ export class OperatorsService {
         const node: TreeNodeViewModel = {
           id: fn.id,
           name: fn.name!,
-          children: [],
+          childs: [],
           hasChild: false,
           type: 'function'
         }

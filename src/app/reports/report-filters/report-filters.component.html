@@ -1,10 +1,14 @@
 <mat-drawer-container class="drawer-container">
     <mat-drawer #measuresDrawer [opened]="true" mode="side">
-
+        <div class="measures-container">
+            <app-levels-side-tree [reportMeasures]="reportMeasures" [connectedDragDropLists]="dropContainers"></app-levels-side-tree>
+        </div>
     </mat-drawer>
     <mat-drawer-content class="drawer-container-content">
+        <div class="stepper-content">
         <ng-container *ngFor="let containerForm of formArrayControls; let i = index">
-            <mat-card class="filter-container" [ngClass]="containerForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'and' : 'or'">
+            <mat-card class="filter-container"
+                [ngClass]="containerForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'and' : 'or'">
                 <div class="operator">
                     <div>{{containerForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'AND' : 'OR'}}</div>
                     <span class="full-spacer"></span>
@@ -14,8 +18,11 @@
                     <ng-container *ngFor="let filterForm of getFilterControls(i); let hI = index">
                         <div [formGroup]="filterForm" class="filter" lines=1>
                             <div class="op">
-                                <div class="highlight clickable" [ngClass]="filterForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'and' : 'or'" (click)="changeLogicalOpertor(filterForm)">
-                                    {{filterForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'AND' : 'OR'}}
+                                <div class="highlight clickable"
+                                    [ngClass]="filterForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'and' : 'or'"
+                                    (click)="changeLogicalOpertor(filterForm)">
+                                    {{filterForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'AND' :
+                                    'OR'}}
                                 </div>
                             </div>
                             <div class="filter-name">
@@ -29,21 +36,26 @@
                         </div>
                     </ng-container>
                 </div>
-                <div class="level-drop-container" >
-                    <div cdkDropList #measureDropper="cdkDropList">
-                    <div class="level-drop clickable" (click)="addFilter(i)">
-                        <mat-icon>flip_to_front</mat-icon><div>Drop To Add Filter to Container</div>
+                <div class="level-drop-container">
+                    <div cdkDropList #levelDropper="cdkDropList" (cdkDropListDropped)="addFilter($event, i)">
+                        <div class="level-drop clickable">
+                            <mat-icon>flip_to_front</mat-icon>
+                            <div>Drop To Add Filter to Container</div>
+                        </div>
                     </div>
-                </div>
                 </div>
             </mat-card>
         </ng-container>
         <div class="level-drop-container" style="padding-top: 40px;">
-            <div cdkDropList #measureDropper="cdkDropList">
-            <div class="level-drop clickable" (click)="addContainer()">
-                <mat-icon>flip_to_front</mat-icon><div>Drop To Add New Container</div>
+            <div cdkDropList #levelDropper="cdkDropList" (cdkDropListDropped)="addContainer($event)">
+                <div class="level-drop clickable">
+                    <mat-icon>flip_to_front</mat-icon>
+                    <div>Drop To Add New Container</div>
+                </div>
             </div>
         </div>
-        </div>
+    </div>
+        <div class="stepper-buttons"><button mat-raised-button color="primary" matStepperNext>Next</button></div>
+    
     </mat-drawer-content>
 </mat-drawer-container>

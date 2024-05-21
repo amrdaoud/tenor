@@ -25,6 +25,7 @@ import { OperationService } from '../operation.service';
 })
 export class OperationContainerComponent implements OnChanges {
   @ViewChild(MatMenuTrigger) contextMenu!: MatMenuTrigger;
+  @Input() draggedCounter!: TreeNodeViewModel | null;
   contextMenuPosition = { x: '0px', y: '0px' };
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER] as const;
@@ -49,6 +50,8 @@ export class OperationContainerComponent implements OnChanges {
     }
   }
   drop(event: CdkDragDrop<TreeNodeViewModel[]>) {
+    console.log(event.previousContainer);
+    console.log(event.previousIndex);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -73,7 +76,7 @@ export class OperationContainerComponent implements OnChanges {
     }
     const value = (event.value || '').trim();
     if (value) {
-      this.chipItems.push({id: 0, name: event.value, type: 'number', hasChild:false, children: []});
+      this.chipItems.push({id: 0, name: event.value, type: 'number', hasChild:false, childs: []});
     }
     event.chipInput!.clear();
     if(this.autoValidate) {

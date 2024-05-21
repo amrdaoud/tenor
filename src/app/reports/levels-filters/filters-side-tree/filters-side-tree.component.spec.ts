@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReportMeasuresComponent } from './report-measures.component';
+import { FiltersSideTreeComponent } from './filters-side-tree.component';
 
-describe('ReportMeasuresComponent', () => {
-  let component: ReportMeasuresComponent;
-  let fixture: ComponentFixture<ReportMeasuresComponent>;
+describe('FiltersSideTreeComponent', () => {
+  let component: FiltersSideTreeComponent;
+  let fixture: ComponentFixture<FiltersSideTreeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReportMeasuresComponent]
+      imports: [FiltersSideTreeComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ReportMeasuresComponent);
+    fixture = TestBed.createComponent(FiltersSideTreeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -90,7 +90,7 @@ export class KpiSideListComponent extends Unsubscriber {
           data: x.data.map((kpi: KpiListViewModel) => {
             const t: TreeNodeViewModel = {
               id: kpi.id,
-              children: [],
+              childs: [],
               hasChild: false,
               name: kpi.name,
               type: 'kpi'

@@ -7,7 +7,7 @@ import { Unsubscriber } from 'techteec-lib/common';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, filter, finalize, switchMap } from 'rxjs';
+import { Observable, debounceTime, distinctUntilChanged, expand, filter, finalize, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { DomSanitizer } from '@angular/platform-browser';
 import { COUNTER_ICON, DEVICE_ICON, SUBSET_ICON } from '../../common/app-icons.const';
+import { CollectionViewer, ListRange } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-counter-side-tree',
@@ -23,22 +24,27 @@ import { COUNTER_ICON, DEVICE_ICON, SUBSET_ICON } from '../../common/app-icons.c
   templateUrl: './counter-side-tree.component.html',
   styleUrl: './counter-side-tree.component.scss'
 })
-export class CounterSideTreeComponent extends Unsubscriber implements OnChanges, OnInit {
-  @Input() deviceId: number | undefined;
+export class CounterSideTreeComponent extends Unsubscriber implements OnInit {
+  // @Input() deviceId: number | undefined;
   @Input() connectedDragDropLists!: CdkDropList<any>[];
   @Output() selected = new EventEmitter<TreeNodeViewModel>();
+  dataSourceViewer: CollectionViewer = {
+    viewChange: new Observable<ListRange>()
+   };
+   expandedNodeList:any = [];
   private counterService = inject(CounterService);
   loadingRootDevices$ = this.counterService.loadingRootDevices$;
   treeControl!: FlatTreeControl<FlatTreeNode>;
   treeFlattener!: MatTreeFlattener<TreeNodeViewModel, FlatTreeNode>;
   dataSource!: MatTreeFlatDataSource<TreeNodeViewModel, FlatTreeNode>;
   searchControl = new FormControl('');
+  dropList: FlatTreeNode[] = [];
   constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer){
     super();
     this.searchControl.valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400),
-      switchMap(val => this.counterService.getDeviceChildsByParentId(this.deviceId!, val!))
+      switchMap(val => this.counterService.getDeviceChildsByParentId(undefined, val!))
     ).subscribe(x => this.dataSource.data = x);
     iconRegistry.addSvgIconLiteral('counter-icon', sanitizer.bypassSecurityTrustHtml(COUNTER_ICON));
     iconRegistry.addSvgIconLiteral('device-icon', sanitizer.bypassSecurityTrustHtml(DEVICE_ICON));
@@ -52,23 +58,10 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges,
       this.getChildren);
     this.treeControl = new FlatTreeControl(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-    this._otherSubscription = this.counterService.getDeviceChildsByParentId(this.deviceId, this.searchControl.value!).subscribe(x => this.dataSource.data = x);
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    // if(!changes['deviceId']) {
-    //   return;
-    // }
-    // this.treeFlattener = new MatTreeFlattener(
-    //   this.transformer,
-    //   this.getLevel,
-    //   this.isExpandable,
-    //   this.getChildren);
-    // this.treeControl = new FlatTreeControl(this.getLevel, this.isExpandable);
-    // this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-    // this._otherSubscription = this.counterService.getDeviceChildsByParentId(this.deviceId, this.searchControl.value!).subscribe(x => this.dataSource.data = x);
-    // if(this.deviceId) {
-    //   this._otherSubscription = this.counterService.getDevicesByParentId(this.deviceId, this.searchControl.value!).subscribe(x => this.dataSource.data = x);
-    // }
+    this._otherSubscription = this.counterService.getDeviceChildsByParentId(undefined, this.searchControl.value!).subscribe(x => this.dataSource.data = x);
+    this._otherSubscription = this.dataSource.connect(this.dataSourceViewer).subscribe(data => {
+      this.expandedNodeList = data;
+    })
   }
 
   transformer(node: TreeNodeViewModel, level: number): FlatTreeNode {
@@ -99,29 +92,28 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges,
     return node.expandable;
   }
   getChildren(node: TreeNodeViewModel): TreeNodeViewModel[] | null | undefined {
-    return node.children;
+    return node.childs;
   }
   loadNodeChildren(node: FlatTreeNode) {
-    console.log(node);
     let currentNode = this.dataSource.data.find(x => x.id === node.id);
     
     if (node.level === 1) {
-      const parentNode = this.dataSource.data.find(x => x.children?.find(y => y.id === node.id));
-      currentNode = parentNode?.children.find(x => x.id === node.id);
+      const parentNode = this.dataSource.data.find(x => x.childs?.find(y => y.id === node.id));
+      currentNode = parentNode?.childs.find(x => x.id === node.id);
     }
     else if (node.level === 2) {
-      const grandParentNode = this.dataSource.data.find(x => x.children?.find(y => y.children?.find(z => z.id === node.id)));
-      const parentNode = grandParentNode?.children.find(x => x.children?.find(y => y.id === node.id));
-      currentNode = parentNode?.children.find(x => x.id === node.id);
+      const grandParentNode = this.dataSource.data.find(x => x.childs?.find(y => y.childs?.find(z => z.id === node.id)));
+      const parentNode = grandParentNode?.childs.find(x => x.childs?.find(y => y.id === node.id));
+      currentNode = parentNode?.childs.find(x => x.id === node.id);
     }
     else if (node.level === 3) {
-      const grandGrandParentNode = this.dataSource.data.find(x => x.children?.find(y => y.children?.find(z => z.children?.find(q => q.id === node.id))));
-      const grandParentNode = grandGrandParentNode?.children.find(x => x.children?.find(y => y.children?.find(z => z.id === node.id)));
-      const parentNode = grandParentNode?.children.find(x => x.children?.find(y => y.id === node.id));
-      currentNode = parentNode?.children.find(x => x.id === node.id);
+      const grandGrandParentNode = this.dataSource.data.find(x => x.childs?.find(y => y.childs?.find(z => z.childs?.find(q => q.id === node.id))));
+      const grandParentNode = grandGrandParentNode?.childs.find(x => x.childs?.find(y => y.childs?.find(z => z.id === node.id)));
+      const parentNode = grandParentNode?.childs.find(x => x.childs?.find(y => y.id === node.id));
+      currentNode = parentNode?.childs.find(x => x.id === node.id);
     }
     
-    if (currentNode && currentNode.hasChild && (!(currentNode?.children) || currentNode?.children?.length === 0)) {
+    if (currentNode && currentNode.hasChild && (!(currentNode?.childs) || currentNode?.childs?.length === 0)) {
       node.isLoading = true;
       if (node.type === 'device') {
         this._otherSubscription = this.counterService.getDeviceChildsByParentId(node.id, this.searchControl.value!)
@@ -129,7 +121,7 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges,
           finalize(() => node.isLoading = false)
         )
         .subscribe(x => {
-          currentNode!.children = x;
+          currentNode!.childs = x;
           const expanded = this.treeControl.dataNodes.filter(x => this.treeControl.isExpanded(x));
           this.dataSource.data = [...this.dataSource.data];
           this.toggleNode(currentNode!,node.level, expanded);
@@ -141,7 +133,7 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges,
           finalize(() => node.isLoading = false)
         )
         .subscribe(x => {
-          currentNode!.children = x;
+          currentNode!.childs = x;
           const expanded = this.treeControl.dataNodes.filter(x => this.treeControl.isExpanded(x));
           this.dataSource.data = [...this.dataSource.data];
           this.toggleNode(currentNode!,node.level, expanded);
@@ -162,6 +154,8 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnChanges,
     } else {
       this.treeControl.expand(node!);
     }
+    this.dropList = this.treeControl.dataNodes.filter(x => (this.treeControl.isExpanded(x)) || x.type === 'counter');
+    console.log(this.dropList);
   }
   selectElement(element: TreeNodeViewModel) {
     this.selected.emit(element);
