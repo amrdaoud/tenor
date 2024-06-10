@@ -1,0 +1,44 @@
+<form *ngIf="type === 'List'; else dateForm" style="display: flex;">
+    <mat-form-field style="width:100%" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{label}}</mat-label>
+        <mat-chip-grid #chipGrid aria-label="Fruit selection">
+            @for (selectedOption of selectedOptions; track selectedOption) {
+            <mat-chip-row (removed)="remove(selectedOption)">
+                {{selectedOption}}
+                <button matChipRemove [attr.aria-label]="'remove ' + selectedOption" *ngIf="!valueControl?.disabled">
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </mat-chip-row>
+            }
+        </mat-chip-grid>
+        <input [placeholder]="placeHolder" #autoInput [formControl]="filterCtrl" [matChipInputFor]="chipGrid"
+            [matAutocomplete]="auto" (blur)="resetValue()" [readOnly]="valueControl?.disabled"/>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            
+            @if(!valueControl?.disabled) {
+                <div class="overall-spinner-container" *ngIf="(loadingFilterOptions$ | async)">
+                    <mat-spinner diameter="50"></mat-spinner>
+                    <p>Loading Options</p>
+                </div>
+            @for (option of filteredOptions | async; track option) {
+            <mat-option [value]="option">{{option}}</mat-option>
+            }
+            }
+
+        </mat-autocomplete>
+        <mat-icon *ngIf="!valueControl?.disabled" matIconSuffix (click)="clear()">close</mat-icon>
+    </mat-form-field>
+</form>
+
+<ng-template #dateForm>
+    <mat-form-field style="width:100%" class="date-control" appearance="outline" subscriptSizing="dynamic">
+        <mat-label>{{label}}</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate [formControl]="dateCtrl1" placeholder="Start date" readonly>
+            <input matEndDate [formControl]="dateCtrl2" placeholder="End date" readonly>
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-icon matIconSuffix *ngIf="!valueControl?.disabled" (click)="clear()">close</mat-icon>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+</ng-template>

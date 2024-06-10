@@ -26,6 +26,7 @@ import { OperationService } from '../operation.service';
 export class OperationContainerComponent implements OnChanges {
   @ViewChild(MatMenuTrigger) contextMenu!: MatMenuTrigger;
   @Input() draggedCounter!: TreeNodeViewModel | null;
+  @Input() isDisabled = false;
   contextMenuPosition = { x: '0px', y: '0px' };
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER] as const;
@@ -50,8 +51,6 @@ export class OperationContainerComponent implements OnChanges {
     }
   }
   drop(event: CdkDragDrop<TreeNodeViewModel[]>) {
-    console.log(event.previousContainer);
-    console.log(event.previousIndex);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -64,6 +63,7 @@ export class OperationContainerComponent implements OnChanges {
     }
     this.operationFormControl?.setValue('');
     this.operationValidationMessage = '';
+    this.operationFormControl.markAsDirty();
   }
   add(event: MatChipInputEvent): void {
     if(isNaN(+event.value)) {
@@ -85,6 +85,7 @@ export class OperationContainerComponent implements OnChanges {
     }
     this.operationFormControl?.setValue('');
     this.operationValidationMessage = '';
+    this.operationFormControl.markAsDirty();
   }
   remove(index: number): void {
     if (index >= 0) {
@@ -96,6 +97,7 @@ export class OperationContainerComponent implements OnChanges {
     }
     this.operationFormControl?.setValue('');
     this.operationValidationMessage = '';
+    this.operationFormControl.markAsDirty();
   }
   edit(index: number, event: MatChipEditedEvent) {
     const value = event.value.trim();
@@ -112,6 +114,7 @@ export class OperationContainerComponent implements OnChanges {
     }
     this.operationFormControl?.setValue('');
     this.operationValidationMessage = '';
+    this.operationFormControl.markAsDirty();
   }
   addOperatorOrFunction(node: TreeNodeViewModel) {
     this.chipItems.push(node);
@@ -121,6 +124,7 @@ export class OperationContainerComponent implements OnChanges {
     }
     this.operationFormControl?.setValue('');
     this.operationValidationMessage = '';
+    this.operationFormControl.markAsDirty();
   }
   onContextMenu(event: MouseEvent, item: TreeNodeViewModel, index: number) {
     event.preventDefault();
@@ -159,5 +163,12 @@ export class OperationContainerComponent implements OnChanges {
         this.operationValidationMessage = error.message;
       }
     }
+  }
+  changeAggregation(itemIndex: number, aggregation: string) {
+    this.chipItems[itemIndex].aggregation = aggregation;
+    if(this.autoValidate) {
+      this.validateOperation();
+    }
+    this.operationFormControl.markAsDirty();
   }
 }

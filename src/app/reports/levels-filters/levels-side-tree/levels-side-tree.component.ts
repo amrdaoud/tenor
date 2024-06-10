@@ -7,11 +7,13 @@ import { MatTreeFlatDataSource, MatTreeFlattener, MatTreeModule } from '@angular
 import { Unsubscriber } from 'techteec-lib/common';
 import { ReportMeasureDto } from '../../report';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { CollectionViewer, ListRange } from '@angular/cdk/collections';
 import { Observable } from 'rxjs';
+import { DomSanitizer } from '@angular/platform-browser';
+import { DIMENSION_ICON, LEVEL_ICON } from '../../../common/app-icons.const';
 
 @Component({
   selector: 'app-levels-side-tree',
@@ -22,6 +24,7 @@ import { Observable } from 'rxjs';
 })
 export class LevelsSideTreeComponent extends Unsubscriber implements OnChanges {
   @Input() reportMeasures!: ReportMeasureDto[];
+  @Input() type: 'levels' | 'filters' = 'levels';
   @Input() connectedDragDropLists!: CdkDropList<any>[];
   @Output() selected = new EventEmitter<TreeNodeViewModel>();
   private reportService = inject(ReportService);
@@ -30,9 +33,15 @@ export class LevelsSideTreeComponent extends Unsubscriber implements OnChanges {
    };
    expandedNodeList:any = [];
   loadingLevels$ = this.reportService.loadingLevels$;
+  loadingFilters$ = this.reportService.loadingFilters$;
   treeControl!: FlatTreeControl<FlatTreeNode>;
   treeFlattener!: MatTreeFlattener<TreeNodeViewModel, FlatTreeNode>;
   dataSource!: MatTreeFlatDataSource<TreeNodeViewModel, FlatTreeNode>;
+  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    super();
+    iconRegistry.addSvgIconLiteral('dimension-icon', sanitizer.bypassSecurityTrustHtml(DIMENSION_ICON));
+    iconRegistry.addSvgIconLiteral('level-icon', sanitizer.bypassSecurityTrustHtml(LEVEL_ICON));
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if(!changes['reportMeasures']) {
       return;
@@ -45,7 +54,9 @@ export class LevelsSideTreeComponent extends Unsubscriber implements OnChanges {
     this.treeControl = new FlatTreeControl(this.getLevel, this.isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
     if(this.reportMeasures && this.reportMeasures.length > 0) {
-      this._otherSubscription = this.reportService.getLevelsByMeasures(this.reportMeasures).subscribe(x => this.dataSource.data = x);
+      this._otherSubscription = this.type == 'levels' ?
+      this.reportService.getLevelsByMeasures(this.reportMeasures).subscribe(x => this.dataSource.data = x) :
+      this.reportService.getFiltersByMeasures(this.reportMeasures).subscribe(x => this.dataSource.data = x);
     } else {
       this.dataSource.data = [];
     }

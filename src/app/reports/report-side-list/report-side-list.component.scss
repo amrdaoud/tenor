@@ -1,0 +1,46 @@
+@use '@angular/material' as mat;
+.type-icon {
+    color: #757575;
+    stroke: #757575;
+    margin-right: 5px;
+  }
+.density {
+    @include mat.tree-density(-6);
+    @include mat.form-field-density(-6);
+    height:100%;
+    // .list-container {
+    //     height:calc(100% - 36px);
+    //     overflow-y: auto;
+    // }
+    .form-container {
+        height: 50px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        .mat-mdc-form-field {
+            width:100%;
+        }
+        .search-container {
+            flex: 1 1 auto;
+            max-width: calc(100% - 24px);
+        }
+        .menu-button-container {
+            width: 24px;
+            .mat-icon {
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+
+
+    
+
+::ng-deep .measure-list-filter-menu-controls {
+    padding: 15px;
+
+    .mat-mdc-form-field-bottom-align {
+        height: 8px !important;
+    }
+}

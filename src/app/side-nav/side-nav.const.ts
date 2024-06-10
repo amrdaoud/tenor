@@ -9,6 +9,7 @@ import {
   HOME_ICON,
   KPI_ICON,
   LIST_ICON,
+  REPORT_DATA_ICON,
   REPORT_ICON,
   SHARE_ICON,
   SUBSET_ICON,
@@ -40,21 +41,28 @@ export const items: IconNavItemWithRoles[] = [
       },
     ],
   },
-  // {
-  //   title: 'Reports',
-  //   svgIcon: REPORT_ICON,
-  //   postition: 'top',
-  //   children: [
-  //     {
-  //       title: 'All Reports',
-  //       svgIcon: LIST_ICON,
-  //     },
-  //     {
-  //       title: 'Create New',
-  //       svgIcon: ADD_ICON,
-  //     },
-  //   ],
-  // },
+  {
+    title: 'Reports',
+    svgIcon: REPORT_ICON,
+    postition: 'top',
+    children: [
+      {
+        title: 'All Reports',
+        svgIcon: LIST_ICON,
+        routerLink: 'reports/list'
+      },
+      {
+        title: 'Create New',
+        svgIcon: ADD_ICON,
+        routerLink: 'reports/builder'
+      },
+      {
+        title: 'Reports Data',
+        svgIcon: REPORT_DATA_ICON,
+        routerLink: 'reports/preview-list'
+      },
+    ],
+  },
   // {
   //   title: 'Dashboards',
   //   svgIcon: DASHBOARD_ICON,

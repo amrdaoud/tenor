@@ -62,7 +62,13 @@ export const routes: Routes = [
             (c) => c.KpiListComponent
           ),
       },
-      
+      {
+        path: 'reports/list',
+        loadComponent: () =>
+          import('./reports/report-list/report-list.component').then(
+            (c) => c.ReportListComponent
+          ),
+      },
       {
         path: 'kpis/builder',
         loadComponent: () =>
@@ -84,8 +90,25 @@ export const routes: Routes = [
           import('./reports/report-builder/report-builder.component').then(
             (c) => c.ReportBuilderComponent
           ),
+          canDeactivate: [unsavedGuard],
           canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
-      }
+      },
+      {
+        path: 'reports/edit/:reportId',
+        loadComponent: () =>
+          import('./reports/report-builder/report-builder.component').then(
+            (c) => c.ReportBuilderComponent
+          ),
+          canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
+      },
+      {
+        path: 'reports/preview-list',
+        loadComponent: () =>
+          import('./reports/report-preview-list/report-preview-list.component').then(
+            (c) => c.ReportPreviewListComponent
+          ),
+          canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
+      },
     ],
   },
   {

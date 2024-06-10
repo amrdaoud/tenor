@@ -1,0 +1,32 @@
+<mat-drawer-container class="inner-drawer-container">
+    <mat-drawer opened mode="side">
+        <app-report-side-list (selected)="changeQueryParam($event.id)"></app-report-side-list>
+    </mat-drawer>
+    <mat-drawer-content>
+        <ng-container *ngIf="(reportId$ | async) as reportId;else notSelected">
+            <mat-tab-group>
+                <mat-tab label="Information">
+                    <app-report-builder [reportId]="reportId"></app-report-builder>
+                </mat-tab>
+                <mat-tab label="Data" disabled>
+
+                </mat-tab>
+                <mat-tab label="Charts" disabled>
+
+                </mat-tab>
+                
+                <mat-tab label="Actions" disabled>
+
+                </mat-tab>
+            </mat-tab-group>
+        </ng-container>
+    </mat-drawer-content>
+</mat-drawer-container>
+<ng-template #notSelected>
+    <div class="not-selected-container">
+        <div class="not-selected-text">
+            No report selected
+        </div>
+        
+    </div>
+</ng-template>

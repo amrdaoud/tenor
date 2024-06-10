@@ -1,0 +1,20 @@
+.inner-drawer-container {
+    .mat-mdc-tab-group {
+        height:100%;
+    }
+}
+.not-selected-container {
+    height:100%;
+    width:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    color: #ccc;
+    font-weight: 400;
+    .not-selected-text {
+        padding: 40px;
+        border: 1px solid;
+        border-radius: 15px;
+    }
+}

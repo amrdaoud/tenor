@@ -1,6 +1,6 @@
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, QueryList, SimpleChanges, ViewChildren, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,13 +11,19 @@ import { TreeNodeViewModel, enLogicalOperator } from '../../common/generic';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { LevelsSideTreeComponent } from "../levels-filters/levels-side-tree/levels-side-tree.component";
 import { ReportMeasureDto } from '../report';
-import { filter, map, startWith, tap } from 'rxjs';
+import { filter, map} from 'rxjs';
+import { ReportFilterControlComponent } from "../report-filter-control/report-filter-control.component";
+import { ReportBuilderService } from '../report-builder/report-builder.service';
+import { MatStepperNext, MatStepperPrevious } from '@angular/material/stepper';
 @Component({
     selector: 'app-report-filters',
     standalone: true,
     templateUrl: './report-filters.component.html',
     styleUrl: './report-filters.component.scss',
-    imports: [CommonModule, MatSidenavModule, MatCardModule, MatIconModule, MatListModule, CdkDropList, MatCheckboxModule, ReactiveFormsModule, LevelsSideTreeComponent, MatButtonModule]
+    imports: [CommonModule, MatSidenavModule, MatCardModule,
+      MatIconModule, MatListModule, CdkDropList, MatCheckboxModule,
+      ReactiveFormsModule, LevelsSideTreeComponent, MatButtonModule,
+      ReportFilterControlComponent, MatStepperNext, MatStepperPrevious]
 })
 export class ReportFiltersComponent implements AfterViewInit {
   @Input() formArray = new FormArray<any>([]);
@@ -25,10 +31,10 @@ export class ReportFiltersComponent implements AfterViewInit {
   dropContainers:  CdkDropList<any>[] = [];
   @ViewChildren('levelDropper') levelDroppers!: QueryList<CdkDropList<any>>;
   reportMeasures: ReportMeasureDto[] = [];
+  private reportBuilder = inject(ReportBuilderService);
   ngAfterViewInit(): void {
     this.updateContainers();
     this.measuresArray.valueChanges.pipe(
-      tap(x => console.log(x)),
       filter(() => this.measuresArray.valid),
       map(x => x as ReportMeasureDto[])
     ).subscribe(x => this.reportMeasures = x);
@@ -47,36 +53,16 @@ export class ReportFiltersComponent implements AfterViewInit {
   }
   changeLogicalOpertor(containerForm: FormGroup) {
     containerForm.get('logicalOperator')?.setValue(containerForm.get('logicalOperator')?.value === 1 ? 0 : 1);
+    this.formArray.markAsDirty();
   }
   addContainer(event: CdkDragDrop<never[]>) {    
-    const f = { ...event.previousContainer.data[event.previousIndex] as any } as TreeNodeViewModel;
-    this.formArray.push(new FormGroup({
-      id: new FormControl(0, Validators.required),
-      logicalOperator: new FormControl(enLogicalOperator.AND, Validators.required),
-      reportFilters: new FormArray([new FormGroup({
-        id: new FormControl(0, Validators.required),
-        name: new FormControl(f.name), //Must get the name of this filter
-        logicalOperator: new FormControl(enLogicalOperator.AND, Validators.required),
-        value: new FormControl(),
-        levelId: new FormControl(f.id, Validators.required),
-        isMandatory: new FormControl(true, Validators.required),
-        isVariable: new FormControl(false, Validators.required)
-      })]),
-    }));
+    this.formArray.push(this.reportBuilder.createFilterContainerFormFromDrop(event));
     this.updateContainers();
-    
+    this.formArray.markAsDirty();
   }
   addFilter(event: CdkDragDrop<never[]>, containerFormIndex: number) {
-    const f = { ...event.previousContainer.data[event.previousIndex] as any } as TreeNodeViewModel;
-    this.getFilterFormArray(containerFormIndex).push(new FormGroup({
-      id: new FormControl(0, Validators.required),
-      name: new FormControl(f.name) , //Must get the name of this filter
-      logicalOperator: new FormControl(enLogicalOperator.AND, Validators.required),
-      value: new FormControl(),
-      levelId: new FormControl(f.id, Validators.required),
-      isMandatory: new FormControl(true, Validators.required),
-      isVariable: new FormControl(false, Validators.required)
-  }));
+    this.getFilterFormArray(containerFormIndex).push(this.reportBuilder.createFilterFormFromDrop(event));
+    this.formArray.markAsDirty();
   }
   updateContainers() {
     setTimeout(() => {
@@ -84,5 +70,13 @@ export class ReportFiltersComponent implements AfterViewInit {
       this.dropContainers = containers;
     }, 500);
     // this.changed();
+  }
+  removeFilter(containerIndex: number, filterIndex: number) {
+    this.getFilterFormArray(containerIndex).removeAt(filterIndex);
+    this.formArray.markAsDirty();
+  }
+  removeContainer(containerIndex: number) {
+    this.formArray.removeAt(containerIndex);
+    this.formArray.markAsDirty();
   }
 }

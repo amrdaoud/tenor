@@ -1,0 +1,32 @@
+<mat-drawer-container class="inner-drawer-container">
+    <mat-drawer #measuresDrawer [opened]="true" mode="side" *ngIf="!formArray.disabled">
+        <div class="measures-container">
+            <app-levels-side-tree type="levels" [reportMeasures]="reportMeasures" [connectedDragDropLists]="[levelsContainer]"></app-levels-side-tree>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content>
+        <div class="report-builder-stepper-content">
+            <div class="drop-list" cdkDropList #levelsContainer="cdkDropList" [cdkDropListData]="formArrayControls" (cdkDropListDropped)="dropLevel($event)">
+                <div class="drop-box" cdkDrag [cdkDragDisabled]="formArray.disabled" *ngFor="let levelForm of formArrayControls; let i = index">
+                    <div style="width:33%">{{levelForm.get('name')?.value}}</div>
+                    <div class="highlight red clickable" *ngIf="levelForm.get('sortDirection')?.value === 1" (click)=" !formArray.disabled ? levelForm.get('sortDirection')?.setValue(0) : ''">Decending</div>
+                    <div class="highlight green clickable" *ngIf="levelForm.get('sortDirection')?.value === 0" (click)="!formArray.disabled ? levelForm.get('sortDirection')?.setValue(1) : ''">Ascending</div>
+                    <span class="full-spacer"></span>
+                    <mat-icon *ngIf="!formArray.disabled" class="clickable" (click)="removeLevel(i)">cancel</mat-icon>
+                </div>
+            </div>
+        </div>
+        <div class="error-container" *ngIf="formArray.errors">
+            <div class="error-row" *ngIf="formArray.hasError('required')">
+                Levels are required
+            </div>
+            <div class="error-row" *ngIf="formArray.hasError('nameDuplication')">
+                Duplication in levels!
+            </div>
+        </div>
+        <div class="stepper-buttons">
+            <button mat-raised-button type="button" matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" matStepperNext [disabled]="formArray.invalid">Next (Filters)</button>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

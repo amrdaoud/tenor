@@ -12,7 +12,7 @@ export interface ExtraField {
 export interface TreeNodeViewModel {
     id: number;
     name: string;
-    type: 'counter' | 'subset' | 'device' | 'number' | 'kpi' | 'operator' | 'function';
+    type: 'counter' | 'subset' | 'device' | 'number' | 'kpi' | 'operator' | 'function' | 'userName' | 'device' | 'report';
     hasChild: boolean;
     childs: TreeNodeViewModel[];
     aggregation?: string;
@@ -22,7 +22,7 @@ export interface TreeNodeViewModel {
     isLevel?: boolean;
 }
 export interface FlatTreeNode {
-    id: number;
+    id: number | string;
     name: string;
     type: string;
     level: number;

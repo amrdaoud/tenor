@@ -86,7 +86,7 @@ export class KpiListComponent extends Unsubscriber {
       });
   }
   btnClicked(btnIndex: number) {
-    this.router.navigateByUrl('/kpis/devices');
+    this.router.navigateByUrl('/kpis/builder');
   }
   menuCLicked(event: { index: number; target: KpiListViewModel; targetIndex: number }) {
     if (event.index === 0) {

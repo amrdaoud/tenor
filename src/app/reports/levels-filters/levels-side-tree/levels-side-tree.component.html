@@ -1,5 +1,9 @@
 <div class="density">
     <div class="tree-container">
+        <div class="overall-spinner-container" *ngIf="(type === 'levels' ? (loadingLevels$ | async) : (loadingFilters$ | async) )">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>Loading information</p>
+        </div>
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList
             [cdkDropListData]="expandedNodeList" cdkDropListSortingDisabled
             [cdkDropListConnectedTo]="connectedDragDropLists">

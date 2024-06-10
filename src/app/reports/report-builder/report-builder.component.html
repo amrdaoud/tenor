@@ -1,22 +1,29 @@
+<div class="overall-spinner-container" *ngIf="(loadingReport$ | async)">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading Report information</p>
+</div>
+<div class="overall-spinner-container" *ngIf="(loadingAddReport$ | async)">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>{{report ? 'Updating your Report' : 'Adding your Report'}}</p>
+</div>
 <div class="report-builder-container" *ngIf="frm">
-    <mat-stepper class="full-height-stepper no-padding-stepper header-bottom-border-stepper" [formGroup]="frm"
-        [linear]="false">
-        <mat-step label="Select Filters">
-            <app-report-filters [formArray]="filterContainers" [measuresArray]="measures" #reportFilters></app-report-filters>
-        </mat-step>
-        <mat-step label="Select Measures" [stepControl]="measures">
+    <mat-stepper class="full-height-stepper no-padding-stepper header-bottom-border-stepper" [formGroup]="frm" 
+        [linear]="!frm.disabled">
+        <mat-step label="Measures" [stepControl]="measures">
             <app-report-measures [formArray]="measures" #reportMeasures></app-report-measures>
         </mat-step>
-        <mat-step label="Select Levels">
+        <mat-step label="Levels" [stepControl]="levels">
+            <app-report-levels [formArray]="levels" [measuresArray]="measures" #reportLevels></app-report-levels>
         </mat-step>
-        <mat-step label="Select Report Options">
+        <mat-step label="Filters" [stepControl]="filterContainers">
+            <app-report-filters [formArray]="filterContainers" [measuresArray]="measures" #reportFilters></app-report-filters>
+        </mat-step>
+        <mat-step label="Report Options">
             <app-shared-form-controls [formGroup]="frm" formArrayName="reportFields"></app-shared-form-controls>
-            <div class="section">
-                <div class="button-handler">
-                    <button mat-stroked-button type="button" color="primary" matStepperPrevious>Back</button>
-                    <button mat-raised-button color="primary"[disabled]="frm.invalid">{{report ? 'Update Report' : 'Submit Report'}}</button>
+                <div class="stepper-buttons">
+                    <button mat-raised-button type="button" matStepperPrevious>Back</button>
+                    <button mat-raised-button *ngIf="!frm.disabled" type="submit" color="primary" (click)="submit()" [disabled]="frm.invalid">{{report ? 'Update Report' : 'Submit Report'}}</button>
                 </div>
-            </div>
         </mat-step>
     </mat-stepper>
 </div>

@@ -9,24 +9,25 @@
             @for (chipItem of chipItems; track chipItem) {
             <mat-chip-row cdkDrag [ngClass]="chipItem.type"
                 [editable]="chipItem.type === 'number'"
-                (edited)="edit($index, $event)"
-                (removed)="remove($index)"
-                [aria-description]="'press enter to edit ' + chipItem.name" (contextmenu)="onContextMenu($event, chipItem, $index)">
+                (edited)="!isDisabled ? edit($index, $event) : ''"
+                (removed)="!isDisabled ? remove($index) : ''"
+                [aria-description]="'press enter to edit ' + chipItem.name" (contextmenu)="!isDisabled ? onContextMenu($event, chipItem, $index) : ''">
                 {{chipItem.type === 'counter' ? chipItem.aggregation +' '+ chipItem.name : chipItem.name}}
             </mat-chip-row>
             }
             <input placeholder="Enter a number, function or operator"
+            [readOnly]="isDisabled"
             [matChipInputFor]="chipGrid"
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
             [matChipInputAddOnBlur]="addOnBlur"
-            (matChipInputTokenEnd)="add($event)"
+            (matChipInputTokenEnd)="!isDisabled ? add($event) : ''"
             [matChipInputFor]="chipGrid"/>
         </mat-chip-grid>
         <mat-hint class="control-error" *ngIf="operationValidationMessage || operationFormControl?.errors">{{operationValidationMessage}}</mat-hint>
     </mat-form-field>
     </div>
 </div>
-<div class="section" *ngIf="(operatorsAndFunctions$ | async) as operatorsFunctions; else loadingOperators">
+<div class="section" *ngIf="!isDisabled && (operatorsAndFunctions$ | async) as operatorsFunctions; else loadingOperators">
     <mat-grid-list rowHeight="50px" cols="8" gutterSize="5" cdkDropList cdkDropListSortingDisabled [cdkDropListData]="operatorsFunctions" [cdkDropListConnectedTo]="formula">
         <mat-grid-tile *ngFor="let operator of operatorsFunctions">
             <button type="button" mat-stroked-button style="width:100%" (click)="addOperatorOrFunction(operator)" cdkDrag [cdkDragData]="operator">{{operator.name}}</button>
@@ -34,7 +35,7 @@
     </mat-grid-list>
 </div>
 <ng-template #loadingOperators>
-    <mat-progress-bar *ngIf="loadingOperatorsAndFunctions$ | async" mode='query'></mat-progress-bar>
+    <mat-progress-bar *ngIf="!isDisabled && (loadingOperatorsAndFunctions$ | async)" mode='query'></mat-progress-bar>
 </ng-template>
 
 <div style="visibility: hidden; position: fixed"
@@ -47,11 +48,11 @@
         <button mat-menu-item [matMenuTriggerFor]="aggregationMenu" *ngIf="item.type === 'counter'">Select Aggregation</button>
 		<button mat-menu-item (click)="remove(index)"><mat-icon color="warn" >cancel</mat-icon>remove</button>
         <mat-menu #aggregationMenu="matMenu">
-            <button mat-menu-item (click)="chipItems[index].aggregation = 'AVG'">AVG</button>
-            <button mat-menu-item (click)="chipItems[index].aggregation = 'SUM'">SUM</button>
-            <button mat-menu-item (click)="chipItems[index].aggregation = 'MIN'">MIN</button>
-            <button mat-menu-item (click)="chipItems[index].aggregation = 'MAX'">MAX</button>
-            <button mat-menu-item (click)="chipItems[index].aggregation = 'COUNT'">COUNT</button>
+            <button mat-menu-item (click)="changeAggregation(index, 'AVG')">AVG</button>
+            <button mat-menu-item (click)="changeAggregation(index, 'SUM')">SUM</button>
+            <button mat-menu-item (click)="changeAggregation(index, 'MIN')">MIN</button>
+            <button mat-menu-item (click)="changeAggregation(index, 'MAX')">MAX</button>
+            <button mat-menu-item (click)="changeAggregation(index, 'COUNT')">COUNT</button>
         </mat-menu>
 	</ng-template>
 </mat-menu>

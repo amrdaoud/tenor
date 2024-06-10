@@ -116,7 +116,7 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnInit {
     if (currentNode && currentNode.hasChild && (!(currentNode?.childs) || currentNode?.childs?.length === 0)) {
       node.isLoading = true;
       if (node.type === 'device') {
-        this._otherSubscription = this.counterService.getDeviceChildsByParentId(node.id, this.searchControl.value!)
+        this._otherSubscription = this.counterService.getDeviceChildsByParentId(+node.id, this.searchControl.value!)
         .pipe(
           finalize(() => node.isLoading = false)
         )
@@ -128,7 +128,7 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnInit {
         });
       }
       else if (node.type === 'subset') {
-        this._otherSubscription = this.counterService.getCountersByParentId(node.id, this.searchControl.value!)
+        this._otherSubscription = this.counterService.getCountersByParentId(+node.id, this.searchControl.value!)
         .pipe(
           finalize(() => node.isLoading = false)
         )
@@ -154,8 +154,6 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnInit {
     } else {
       this.treeControl.expand(node!);
     }
-    this.dropList = this.treeControl.dataNodes.filter(x => (this.treeControl.isExpanded(x)) || x.type === 'counter');
-    console.log(this.dropList);
   }
   selectElement(element: TreeNodeViewModel) {
     this.selected.emit(element);

@@ -1,42 +1,41 @@
-<mat-drawer-container class="drawer-container">
-    <mat-drawer #measuresDrawer [opened]="true" mode="side">
+<mat-drawer-container class="inner-drawer-container">
+    <mat-drawer #measuresDrawer [opened]="true" mode="side" *ngIf="!formArray.disabled">
         <div class="measures-container">
-            <app-levels-side-tree [reportMeasures]="reportMeasures" [connectedDragDropLists]="dropContainers"></app-levels-side-tree>
+            <app-levels-side-tree type="filters" [reportMeasures]="reportMeasures" [connectedDragDropLists]="!formArray.disabled ? dropContainers : []"></app-levels-side-tree>
         </div>
     </mat-drawer>
-    <mat-drawer-content class="drawer-container-content">
-        <div class="stepper-content">
+    <mat-drawer-content>
+        <div class="report-builder-stepper-content">
         <ng-container *ngFor="let containerForm of formArrayControls; let i = index">
             <mat-card class="filter-container"
                 [ngClass]="containerForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'and' : 'or'">
                 <div class="operator">
                     <div>{{containerForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'AND' : 'OR'}}</div>
                     <span class="full-spacer"></span>
-                    <mat-icon class="clickable" (click)="changeLogicalOpertor(containerForm)">refresh</mat-icon>
+                    <mat-icon class="clickable" *ngIf="!formArray.disabled" (click)="changeLogicalOpertor(containerForm)">refresh</mat-icon>
+                    <mat-icon class="clickable" *ngIf="!formArray.disabled" (click)="removeContainer(i)">cancel</mat-icon>
                 </div>
                 <div class="filter-list">
                     <ng-container *ngFor="let filterForm of getFilterControls(i); let hI = index">
-                        <div [formGroup]="filterForm" class="filter" lines=1>
+                        <div [formGroup]="filterForm" class="filter" lines=1 [ngClass]="filterForm.hasError('invalidFilter') ? 'has-error' : ''">
                             <div class="op">
                                 <div class="highlight clickable"
                                     [ngClass]="filterForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'and' : 'or'"
-                                    (click)="changeLogicalOpertor(filterForm)">
+                                    (click)="!formArray.disabled ? changeLogicalOpertor(filterForm) : ''">
                                     {{filterForm.get('logicalOperator')?.value === enLogicalOperator.AND ? 'AND' :
                                     'OR'}}
                                 </div>
                             </div>
-                            <div class="filter-name">
-                                {{filterForm.get('name')?.value}}
-                            </div>
-                            <div class="filter-value">
-                                {{filterForm.get('value')?.value}}
+                            <div class="filter-value density">
+                                <app-report-filter-control [type]="filterForm.get('type')?.value" [valueControl]="filterForm.get('value')" [levelId]="filterForm.get('levelId')?.value" [label]="filterForm.get('name')?.value"></app-report-filter-control>
                             </div>
                             <mat-checkbox formControlName="isVariable" color="primary">Ask each time</mat-checkbox>
                             <mat-checkbox formControlName="isMandatory" color="warn">Mandatory</mat-checkbox>
+                            <mat-icon class="clickable" *ngIf="!formArray.disabled" (click)="removeFilter(i, hI)">cancel</mat-icon>
                         </div>
                     </ng-container>
                 </div>
-                <div class="level-drop-container">
+                <div class="level-drop-container" *ngIf="!formArray.disabled">
                     <div cdkDropList #levelDropper="cdkDropList" (cdkDropListDropped)="addFilter($event, i)">
                         <div class="level-drop clickable">
                             <mat-icon>flip_to_front</mat-icon>
@@ -46,7 +45,7 @@
                 </div>
             </mat-card>
         </ng-container>
-        <div class="level-drop-container" style="padding-top: 40px;">
+        <div class="level-drop-container" style="padding-top: 40px;" *ngIf="!formArray.disabled">
             <div cdkDropList #levelDropper="cdkDropList" (cdkDropListDropped)="addContainer($event)">
                 <div class="level-drop clickable">
                     <mat-icon>flip_to_front</mat-icon>
@@ -55,7 +54,17 @@
             </div>
         </div>
     </div>
-        <div class="stepper-buttons"><button mat-raised-button color="primary" matStepperNext>Next</button></div>
-    
+    <div class="error-container" *ngIf="formArray.errors">
+        <div class="error-row" *ngIf="formArray.hasError('required')">
+            Filters are required
+        </div>
+        <div class="error-row" *ngIf="formArray.hasError('noDate')">
+            Filters must have a mandatory date
+        </div>
+    </div>
+        <div class="stepper-buttons">
+            <button mat-raised-button type="button" matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" matStepperNext [disabled]="formArray.invalid">Next (Options)</button>
+        </div>
     </mat-drawer-content>
 </mat-drawer-container>
