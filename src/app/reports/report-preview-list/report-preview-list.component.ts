@@ -6,13 +6,14 @@ import { map } from 'rxjs';
 import { ReportBuilderComponent } from "../report-builder/report-builder.component";
 import { CommonModule } from '@angular/common';
 import { ReportSideListComponent } from "../report-side-list/report-side-list.component";
+import { ReportDataTableComponent } from "../report-data-table/report-data-table.component";
 
 @Component({
     selector: 'app-report-preview-list',
     standalone: true,
     templateUrl: './report-preview-list.component.html',
     styleUrl: './report-preview-list.component.scss',
-    imports: [CommonModule, MatSidenavModule, MatTabsModule, ReportBuilderComponent, ReportSideListComponent]
+    imports: [CommonModule, MatSidenavModule, MatTabsModule, ReportBuilderComponent, ReportSideListComponent, ReportDataTableComponent]
 })
 export class ReportPreviewListComponent {
   private route = inject(ActivatedRoute);

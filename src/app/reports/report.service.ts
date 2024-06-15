@@ -196,4 +196,10 @@ export class ReportService {
       finalize(() => this.loadingTreeReports.next(false))
     )
   }
+  editReport(report: CreateReport): Observable<ReportViewModel> {
+    this.loadingAddReport.next(true);
+    return this.http.put<ReportViewModel>(this.url + '/edit?id='+report.id, report).pipe(
+      finalize(() => this.loadingAddReport.next(false))
+    )
+  }
 }

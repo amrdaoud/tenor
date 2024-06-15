@@ -103,7 +103,12 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
       return;
     }
     if(this.report) {
-      console.log(this.frm.value);
+      this._otherSubscription = this.reportService.editReport(this.frm.value).subscribe(x => {
+        if(x) {
+          this.submitted = true;
+          this.router.navigateByUrl('/reports/list')
+        }
+      });
       return;
     }
     this._otherSubscription = this.reportService.addReport(this.frm.value).subscribe(x => {

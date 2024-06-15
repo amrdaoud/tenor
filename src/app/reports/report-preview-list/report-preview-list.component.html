@@ -8,13 +8,15 @@
                 <mat-tab label="Information">
                     <app-report-builder [reportId]="reportId"></app-report-builder>
                 </mat-tab>
-                <mat-tab label="Data" disabled>
-
+                <mat-tab label="Data">
+                    <div class="stepper-content">
+                        <app-report-data-table></app-report-data-table>
+                    </div>
                 </mat-tab>
                 <mat-tab label="Charts" disabled>
 
                 </mat-tab>
-                
+
                 <mat-tab label="Actions" disabled>
 
                 </mat-tab>
@@ -27,6 +29,6 @@
         <div class="not-selected-text">
             No report selected
         </div>
-        
+
     </div>
 </ng-template>
