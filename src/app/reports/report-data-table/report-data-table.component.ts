@@ -18,7 +18,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { saveAs } from "file-saver";
 @Component({
   selector: 'app-report-data-table',
   standalone: true,
@@ -35,6 +35,7 @@ export class ReportDataTableComponent implements AfterViewInit {
   private destroyRef = inject(DestroyRef);
   loadingRehearsal = toSignal(this.reportService.loadingRehearsal$, { initialValue: false });
   loadingData = toSignal(this.reportService.loadingData$, { initialValue: false });
+  loadingDownload = toSignal(this.reportService.loadingDownload$, { initialValue: false });
   get enLogicalOperator(): typeof enLogicalOperator {
     return enLogicalOperator;
   }
@@ -87,5 +88,10 @@ export class ReportDataTableComponent implements AfterViewInit {
         this.dataSize = x.dataSize;
         this.dataSource.data = x.data;
       });
+  }
+  download() {
+    this.reportService.downloadReportById(this.reportId(), this.filterContainersFormArray().getRawValue()).subscribe(
+      data => saveAs(data, this.rehearsalData()?.name + '-' + new Date().toLocaleDateString() + '.csv')
+    )
   }
 }

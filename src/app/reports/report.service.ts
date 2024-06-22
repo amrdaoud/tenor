@@ -53,7 +53,10 @@ export class ReportService {
   get loadingList$(): Observable<boolean> {
     return this.loadingList.asObservable();
   }
-
+  private loadingDelete = new BehaviorSubject<boolean>(false);
+  get loadingDelete$(): Observable<boolean> {
+    return this.loadingDelete.asObservable();
+  }
   private loadingMenuElements = new BehaviorSubject<number[]>([]);
   get loadingMenuElements$(): Observable<number[]> {
     return this.loadingMenuElements.asObservable();
@@ -77,6 +80,10 @@ export class ReportService {
   private loadingData = new BehaviorSubject<boolean>(false);
   get loadingData$(): Observable<boolean> {
     return this.loadingData.asObservable();
+  }
+  private loadingDownload = new BehaviorSubject<boolean>(false);
+  get loadingDownload$(): Observable<boolean> {
+    return this.loadingDownload.asObservable();
   }
   getLevelsByMeasures(measures: ReportMeasureDto[]): Observable<TreeNodeViewModel[]> {
     this.loadingLevels.next(true);
@@ -173,8 +180,10 @@ export class ReportService {
   }
   deleteReport(id: number, index: number): Observable<boolean> {
     this.loadingMenuElements.next([...this.loadingMenuElements.value, index]);
+    this.loadingDelete.next(true);
     return this.http.delete<boolean>(this.url + '/hardDelete?id='+id).pipe(
       finalize(() => {
+        this.loadingDelete.next(false);
         const i = this.loadingMenuElements.value.findIndex(x => x === index);
         this.loadingMenuElements.value.splice(i, 1);
         this.loadingMenuElements.next(this.loadingMenuElements.value);
@@ -227,4 +236,12 @@ export class ReportService {
       finalize(() => this.loadingData.next(false))
     );
   } 
+  downloadReportById(reportId: number, filters: ContainerOfFilter[]): Observable<Blob> {
+    this.loadingDownload.next(true);
+    let params = new HttpParams()
+    .set('reportId', reportId);
+    return this.http.post(this.url + '/exportReportDataById', filters, {params, responseType: 'blob'}).pipe(
+      finalize(() => this.loadingDownload.next(false))
+    )
+  }
 }

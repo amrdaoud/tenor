@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, inject, input } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, effect, inject, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize, of, switchMap, tap } from 'rxjs';
 import { Unsubscriber } from 'techteec-lib/common';
@@ -33,6 +33,7 @@ export class ReportSideListComponent extends Unsubscriber implements OnInit{
   });
   @Output() selected = new EventEmitter<TreeNodeViewModel>();
   selectedReportId = input<number>(0);
+  deletedReportIds = input<number[]>([]);
   private reportService = inject(ReportService);
   private deviceService = inject(DeviceService);
   rootDevices$ = this.deviceService.getRootDevices();

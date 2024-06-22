@@ -102,6 +102,14 @@ export const routes: Routes = [
           canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
       },
       {
+        path: 'reports/clone/:reportId',
+        loadComponent: () =>
+          import('./reports/report-builder/report-builder.component').then(
+            (c) => c.ReportBuilderComponent
+          ),
+          canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
+      },
+      {
         path: 'reports/preview-list',
         loadComponent: () =>
           import('./reports/report-preview-list/report-preview-list.component').then(

@@ -1,8 +1,14 @@
 <mat-drawer-container class="inner-drawer-container">
     <mat-drawer opened mode="side">
-        <app-report-side-list (selected)="changeQueryParam($event.id)" [selectedReportId]="reportId()!"></app-report-side-list>
+        <app-report-side-list (selected)="changeQueryParam($event.id)" [deletedReportIds]="deletedReportIds" [selectedReportId]="reportId()!"></app-report-side-list>
     </mat-drawer>
     <mat-drawer-content>
+        @if(loadingDelete()) {
+            <div class="overall-spinner-container">
+                <mat-spinner diameter="50"></mat-spinner>
+                <p>Deleting Report</p>
+            </div>
+        }
         @if(reportId()) {
             <mat-tab-group>
                 <mat-tab label="Data">
@@ -19,7 +25,22 @@
                 </mat-tab> -->
 
                 <mat-tab label="Actions">
-
+                    <mat-card>
+                    <mat-action-list>
+                        <button mat-list-item [routerLink]="'/reports/edit/' + reportId()">
+                            <mat-icon matListItemIcon style="color: #5854e0">edit</mat-icon>
+                            Edit Report
+                        </button>
+                        <button mat-list-item [routerLink]="'/reports/clone/' + reportId()">
+                            <mat-icon matListItemIcon style="color: #5854e0">file_copy</mat-icon>
+                            Duplicate Report
+                        </button>
+                        <button mat-list-item (click)="delete()">
+                            <mat-icon matListItemIcon style="color: #e42c2f">delete</mat-icon>
+                            Delete Report
+                        </button>
+                    </mat-action-list>
+                </mat-card>
                 </mat-tab>
             </mat-tab-group>
         } @else {

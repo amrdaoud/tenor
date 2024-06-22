@@ -14,6 +14,12 @@
     <mat-drawer-container class="rdt-container">
         <mat-drawer #filterDrawer position="end" class="filter-drawer">
             <div class="filter-menu-contents">
+                @if(loadingDownload()) {
+                    <div class="overall-spinner-container">
+                        <mat-spinner diameter="50"></mat-spinner>
+                        <p>Downloading Data</p>
+                    </div>
+                }
                 @if (filterContainers()) {
                     @for (filterContainer of formArrayControls(); track filterContainer.get('id'); let i = $index) {
                     <div class="container-panel">
@@ -29,6 +35,11 @@
                     <div class="container-btn">
                         <button (click)="filterDrawer.close(); submit()" mat-raised-button color="primary" [disabled]="filterContainersFormArray().invalid" class="full-spacer">
                             GET DATA
+                        </button>
+                    </div>
+                    <div class="container-btn">
+                        <button (click)="download()" mat-raised-button color="accent" [disabled]="filterContainersFormArray().invalid" class="full-spacer">
+                            DOWNLOAD DATA
                         </button>
                     </div>
                 }
@@ -51,7 +62,7 @@
                 @if (reportId())
                 {
                 <div class="rdt-table-container density">
-                    <table mat-table [dataSource]="dataSource" class="rdt-table">
+                    <table mat-table [dataSource]="dataSource" class="rdt-table" width="100%">
                         @for (column of rehearsalData()?.columns; track $index) {
                         <ng-container [matColumnDef]="column.name">
                             <th mat-header-cell *matHeaderCellDef> {{column.name}} </th>

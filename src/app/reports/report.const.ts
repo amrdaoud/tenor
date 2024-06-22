@@ -25,6 +25,11 @@ export const columns: ColumnDef[] = [
       Icon: 'edit',
     },
     {
+      Text: 'Duplicate Report',
+      MatColor: 'primary',
+      Icon: 'file_copy',
+    },
+    {
       Text: 'Preview Report',
       MatColor: 'accent',
       Icon: 'visibility',

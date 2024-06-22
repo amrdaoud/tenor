@@ -50,6 +50,7 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
   report!: ReportViewModel;
   private route = inject(ActivatedRoute);
   frm!: FormGroup;
+  isClone = false;
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['reportId'] && this.reportId) {
       this._otherSubscription = this.reportService.getById(this.reportId).pipe(
@@ -65,6 +66,7 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
     }
   }
   ngOnInit(): void {
+    this.isClone = this.router.url.includes('/clone/');
     if(!this.reportId) {
       this._otherSubscription = this.route.paramMap.pipe(
         switchMap((param: ParamMap) => {
@@ -72,7 +74,7 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
             return this.reportService.getById(+param.get('reportId')!).pipe(
               tap((report: ReportViewModel) => this.report = report),
               switchMap(e => this.reportService.getExtraFields(e.deviceId!)),
-              map(e => this.reportBuilderService.createReportForm(this.report,e)),
+              map(e => this.reportBuilderService.createReportForm(this.report,e, this.isClone)),
             )
           } else {
             return of(this.reportBuilderService.createReportForm())
@@ -102,11 +104,11 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
     if(this.frm.invalid) {
       return;
     }
-    if(this.report) {
+    if(this.report && !this.isClone) {
       this._otherSubscription = this.reportService.editReport(this.frm.value).subscribe(x => {
         if(x) {
           this.submitted = true;
-          this.router.navigateByUrl('/reports/list')
+          this.router.navigate([`/reports/preview-list`], {queryParams:{reportId: x.id}})
         }
       });
       return;
@@ -114,7 +116,7 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
     this._otherSubscription = this.reportService.addReport(this.frm.value).subscribe(x => {
       if(x) {
         this.submitted = true;
-        this.router.navigateByUrl('/reports/list')
+        this.router.navigate([`/reports/preview-list`], {queryParams:{reportId: x.id}})
       }
     });
   }

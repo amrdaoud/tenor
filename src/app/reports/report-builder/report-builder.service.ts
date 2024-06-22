@@ -57,10 +57,10 @@ const validateHavingDate : ValidatorFn = (control: AbstractControl): ValidationE
 export class ReportBuilderService {
   private operationService = inject(OperationService);
   private reportService = inject(ReportService);
-  createReportForm(report?: ReportViewModel, extraFields?: ExtraField[]): FormGroup {
+  createReportForm(report?: ReportViewModel, extraFields?: ExtraField[], isClone?: boolean): FormGroup {
     let frm = new FormGroup({
-      id: new FormControl(report?.id ?? 0, Validators.required),
-      name: new FormControl(report?.name, {
+      id: new FormControl(isClone ? 0 : report?.id ?? 0, Validators.required),
+      name: new FormControl(report?.name + (isClone ? '(Cloned)' : ''), {
         validators: Validators.required,
         asyncValidators: this.reportService.validateName('deviceId', report?.name),
         updateOn: 'blur'
