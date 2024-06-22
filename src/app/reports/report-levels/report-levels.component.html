@@ -1,5 +1,5 @@
 <mat-drawer-container class="inner-drawer-container">
-    <mat-drawer #measuresDrawer [opened]="true" mode="side" *ngIf="!formArray.disabled">
+    <mat-drawer #measuresDrawer [opened]="true" mode="side" *ngIf="!formArray.disabled" style="width:25%">
         <div class="measures-container">
             <app-levels-side-tree type="levels" [reportMeasures]="reportMeasures" [connectedDragDropLists]="[levelsContainer]"></app-levels-side-tree>
         </div>

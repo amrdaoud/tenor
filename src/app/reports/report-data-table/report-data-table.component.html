@@ -1,20 +1,83 @@
-<mat-card class="rdt-container">
-    <div class="rdt-header">
-        <div class="rdt-title-subtitle">
-            <div class="rdt-title">
-                Data table Title
-            </div>
-            <div class="rdt-subtitle">
-                Data Table Subtitle
-            </div>
+<mat-card class="rdt-card">
+    @if(loadingRehearsal()) {
+        <div class="overall-spinner-container">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>Loading Report information</p>
         </div>
-        <button mat-icon-button><mat-icon class="filter-icon" svgIcon="filter-icon"></mat-icon></button>
-    </div>
-    <div class="rdt-content">
-        <div class="rdt-table">
-            <table mat-table>
-                
-            </table>
+    }
+    @if(loadingData()) {
+        <div class="overall-spinner-container">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>Loading Report data</p>
         </div>
-    </div>
+    }
+    <mat-drawer-container class="rdt-container">
+        <mat-drawer #filterDrawer position="end" class="filter-drawer">
+            <div class="filter-menu-contents">
+                @if (filterContainers()) {
+                    @for (filterContainer of formArrayControls(); track filterContainer.get('id'); let i = $index) {
+                    <div class="container-panel">
+                        <div class="container-label">
+                            {{filterContainer.value.logicalOperator === enLogicalOperator.AND ? 'and' : 'or'}}
+                        </div>
+                        @for (filter of getFilterControls(i); track filter.get('id')) {
+                        <app-report-filter-control [levelId]="filter.value.levelId" [label]="(filter.value.logicalOperator === enLogicalOperator.AND ? 'and' : 'or') + ':' + filter.value.name"
+                            [type]="filter.value.type" [valueControl]="filter.get('value')" [isMandatory]="filter.value.isMandatory"></app-report-filter-control>
+                        }
+                    </div>
+                    }
+                    <div class="container-btn">
+                        <button (click)="filterDrawer.close(); submit()" mat-raised-button color="primary" [disabled]="filterContainersFormArray().invalid" class="full-spacer">
+                            GET DATA
+                        </button>
+                    </div>
+                }
+            </div>
+        </mat-drawer>
+        <mat-drawer-content>
+            <div class="rdt-header">
+                <div class="rdt-title-subtitle">
+                    <div class="rdt-title">
+                        {{name()}}
+                    </div>
+                    <div class="rdt-subtitle">
+                        Select filters to get data
+                    </div>
+                </div>
+                <button (click)="filterDrawer.toggle()" mat-icon-button><mat-icon class="filter-icon"
+                        svgIcon="filter-icon"></mat-icon></button>
+            </div>
+            <div class="rdt-content">
+                @if (reportId())
+                {
+                <div class="rdt-table-container density">
+                    <table mat-table [dataSource]="dataSource" class="rdt-table">
+                        @for (column of rehearsalData()?.columns; track $index) {
+                        <ng-container [matColumnDef]="column.name">
+                            <th mat-header-cell *matHeaderCellDef> {{column.name}} </th>
+                            @if(column.type === 'Date') {
+                                <td mat-cell *matCellDef="let row"> {{row[column.name] | date}} </td>
+                            }@else if(column.type === 'Number') {
+                                <td mat-cell *matCellDef="let row"> {{row[column.name] | number : '1.2-2'}} </td>
+                            }@else {
+                                <td mat-cell *matCellDef="let row"> {{row[column.name]}} </td>
+                            }
+                            
+                        </ng-container>
+                        }
+                        <tr mat-header-row *matHeaderRowDef="columnNames(); sticky:true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: columnNames();"></tr>
+        
+                        <!-- Row shown when there is no matching data. -->
+                        <tr class="mat-row" *matNoDataRow>
+                            No Data Found
+                        </tr>
+                    </table>
+                </div>
+                }
+                <mat-paginator class="data-table-paginator" [pageSizeOptions]="[10, 30, 50, 100]"  [length]="dataSize" [pageSize]="pageSize()"></mat-paginator>
+            </div>
+        </mat-drawer-content>
+    </mat-drawer-container>
+    
 </mat-card>

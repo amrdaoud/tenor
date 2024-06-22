@@ -7,6 +7,7 @@ import { ReportBuilderComponent } from "../report-builder/report-builder.compone
 import { CommonModule } from '@angular/common';
 import { ReportSideListComponent } from "../report-side-list/report-side-list.component";
 import { ReportDataTableComponent } from "../report-data-table/report-data-table.component";
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-report-preview-list',
@@ -18,9 +19,9 @@ import { ReportDataTableComponent } from "../report-data-table/report-data-table
 export class ReportPreviewListComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  reportId$ = this.route.queryParamMap.pipe(
+  reportId = toSignal(this.route.queryParamMap.pipe(
     map((qParamMap: ParamMap) => +qParamMap.get('reportId')!)
-  )
+  ), {initialValue: undefined})
   changeQueryParam(reportId: number) {
     this.router.navigate([], {
       relativeTo: this.route,

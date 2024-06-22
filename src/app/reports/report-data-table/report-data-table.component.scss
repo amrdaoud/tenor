@@ -1,8 +1,10 @@
-.rdt-container {
+@use '@angular/material' as mat;
+
+.density {
+    @include mat.table-density(-6);
+}
+.rdt-card {
     height: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    background-color: #fff;
 }
 .rdt-header {
     display: flex;
@@ -26,9 +28,49 @@
     letter-spacing: 0.5px;
 }
 .rdt-content {
-    height: calc(100% - 36px);
+    height: calc(100% - 51px);
 }
 .filter-icon {
     stroke: #5854e0;
     color: #5854e0;
+}
+::ng-deep .filter-menu.mat-mdc-menu-panel.mat-mdc-menu-panel {
+    max-width: 100vw;
+}
+.container-panel {
+    padding:10px;
+    border: 1px solid;
+    color: #999;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.filter-menu-contents {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+}
+.container-label {
+    width:100%;
+    text-align: center;
+    margin-top: -5px;
+}
+.container-btn {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.rdt-container {
+    height:100%;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 15px;
+}
+td {
+    padding: 0px 5px 0px 5px !important;
+    font-size: 12px !important;
 }

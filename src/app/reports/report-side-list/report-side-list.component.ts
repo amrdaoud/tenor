@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize, of, switchMap, tap } from 'rxjs';
 import { Unsubscriber } from 'techteec-lib/common';
@@ -7,7 +7,7 @@ import { DeviceService } from '../../devices/device.service';
 import { ExtraField, FlatTreeNode, TreeNodeViewModel } from '../../common/generic';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InputComponent, SelectComponent } from 'techteec-lib/controls';
@@ -15,6 +15,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlattener, MatTreeFlatDataSource, MatTreeModule } from '@angular/material/tree';
 import { MatButtonModule } from '@angular/material/button';
+import { DomSanitizer } from '@angular/platform-browser';
+import { KPI_ICON, REPORT_ICON, USER_ICON } from '../../common/app-icons.const';
 
 @Component({
   selector: 'app-report-side-list',
@@ -30,6 +32,7 @@ export class ReportSideListComponent extends Unsubscriber implements OnInit{
     deviceId: new FormControl(null)
   });
   @Output() selected = new EventEmitter<TreeNodeViewModel>();
+  selectedReportId = input<number>(0);
   private reportService = inject(ReportService);
   private deviceService = inject(DeviceService);
   rootDevices$ = this.deviceService.getRootDevices();
@@ -38,8 +41,10 @@ export class ReportSideListComponent extends Unsubscriber implements OnInit{
   treeControl!: FlatTreeControl<FlatTreeNode>;
   treeFlattener!: MatTreeFlattener<TreeNodeViewModel, FlatTreeNode>;
   dataSource!: MatTreeFlatDataSource<TreeNodeViewModel, FlatTreeNode>;
-  constructor() {
+  constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
     super();
+    iconRegistry.addSvgIconLiteral('report-icon', sanitizer.bypassSecurityTrustHtml(REPORT_ICON));
+    iconRegistry.addSvgIconLiteral('user-icon', sanitizer.bypassSecurityTrustHtml(USER_ICON));
   }
   ngOnInit(): void {
     this.frm.get('deviceId')?.valueChanges.pipe(

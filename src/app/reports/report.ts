@@ -36,6 +36,7 @@ export interface ReportFilterContainer {
 export interface ReportFilterDto {
     id: number;
     logicalOperator: enLogicalOperator;
+    logicalOperatorName: string;
     value: string[] | null;
     levelId: number;
     levelName: string;

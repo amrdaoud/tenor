@@ -25,6 +25,11 @@ export const columns: ColumnDef[] = [
       Icon: 'edit',
     },
     {
+      Text: 'Preview Report',
+      MatColor: 'accent',
+      Icon: 'visibility',
+    },
+    {
       Text: 'Delete',
       MatColor: 'warn',
       Icon: 'delete',

@@ -2,10 +2,11 @@ import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, finalize, map, of } from 'rxjs';
-import { CreateReport, ReportDto, ReportMeasureDto, ReportViewModel } from './report';
-import { ExtraField, TreeNodeViewModel } from '../common/generic';
+import { ContainerOfFilter, CreateReport, ReportDto, ReportMeasureDto, ReportViewModel } from './report';
+import { DataWithSize, ExtraField, TreeNodeViewModel } from '../common/generic';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 import { GeneralFilterModel } from 'techteec-lib/components/data-table/src/data-table.model';
+import { ReportRehearsalModel } from './report-data-table/models/report-data-table';
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +69,14 @@ export class ReportService {
   private loadingTreeReports = new BehaviorSubject<boolean>(false);;
   get loadingTreeReports$(): Observable<boolean> {
     return this.loadingTreeReports.asObservable();
+  }
+  private loadingRehearsal = new BehaviorSubject<boolean>(false);
+  get loadingRehearsal$(): Observable<boolean> {
+    return this.loadingRehearsal.asObservable();
+  }
+  private loadingData = new BehaviorSubject<boolean>(false);
+  get loadingData$(): Observable<boolean> {
+    return this.loadingData.asObservable();
   }
   getLevelsByMeasures(measures: ReportMeasureDto[]): Observable<TreeNodeViewModel[]> {
     this.loadingLevels.next(true);
@@ -202,4 +211,20 @@ export class ReportService {
       finalize(() => this.loadingAddReport.next(false))
     )
   }
+  getReportRehearsal(reportId: number): Observable<ReportRehearsalModel> {
+    this.loadingRehearsal.next(true);
+    return this.http.get<ReportRehearsalModel>(this.url + `/getRehearsal?id=${reportId}`).pipe(
+      finalize(() => this.loadingRehearsal.next(false))
+    );
+  }
+  getReportData(reportId: number, pageSize: number, pageIndex: number, filters: ContainerOfFilter[]): Observable<DataWithSize<any>> {
+    this.loadingData.next(true);
+    let params = new HttpParams()
+    .set('reportId', reportId)
+    .set('pageIndex', pageIndex)
+    .set('pageSize', pageSize);
+    return this.http.post<DataWithSize<any>>(this.url + '/getReportDataById', filters, {params}).pipe(
+      finalize(() => this.loadingData.next(false))
+    );
+  } 
 }

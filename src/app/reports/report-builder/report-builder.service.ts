@@ -90,6 +90,11 @@ export class ReportBuilderService {
     });
     return frm;
   }
+  createContainerOfFilterFormArray(containerOfFilters: ContainerOfFilter[]): FormArray {
+    const frmArray = new FormArray([] as any[]);
+    containerOfFilters.forEach(cf => frmArray.push(this.createFilterContainerForm(cf, true)))
+    return frmArray;
+  }
   resetExtraFields(frm: FormGroup, extraFields: ExtraField[], report?: ReportViewModel) {
     (frm.get('reportFields') as FormArray).clear();
     extraFields.forEach(ef => {
@@ -154,7 +159,7 @@ export class ReportBuilderService {
         isMandatory: new FormControl(true, Validators.required),
         isVariable: new FormControl(false, Validators.required),
         type: new FormControl(f.type, Validators.required)
-      }, [validateFilterFormGroup])]),
+      }, [validateFilterFormGroup])], Validators.required),
     });
     return frm;
   }
@@ -201,22 +206,22 @@ export class ReportBuilderService {
       }) as FormGroup[])
     });
   }
-  createFilterContainerForm(item: ContainerOfFilter): FormGroup {
+  createFilterContainerForm(item: ContainerOfFilter, checkDisabled?: boolean): FormGroup {
     const frm = new FormGroup({
       id: new FormControl(item.id, Validators.required),
       logicalOperator: new FormControl(item.logicalOperator, Validators.required),
       reportFilters: new FormArray(item.reportFilters?.map(f => {
-        return this.createFilterForm(f);
-      }))
+        return this.createFilterForm(f, checkDisabled!);
+      }), Validators.required)
     });
     return frm;
   }
-  createFilterForm(item: ReportFilterDto): FormGroup {
+  createFilterForm(item: ReportFilterDto, checkDisabled?: boolean): FormGroup {
     const frm = new FormGroup({
       id: new FormControl(item.id, Validators.required),
       name: new FormControl(item.levelName), //Must get the name of this filter
       logicalOperator: new FormControl(item.logicalOperator, Validators.required),
-      value: new FormControl(item.value),
+      value: new FormControl({value: item.value ?? [], disabled: checkDisabled! && !item.isVariable},{validators: checkDisabled && item.isMandatory ? Validators.required : undefined}),
       levelId: new FormControl(item.levelId, Validators.required),
       isMandatory: new FormControl(item.isMandatory, Validators.required),
       isVariable: new FormControl(item.isVariable, Validators.required),

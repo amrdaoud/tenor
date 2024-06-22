@@ -35,7 +35,7 @@
         </div>
         <div class="tree-container">
             <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" >
-                <mat-tree-node *matTreeNodeDef="let node" [ngClass]="node.type" matTreeNodeToggle matTreeNodePadding matTreeNodePaddingIndent="15" (click)="node.type === 'report' ? selectElement(node) : ''">
+                <mat-tree-node *matTreeNodeDef="let node" class="clickable" [ngClass]="node.id === selectedReportId() ? 'selected' : ''" matTreeNodeToggle matTreeNodePadding matTreeNodePaddingIndent="15" (click)="node.type === 'report' ? selectElement(node) : ''">
                   <button mat-icon-button disabled ></button>
                   <mat-icon class="type-icon" [attr.aria-label]="node.type + 'icon'" [svgIcon]="node.type === 'device' ? 'device-icon' : node.type === 'userName' ? 'user-icon' : 'report-icon'">
                   </mat-icon>

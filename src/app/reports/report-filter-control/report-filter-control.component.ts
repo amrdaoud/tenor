@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, inject } from '@angular/core';
-import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Observable, debounceTime, map, merge, of, startWith, switchMap, tap } from 'rxjs';
+import { AbstractControl, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Observable, debounceTime, distinctUntilChanged, map, merge, of, startWith, switchMap, tap } from 'rxjs';
 import { ReportService } from '../report.service';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,12 +28,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './report-filter-control.component.scss',
   providers: [provideNativeDateAdapter()],
 })
-export class ReportFilterControlComponent extends Unsubscriber implements OnInit {
+export class ReportFilterControlComponent extends Unsubscriber implements OnChanges {
   @Input() levelId!: number;
   @Input() placeHolder: string = 'Select Values';
   @Input() label!: string;
   @Input() valueControl: AbstractControl<any, any> | null = new FormControl([]);
-  @Input() type: 'List' | 'Date' = 'List';
+  @Input() isMandatory = false;
+  @Input() type: string = 'List';
   filterCtrl = new FormControl('');
   dateCtrl1 = new FormControl<Date | undefined>(undefined);
   dateCtrl2 = new FormControl<Date | undefined>(undefined);
@@ -47,22 +48,34 @@ export class ReportFilterControlComponent extends Unsubscriber implements OnInit
     this.filteredOptions = this.filterCtrl.valueChanges.pipe(
       startWith(''),
       debounceTime(400),
+      distinctUntilChanged(),
       switchMap((searchQuery: string | null) => this.reportService.getFilterOptions(this.levelId, searchQuery, 0, 20))
     );
   }
-  ngOnInit(): void {
-    if(this.valueControl?.disabled) {
-      this.dateCtrl1.disable();
-      this.dateCtrl2.disable();
-      this.filterCtrl.disable();
-    }
+  ngOnChanges(): void {
+    this.dateCtrl1.removeValidators(Validators.required);
+    this.dateCtrl2.removeValidators(Validators.required);
+    this.filterCtrl.removeValidators(Validators.required);
+    this.dateCtrl1.enable();
+    this.dateCtrl2.enable();
+    this.filterCtrl.enable();
     if(this.type === 'List') {
       this.selectedOptions = this.valueControl?.value;
     } else if(this.type === 'Date' && this.valueControl?.value && (this.valueControl?.value as string[]).length === 2) {
       this.dateCtrl1.setValue(this.convertNumberStringToDate(this.valueControl?.value[0]))
       this.dateCtrl2.setValue(this.convertNumberStringToDate(this.valueControl?.value[1]))
     }
-    
+
+    if(this.isMandatory) {
+      this.dateCtrl1.addValidators(Validators.required);
+      this.dateCtrl2.addValidators(Validators.required);
+      this.filterCtrl.addValidators(Validators.required);
+    }
+    if(this.valueControl?.disabled) {
+      this.dateCtrl1.disable();
+      this.dateCtrl2.disable();
+      this.filterCtrl.disable();
+    }
     this._otherSubscription = merge(this.dateCtrl1.valueChanges, this.dateCtrl2.valueChanges).pipe(
       tap(() => {
         if(!this.dateCtrl1.value || !this.dateCtrl2.value) {

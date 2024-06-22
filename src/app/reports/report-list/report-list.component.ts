@@ -81,6 +81,12 @@ export class ReportListComponent extends Unsubscriber {
     if (event.index === 0) {
       this.router.navigate(['reports/edit', event.target.id]);
     } else if(event.index === 1) {
+      this.router.navigate(['reports/preview-list'], {
+        queryParams: {reportId: event.target.id},
+        queryParamsHandling: 'merge',
+        replaceUrl: false
+      })
+    } else if(event.index === 2) {
       this.confirm.open({Title: 'Deleting Report', Message: `Are you sure you want to delete "${event.target.name}" Report?`, MatColor: 'warn' }).pipe(
         filter(result => result),
         switchMap(() => this.reportService.deleteReport(event.target.id, event.targetIndex))
