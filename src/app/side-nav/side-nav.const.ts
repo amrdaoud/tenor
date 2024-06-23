@@ -26,7 +26,6 @@ export const items: IconNavItemWithRoles[] = [
     title: 'KPI',
     svgIcon: KPI_ICON,
     postition: 'top',
-    routerLink: 'kpis',
     children: [
       {
         title: 'All KPIS',

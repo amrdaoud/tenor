@@ -60,7 +60,6 @@ export class ReportDataTableComponent implements AfterViewInit {
   constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
     iconRegistry.addSvgIconLiteral('filter-icon', sanitizer.bypassSecurityTrustHtml(FILTER_ICON));
     effect(() => {
-      console.log(this.rehearsalData());
       this.dataSource.data = [];
       this.dataSize = 0;
     })
