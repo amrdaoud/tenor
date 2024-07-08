@@ -7,8 +7,8 @@
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" cdkDropList
             [cdkDropListData]="expandedNodeList" cdkDropListSortingDisabled
             [cdkDropListConnectedTo]="connectedDragDropLists">
-            <mat-tree-node *matTreeNodeDef="let node" [ngClass]="node.type" matTreeNodeToggle matTreeNodePadding
-                matTreeNodePaddingIndent="15" (dblclick)="node.type ? selectElement(node) : ''"
+            <mat-tree-node *matTreeNodeDef="let node" [ngClass]="node.type !== 'dimension' ? 'clickable-node' : ''" matTreeNodeToggle matTreeNodePadding
+                [matTreeNodePaddingIndent]="node.type === 'dimension' ? 15 : 60" (dblclick)="node.type ? selectElement(node) : ''"
                 [cdkDragData]="node" cdkDrag [cdkDragDisabled]="node.type === 'dimension'">
                 <button mat-icon-button *ngIf="node.type === 'dimension'">
                     <mat-icon class="mat-icon-rtl-mirror" *ngIf="!node.isLoading;else loadingSpinner">

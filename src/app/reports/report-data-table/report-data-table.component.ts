@@ -65,6 +65,8 @@ export class ReportDataTableComponent implements AfterViewInit {
     })
   }
   ngAfterViewInit(): void {
+    this.dataSource.data = [];
+    this.dataSize = 0;
     this.paginator().page.pipe(
       switchMap(page => this.reportService.getReportData(this.reportId(), page.pageSize, page.pageIndex, this.filterContainersFormArray().getRawValue())),
       takeUntilDestroyed(this.destroyRef)

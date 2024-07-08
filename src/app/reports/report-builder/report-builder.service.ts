@@ -60,7 +60,7 @@ export class ReportBuilderService {
   createReportForm(report?: ReportViewModel, extraFields?: ExtraField[], isClone?: boolean): FormGroup {
     let frm = new FormGroup({
       id: new FormControl(isClone ? 0 : report?.id ?? 0, Validators.required),
-      name: new FormControl(report?.name + (isClone ? '(Cloned)' : ''), {
+      name: new FormControl(isClone ? (report?.name + '(Cloned)') : report?.name, {
         validators: Validators.required,
         asyncValidators: this.reportService.validateName('deviceId', report?.name),
         updateOn: 'blur'
