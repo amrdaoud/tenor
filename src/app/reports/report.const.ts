@@ -23,6 +23,10 @@ export const columns: ColumnDef[] = [
       Text: 'Edit Report',
       MatColor: 'primary',
       Icon: 'edit',
+      ShowWhen: {
+        Property: 'canEdit',
+        Value: true
+      }
     },
     {
       Text: 'Duplicate Report',
@@ -38,5 +42,9 @@ export const columns: ColumnDef[] = [
       Text: 'Delete',
       MatColor: 'warn',
       Icon: 'delete',
+      ShowWhen: {
+        Property: 'canEdit',
+        Value: true
+      }
     },
   ];

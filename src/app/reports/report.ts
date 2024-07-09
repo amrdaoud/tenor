@@ -66,6 +66,7 @@ export interface ReportViewModel {
     levels: ReportLevelViewModel[];
     reportFields: ReportFieldValueViewModel[] | null;
     containerOfFilters: ContainerOfFilter[];
+    canEdit: boolean
 }
 
 export interface MeasureViewModel {

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, inject, model } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -25,20 +25,21 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ComponentCanDeactivate } from '../../app-core/guards/unsaved.guard';
 
 @Component({
-    selector: 'app-report-builder',
-    standalone: true,
-    templateUrl: './report-builder.component.html',
-    styleUrl: './report-builder.component.scss',
-    imports: [CommonModule, MatStepperModule,
-        CounterSideTreeComponent, KpiSideListComponent, MatListModule, MatIconModule, ReportMeasuresComponent, CdkDropListGroup, CdkDropList, MatButtonModule, SharedFormControlsComponent,
-        ReactiveFormsModule, ReportFiltersComponent, ReportLevelsComponent, MatProgressSpinnerModule]
+  selector: 'app-report-builder',
+  standalone: true,
+  templateUrl: './report-builder.component.html',
+  styleUrl: './report-builder.component.scss',
+  imports: [CommonModule, MatStepperModule,
+    CounterSideTreeComponent, KpiSideListComponent, MatListModule, MatIconModule, ReportMeasuresComponent, CdkDropListGroup, CdkDropList, MatButtonModule, SharedFormControlsComponent,
+    ReactiveFormsModule, ReportFiltersComponent, ReportLevelsComponent, MatProgressSpinnerModule]
 })
 export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnChanges, ComponentCanDeactivate {
-  
+
   canDeactivate(): boolean | Observable<boolean> {
     return this.frm.pristine || this.submitted ? true : false;
   };
   @Input() reportId!: number | null;
+
   submitted: boolean = false;
   measuresdropContainers: CdkDropList<any>[] = [];
   private reportBuilderService = inject(ReportBuilderService);
@@ -48,15 +49,19 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
   loadingAddReport$ = this.reportService.loadingAddReport$
   viewMeasures = [];
   report!: ReportViewModel;
+  reportModel = model<ReportViewModel | undefined>(undefined);
   private route = inject(ActivatedRoute);
   frm!: FormGroup;
   isClone = false;
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['reportId'] && this.reportId) {
+    if (changes['reportId'] && this.reportId) {
       this._otherSubscription = this.reportService.getById(this.reportId).pipe(
-        tap((report: ReportViewModel) => this.report = report),
+        tap((report: ReportViewModel) => {
+          this.report = report;
+          this.reportModel.set(report);
+        }),
         switchMap(e => this.reportService.getExtraFields(e.deviceId!)),
-        map((e) => this.reportBuilderService.createReportForm(this.report,e)),
+        map((e) => this.reportBuilderService.createReportForm(this.report, e)),
         tap(x => {
           this.frm = x;
           this.frm.markAsPristine();
@@ -67,14 +72,14 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
   }
   ngOnInit(): void {
     this.isClone = this.router.url.includes('/clone/');
-    if(!this.reportId) {
+    if (!this.reportId) {
       this._otherSubscription = this.route.paramMap.pipe(
         switchMap((param: ParamMap) => {
-          if(+param.get('reportId')!) {
+          if (+param.get('reportId')!) {
             return this.reportService.getById(+param.get('reportId')!).pipe(
               tap((report: ReportViewModel) => this.report = report),
               switchMap(e => this.reportService.getExtraFields(e.deviceId!)),
-              map(e => this.reportBuilderService.createReportForm(this.report,e, this.isClone)),
+              map(e => this.reportBuilderService.createReportForm(this.report, e, this.isClone)),
             )
           } else {
             return of(this.reportBuilderService.createReportForm())
@@ -83,11 +88,11 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
         tap(x => {
           this.frm = x;
           this.frm.markAsPristine();
-          
+
         }),
         switchMap(x => this.frm?.get('deviceId')?.valueChanges!),
         switchMap(e => this.reportService.getExtraFields(e)),
-        tap(e => {this.reportBuilderService.resetExtraFields(this.frm,e,this.report)}),
+        tap(e => { this.reportBuilderService.resetExtraFields(this.frm, e, this.report) }),
       ).subscribe()
     }
   }
@@ -101,24 +106,24 @@ export class ReportBuilderComponent extends Unsubscriber implements OnInit, OnCh
     return this.frm.get('levels') as FormArray;
   }
   submit() {
-    if(this.frm.invalid) {
+    if (this.frm.invalid) {
       return;
     }
-    if(this.report && !this.isClone) {
+    if (this.report && !this.isClone) {
       this._otherSubscription = this.reportService.editReport(this.frm.value).subscribe(x => {
-        if(x) {
+        if (x) {
           this.submitted = true;
-          this.router.navigate([`/reports/preview-list`], {queryParams:{reportId: x.id}})
+          this.router.navigate([`/reports/preview-list`], { queryParams: { reportId: x.id } })
         }
       });
       return;
     }
     this._otherSubscription = this.reportService.addReport(this.frm.value).subscribe(x => {
-      if(x) {
+      if (x) {
         this.submitted = true;
-        this.router.navigate([`/reports/preview-list`], {queryParams:{reportId: x.id}})
+        this.router.navigate([`/reports/preview-list`], { queryParams: { reportId: x.id } })
       }
     });
   }
-  
+
 }

@@ -17,7 +17,7 @@
                     </div>
                 </mat-tab>
                 <mat-tab label="Information">
-                    <app-report-builder [reportId]="reportId()!"></app-report-builder>
+                    <app-report-builder [reportId]="reportId()!" (reportModelChange)="setReport($event)"></app-report-builder>
                 </mat-tab>
                
                 <!-- <mat-tab label="Charts" disabled>
@@ -27,16 +27,16 @@
                 <mat-tab label="Actions">
                     <mat-card>
                     <mat-action-list>
-                        <button mat-list-item [routerLink]="'/reports/edit/' + reportId()">
-                            <mat-icon matListItemIcon style="color: #5854e0">edit</mat-icon>
-                            Edit Report
-                        </button>
                         <button mat-list-item [routerLink]="'/reports/clone/' + reportId()">
                             <mat-icon matListItemIcon style="color: #5854e0">file_copy</mat-icon>
                             Duplicate Report
                         </button>
-                        <button mat-list-item (click)="delete()">
-                            <mat-icon matListItemIcon style="color: #e42c2f">delete</mat-icon>
+                        <button mat-list-item [routerLink]="'/reports/edit/' + reportId()" [disabled]="!report?.canEdit">
+                            <mat-icon matListItemIcon style="color: #5854e0">edit</mat-icon>
+                            Edit Report
+                        </button>
+                        <button mat-list-item (click)="delete()" [disabled]="!report?.canEdit">
+                            <mat-icon matListItemIcon style="color: #e42c2f" >delete</mat-icon>
                             Delete Report
                         </button>
                     </mat-action-list>

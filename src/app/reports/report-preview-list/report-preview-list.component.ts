@@ -14,6 +14,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ReportService } from '../report.service';
 import { ConfirmService } from 'techteec-lib/dialogs-and-templates';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ReportViewModel } from '../report';
 
 @Component({
     selector: 'app-report-preview-list',
@@ -29,6 +30,7 @@ export class ReportPreviewListComponent {
   private router = inject(Router);
   private reportService = inject(ReportService);
   private confirm = inject(ConfirmService);
+  report!: ReportViewModel | undefined;
   loadingDelete = toSignal(this.reportService.loadingDelete$, {initialValue: false});
   deletedReportIds: number[] = [];
   reportId = toSignal(this.route.queryParamMap.pipe(
@@ -54,5 +56,7 @@ export class ReportPreviewListComponent {
       
     })
   }
-  
+  setReport(report: ReportViewModel | undefined) {
+    this.report = report;
+  }
 }
