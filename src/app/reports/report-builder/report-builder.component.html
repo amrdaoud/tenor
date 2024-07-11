@@ -22,7 +22,12 @@
             <app-shared-form-controls [formGroup]="frm" formArrayName="reportFields"></app-shared-form-controls>
                 <div class="stepper-buttons">
                     <button mat-raised-button type="button" matStepperPrevious>Back</button>
-                    <button mat-raised-button *ngIf="!frm.disabled" type="submit" color="primary" (click)="submit()" [disabled]="frm.invalid">{{isClone ? 'Duplicate Report' : report ? 'Update Report' : 'Submit Report'}}</button>
+                    <button mat-raised-button *ngIf="!frm.disabled" type="submit" color="primary" (click)="submit()" [disabled]="frm.invalid || frm.pending">{{isClone ? 'Duplicate Report' : report ? 'Update Report' : 'Submit Report'}}</button>
+                </div>
+                <div class="error-container" *ngIf="frm.errors">
+                    <div class="error-row" *ngIf="frm.hasError('isTaken')">
+                        Report name already exist
+                    </div>
                 </div>
         </mat-step>
     </mat-stepper>

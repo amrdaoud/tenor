@@ -160,6 +160,24 @@ export class ReportService {
       );
     }
   }
+  validateDeviceAndName(currentName?: string, currentDeviceId?: number): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      const nameCntrl = control.get('name');
+      const deviceCntrl = control.get('deviceId');
+      if(!nameCntrl || !deviceCntrl || !nameCntrl.value || !deviceCntrl.value) {
+        return of(null);
+      }
+      if(nameCntrl.value === currentName && deviceCntrl.value === currentDeviceId) {
+        return of(null);
+      }
+      this.loadingCheckName.next(true);
+      return this.http.get<boolean>(this.url + `/ValidateReport?reportName=${nameCntrl.value}&deviceId=${deviceCntrl.value}`).pipe(
+        map(res => res ? null : {isTaken: true}),
+        catchError(() => of(null)),
+        finalize(() => this.loadingCheckName.next(false))
+      );
+    }
+  }
   addReport(report: CreateReport): Observable<ReportViewModel> {
     this.loadingAddReport.next(true);
     return this.http.post<ReportViewModel>(this.url + '/add', report).pipe(

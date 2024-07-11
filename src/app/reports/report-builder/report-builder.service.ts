@@ -62,20 +62,18 @@ export class ReportBuilderService {
       id: new FormControl(isClone ? 0 : report?.id ?? 0, Validators.required),
       name: new FormControl(isClone ? (report?.name + '(Cloned)') : report?.name, {
         validators: Validators.required,
-        asyncValidators: this.reportService.validateName('deviceId', report?.name),
         updateOn: 'blur'
         }
       ),
       deviceId: new FormControl(report?.deviceId, {
         validators: Validators.required,
-        asyncValidators: this.reportService.validateDevice('name', report?.deviceId)
       }),
       isPublic: new FormControl(report?.isPublic ?? false, Validators.required),
       reportFields: new FormArray([]),
       measures: new FormArray([],[Validators.required, validateMeasureNames]),
       levels: new FormArray([], [Validators.required, validateLevelNames]),
       containerOfFilters: new FormArray([], [Validators.required, validateHavingDate])
-    });
+    }, {asyncValidators: this.reportService.validateDeviceAndName(report?.name, report?.deviceId)});
     if (report?.reportFields && report.reportFields.length > 0) {
       this.resetExtraFields(frm, extraFields!, report)
     }
