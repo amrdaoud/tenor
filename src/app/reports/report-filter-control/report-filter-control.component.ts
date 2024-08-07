@@ -11,6 +11,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { Unsubscriber } from 'techteec-lib/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatGridListModule } from '@angular/material/grid-list';
 @Component({
   selector: 'app-report-filter-control',
   standalone: true,
@@ -22,7 +24,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatIconModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatButtonModule,
+    MatGridListModule
   ],
   templateUrl: './report-filter-control.component.html',
   styleUrl: './report-filter-control.component.scss',
@@ -120,6 +124,10 @@ export class ReportFilterControlComponent extends Unsubscriber implements OnChan
     this.dateCtrl1.setValue(undefined);
     this.dateCtrl2.setValue(undefined);
     this.valueControl?.setValue([]);
+  }
+  setDateValue(days: number) {
+    this.dateCtrl1.setValue(new Date());
+    this.dateCtrl2.setValue(new Date());
   }
 
 }

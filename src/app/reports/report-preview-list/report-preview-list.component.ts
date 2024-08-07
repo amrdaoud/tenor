@@ -15,6 +15,7 @@ import { ReportService } from '../report.service';
 import { ConfirmService } from 'techteec-lib/dialogs-and-templates';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReportViewModel } from '../report';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-report-preview-list',
@@ -23,7 +24,7 @@ import { ReportViewModel } from '../report';
     styleUrl: './report-preview-list.component.scss',
     imports: [CommonModule, MatSidenavModule, MatTabsModule,
       ReportBuilderComponent, ReportSideListComponent,
-      ReportDataTableComponent, MatListModule, MatIconModule, RouterLink, MatCardModule,MatProgressSpinnerModule]
+      ReportDataTableComponent, MatListModule, MatIconModule, RouterLink, MatCardModule,MatProgressSpinnerModule, MatButtonModule]
 })
 export class ReportPreviewListComponent {
   private route = inject(ActivatedRoute);

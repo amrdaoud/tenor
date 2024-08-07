@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, catchError, finalize, map, of } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, delay, finalize, map, of } from 'rxjs';
 import { ContainerOfFilter, CreateReport, ReportDto, ReportMeasureDto, ReportViewModel } from './report';
 import { DataWithSize, ExtraField, TreeNodeViewModel } from '../common/generic';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
@@ -251,6 +251,7 @@ export class ReportService {
     .set('pageIndex', pageIndex)
     .set('pageSize', pageSize);
     return this.http.post<DataWithSize<any>>(this.url + '/getReportDataById', filters, {params}).pipe(
+      delay(5000),
       finalize(() => this.loadingData.next(false))
     );
   } 

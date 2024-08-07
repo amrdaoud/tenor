@@ -1,8 +1,12 @@
 <mat-drawer-container class="inner-drawer-container">
-    <mat-drawer opened mode="side">
+    <mat-drawer opened mode="side" #reportDrawer>
         <app-report-side-list (selected)="changeQueryParam($event.id)" [deletedReportIds]="deletedReportIds" [selectedReportId]="reportId()!"></app-report-side-list>
     </mat-drawer>
     <mat-drawer-content>
+        <button class="drawer-toggle-button" mat-raised-button color="accent" (click)="reportDrawer.toggle()">
+            <mat-icon *ngIf="!reportDrawer.opened; else closeChevron">description</mat-icon>
+            <ng-template #closeChevron><mat-icon>description</mat-icon></ng-template>
+        </button>
         @if(loadingDelete()) {
             <div class="overall-spinner-container">
                 <mat-spinner diameter="50"></mat-spinner>

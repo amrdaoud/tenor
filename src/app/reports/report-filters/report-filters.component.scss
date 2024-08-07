@@ -131,3 +131,15 @@
     // border: 1px solid red !important;
     background-color: rgba($color: red, $alpha: 0.2);
 }
+.drawer-toggle-button {
+    position: absolute;
+    top: calc(30% - 25px);
+    padding:5px !important;
+    min-width: 0px;
+    height: 50px;
+    border-radius: 0px 5px 5px 0px;
+    .mat-icon {
+        margin-right:-4px;
+    }
+    z-index: 3;
+}

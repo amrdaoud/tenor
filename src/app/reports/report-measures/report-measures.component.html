@@ -1,5 +1,5 @@
 <mat-drawer-container class="inner-drawer-container">
-    <mat-drawer #measuresDrawer [opened]="true" mode="side" *ngIf="!formArray.disabled">
+    <mat-drawer #measuresDrawer [opened]="!formArray.disabled" mode="side">
         <mat-tab-group color="accent">
             <mat-tab label="Counters">
                 <div class="measures-container">
@@ -16,8 +16,14 @@
         </mat-tab-group>
     </mat-drawer>
     <mat-drawer-content>
+        <button *ngIf="!formArray.disabled" class="drawer-toggle-button" mat-raised-button color="accent" (click)="measuresDrawer.toggle()">
+            <mat-icon *ngIf="!measuresDrawer.opened; else closeChevron">tag</mat-icon>
+            <ng-template #closeChevron><mat-icon>tag</mat-icon></ng-template>
+        </button>
         <div class="stepper-content">
+            
             <div class="report-measures-container">
+                
                 <mat-accordion cdkDropList [cdkDropListData]="formArrayControls" (cdkDropListDropped)="rearrangeMeasures($event)" class="example-list" >
                     <ng-container *ngFor="let measureForm of formArrayControls; let i = index">
                         <mat-expansion-panel #panel hideToggle  class="example-box" cdkDrag  (cdkDragStarted)="isDragging = true" (cdkDragEnded)="isDragging = false" [formGroup]="measureForm" >

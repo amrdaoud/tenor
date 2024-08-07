@@ -12,14 +12,14 @@
             }
         </mat-chip-grid>
         <input [placeholder]="placeHolder" #autoInput [formControl]="filterCtrl" [matChipInputFor]="chipGrid"
-            [matAutocomplete]="auto" (blur)="resetValue()" [readOnly]="valueControl?.disabled"/>
+            [matAutocomplete]="auto" (blur)="resetValue()" [readOnly]="valueControl?.disabled" />
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-            
+
             @if(!valueControl?.disabled) {
-                <div class="overall-spinner-container" *ngIf="(loadingFilterOptions$ | async)">
-                    <mat-spinner diameter="50"></mat-spinner>
-                    <p>Loading Options</p>
-                </div>
+            <div class="overall-spinner-container" *ngIf="(loadingFilterOptions$ | async)">
+                <mat-spinner diameter="50"></mat-spinner>
+                <p>Loading Options</p>
+            </div>
             @for (option of filteredOptions | async; track option) {
             <mat-option [value]="option">{{option}}</mat-option>
             }
@@ -39,6 +39,30 @@
         </mat-date-range-input>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-icon matIconSuffix *ngIf="!valueControl?.disabled" (click)="clear()">close</mat-icon>
-        <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-date-range-picker #picker>
+            <!-- <mat-datepicker-actions>
+                <div class="date-action-container">
+                <div class="row">
+                    <div class="col">
+                        <button mat-raised-button (click)="setDateValue(1)">Last Day</button>
+                    </div>
+                    <div class="col">
+                        <button mat-raised-button (click)="setDateValue(2)">Last 2 Days</button>
+                    </div>
+                    <div class="col">
+                        <button mat-raised-button (click)="setDateValue(10)">Last 10 Days</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button mat-raised-button color="accent" matDateRangePickerApply>Apply</button>
+                    </div>
+                    <div class="col">
+                        <button mat-raised-button  matDatepickerCancel>Cancel</button>
+                    </div>
+                </div>
+            </div>
+            </mat-datepicker-actions> -->
+        </mat-date-range-picker>
     </mat-form-field>
 </ng-template>

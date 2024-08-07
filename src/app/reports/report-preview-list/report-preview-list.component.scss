@@ -22,3 +22,15 @@
     padding: 10px;
     height: calc(100% - 20px);
 }
+.drawer-toggle-button {
+    position: fixed;
+    top: calc(30% - 25px);
+    padding:5px !important;
+    min-width: 0px;
+    height: 50px;
+    border-radius: 0px 5px 5px 0px;
+    .mat-icon {
+        margin-right:-4px;
+    }
+    z-index: 3;
+}

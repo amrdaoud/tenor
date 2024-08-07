@@ -1,10 +1,14 @@
 <mat-drawer-container class="inner-drawer-container">
-    <mat-drawer #measuresDrawer [opened]="true" mode="side" *ngIf="!formArray.disabled" style="width:25%">
+    <mat-drawer #filtersDrawer [opened]="!formArray.disabled" mode="side"  style="width:25%">
         <div class="measures-container">
             <app-levels-side-tree type="filters" [reportMeasures]="reportMeasures" [connectedDragDropLists]="!formArray.disabled ? dropContainers : []"></app-levels-side-tree>
         </div>
     </mat-drawer>
     <mat-drawer-content>
+        <button *ngIf="!formArray.disabled" class="drawer-toggle-button" mat-raised-button color="accent" (click)="filtersDrawer.toggle()">
+            <mat-icon *ngIf="!filtersDrawer.opened; else closeChevron">filter_list</mat-icon>
+            <ng-template #closeChevron><mat-icon>filter_list</mat-icon></ng-template>
+        </button>
         <div class="report-builder-stepper-content">
         <ng-container *ngFor="let containerForm of formArrayControls; let i = index">
             <mat-card class="filter-container"

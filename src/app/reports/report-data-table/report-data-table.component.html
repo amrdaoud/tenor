@@ -9,6 +9,7 @@
         <div class="overall-spinner-container">
             <mat-spinner diameter="50"></mat-spinner>
             <p>Loading Report data</p>
+            <button mat-raised-button color="warn" (click)="stop()">Stop Request</button>
         </div>
     }
     <mat-drawer-container class="rdt-container">
@@ -18,6 +19,7 @@
                     <div class="overall-spinner-container">
                         <mat-spinner diameter="50"></mat-spinner>
                         <p>Downloading Data</p>
+                        <button mat-raised-button color="warn" (click)="stopDownload()">Stop Request</button>
                     </div>
                 }
                 @if (filterContainers()) {

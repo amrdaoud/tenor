@@ -5,10 +5,10 @@ import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { DomSanitizer } from '@angular/platform-browser';
-import { FILTER_ICON } from 'techteec-lib/common';
+import { FILTER_ICON, Unsubscriber } from 'techteec-lib/common';
 import { toSignal, toObservable, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReportService } from '../report.service';
-import { filter, map, of, switchMap } from 'rxjs';
+import { filter, map, of, Subscription, switchMap } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { ReportFilterControlComponent } from "../report-filter-control/report-filter-control.component";
 import { ReportBuilderService } from '../report-builder/report-builder.service';
@@ -28,7 +28,7 @@ import { saveAs } from "file-saver";
     ReportFilterControlComponent, MatButtonModule, MatSidenavModule, MatPaginatorModule, DatePipe, DecimalPipe,
     MatProgressSpinnerModule]
 })
-export class ReportDataTableComponent implements AfterViewInit {
+export class ReportDataTableComponent extends Unsubscriber implements AfterViewInit {
 
   private reportService = inject(ReportService);
   private reportBuilder = inject(ReportBuilderService);
@@ -45,7 +45,8 @@ export class ReportDataTableComponent implements AfterViewInit {
   pageIndex = input(0);
   pageSize = input(30);
   paginator = viewChild.required(MatPaginator);
-
+  reportSubscription = new Subscription();
+  downloadSubscription = new Subscription();
   rehearsalData = toSignal(toObservable(this.reportId).pipe(
     filter(reportId => reportId !== undefined),
     switchMap(reportId => this.reportService.getReportRehearsal(reportId!)),
@@ -58,6 +59,7 @@ export class ReportDataTableComponent implements AfterViewInit {
   formArrayControls = computed(() => this.filterContainersFormArray().controls as FormGroup[]);
   dataSource = new MatTableDataSource<any>([]);
   constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
+    super();
     iconRegistry.addSvgIconLiteral('filter-icon', sanitizer.bypassSecurityTrustHtml(FILTER_ICON));
     effect(() => {
       this.reportId();
@@ -68,7 +70,7 @@ export class ReportDataTableComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSource.data = [];
     this.dataSize = 0;
-    this.paginator().page.pipe(
+    this.reportSubscription = this.paginator().page.pipe(
       switchMap(page => this.reportService.getReportData(this.reportId(), page.pageSize, page.pageIndex, this.filterContainersFormArray().getRawValue())),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(x => {
@@ -76,24 +78,36 @@ export class ReportDataTableComponent implements AfterViewInit {
       this.dataSource.data = x.data;
     }
     );
-
+    this._otherSubscription = this.reportSubscription;
   }
   getFilterControls(i: number): FormGroup[] {
     return (this.formArrayControls()[i].get('reportFilters') as FormArray).controls as FormGroup[];
   }
   submit() {
     this.paginator().pageIndex = 0;
-    this.reportService.getReportData(this.reportId(), this.paginator().pageSize, this.paginator().pageIndex, this.filterContainersFormArray().getRawValue()).pipe(
+    this.reportSubscription = this.reportService.getReportData(this.reportId(), this.paginator().pageSize, this.paginator().pageIndex, this.filterContainersFormArray().getRawValue()).pipe(
       takeUntilDestroyed(this.destroyRef)
     )
       .subscribe(x => {
         this.dataSize = x.dataSize;
         this.dataSource.data = x.data;
       });
+      this._otherSubscription = this.reportSubscription;
   }
   download() {
-    this.reportService.downloadReportById(this.reportId(), this.filterContainersFormArray().getRawValue()).subscribe(
+    this.downloadSubscription = this.reportService.downloadReportById(this.reportId(), this.filterContainersFormArray().getRawValue()).subscribe(
       data => saveAs(data, this.rehearsalData()?.name + '-' + new Date().toLocaleDateString() + '.csv')
-    )
+    );
+    this._otherSubscription = this.downloadSubscription;
+  }
+  stop() {
+    if(this.reportSubscription && !this.reportSubscription.closed) {
+      this.reportSubscription.unsubscribe();
+    }
+  }
+  stopDownload() {
+    if(this.downloadSubscription && !this.downloadSubscription.closed) {
+      this.downloadSubscription.unsubscribe();
+    }
   }
 }
