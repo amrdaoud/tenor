@@ -115,7 +115,7 @@ export const routes: Routes = [
           import('./reports/report-preview-list/report-preview-list.component').then(
             (c) => c.ReportPreviewListComponent
           ),
-          canActivate: [authGuard], data: {Roles: ['admin', 'editor']}
+          canActivate: [authGuard], data: {Roles: ['admin', 'editor', 'user']}
       },
     ],
   },

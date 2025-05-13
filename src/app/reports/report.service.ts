@@ -251,7 +251,6 @@ export class ReportService {
     .set('pageIndex', pageIndex)
     .set('pageSize', pageSize);
     return this.http.post<DataWithSize<any>>(this.url + '/getReportDataById', filters, {params}).pipe(
-      delay(5000),
       finalize(() => this.loadingData.next(false))
     );
   } 
