@@ -111,6 +111,13 @@ export class CounterService {
     }
     return this.http.get<TreeNodeViewModel[]>(environment.apiUrl + `subsets/GetSubsetByDevice`, {params: params})
   }
+  getSubsetsBySetId(setId: number, searchQuery?: string): Observable<TreeNodeViewModel[]>{
+    let params = new HttpParams().set('setId', setId)
+    if(searchQuery) {
+      params = params.set('searchQuery', searchQuery)
+    }
+    return this.http.get<TreeNodeViewModel[]>(environment.apiUrl + `subsets/GetSubsetBySet`, {params: params})
+  }
   getCountersByParentId(parentId: number, searchQuery?:string): Observable<TreeNodeViewModel[]> {
     let params = new HttpParams().set('subsetid', parentId)
     if(searchQuery) {

@@ -127,6 +127,18 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnInit {
           this.toggleNode(currentNode!,node.level, expanded);
         });
       }
+      else if (node.type === 'set') {
+        this._otherSubscription = this.counterService.getSubsetsBySetId(+node.id, this.searchControl.value!)
+        .pipe(
+          finalize(() => node.isLoading = false)
+        )
+        .subscribe(x => {
+          currentNode!.childs = x;
+          const expanded = this.treeControl.dataNodes.filter(x => this.treeControl.isExpanded(x));
+          this.dataSource.data = [...this.dataSource.data];
+          this.toggleNode(currentNode!,node.level, expanded);
+        });
+      }
       else if (node.type === 'subset') {
         this._otherSubscription = this.counterService.getCountersByParentId(+node.id, this.searchControl.value!)
         .pipe(
