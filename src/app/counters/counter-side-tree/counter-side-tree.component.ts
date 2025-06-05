@@ -14,7 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { DomSanitizer } from '@angular/platform-browser';
-import { COUNTER_ICON, DEVICE_ICON, SUBSET_ICON } from '../../common/app-icons.const';
+import { COUNTER_ICON, DEVICE_ICON, SET_ICON, SUBSET_ICON } from '../../common/app-icons.const';
 import { CollectionViewer, ListRange } from '@angular/cdk/collections';
 
 @Component({
@@ -49,6 +49,7 @@ export class CounterSideTreeComponent extends Unsubscriber implements OnInit {
     iconRegistry.addSvgIconLiteral('counter-icon', sanitizer.bypassSecurityTrustHtml(COUNTER_ICON));
     iconRegistry.addSvgIconLiteral('device-icon', sanitizer.bypassSecurityTrustHtml(DEVICE_ICON));
     iconRegistry.addSvgIconLiteral('subset-icon', sanitizer.bypassSecurityTrustHtml(SUBSET_ICON));
+    iconRegistry.addSvgIconLiteral('set-icon', sanitizer.bypassSecurityTrustHtml(SET_ICON));
   }
   ngOnInit(): void {
     this.treeFlattener = new MatTreeFlattener(
